@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B5E55">
+<title>Profile - Tribal Scholarship One</title>
+<style>
+:root{
+  --brand:#0B5E55;--brand2:#0E7C6F;--brandsoft:#E6F2F0;
+  --bg:#F4F6F8;--card:#fff;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0;
+  --ok:#0F9D58;--okbg:#E7F6EE;--warn:#B45309;--warnbg:#FEF3C7;
+  --err:#DC2626;--errbg:#FEE2E2;--info:#1D4ED8;--infobg:#DBEAFE;
+  --r:14px;--sh:0 1px 2px rgba(15,23,42,.06),0 8px 24px -14px rgba(15,23,42,.2);
+  --safeb:env(safe-area-inset-bottom,0px)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+svg{display:block}
+
+/* SHELL */
+.app{min-height:100dvh;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:50;background:var(--brand);color:#fff;
+  display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:56px;
+  padding-top:calc(10px + env(safe-area-inset-top,0px));
+}
+.topbar .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.logo{
+  width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.15);
+  display:grid;place-items:center;flex:none;
+}
+.logo svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.brand-t{min-width:0}
+.brand-t b{display:block;font-size:14px;line-height:1.15;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.brand-t small{display:block;font-size:11px;opacity:.8;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.top-actions{display:flex;gap:4px}
+.iconbtn{
+  width:38px;height:38px;border-radius:10px;border:0;
+  background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;
+  cursor:pointer;position:relative;
+}
+.iconbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+.iconbtn .dot-badge{
+  position:absolute;top:6px;right:6px;width:8px;height:8px;
+  border-radius:50%;background:#FBBF24;border:2px solid var(--brand)
+}
+.sidebar{display:none}
+.bottomnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:60;background:#fff;
+  border-top:1px solid var(--line);display:flex;
+  padding:6px 4px calc(6px + var(--safeb));
+  box-shadow:0 -4px 16px -8px rgba(15,23,42,.1);
+}
+.bn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 2px;border-radius:10px;color:var(--muted);font-size:10.5px;
+  font-weight:500;min-width:0;
+}
+.bn-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7}
+.bn-item.active{color:var(--brand);background:var(--brandsoft)}
+.bn-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.content{flex:1;padding:14px 14px calc(88px + var(--safeb));min-width:0}
+.wrap{max-width:900px;margin:0 auto}
+
+@media(min-width:768px){
+  .content{padding:18px 22px calc(92px + var(--safeb))}
+  .bottomnav{padding:8px 12px calc(8px + var(--safeb))}
+  .bn-item{font-size:11.5px}.bn-item svg{width:24px;height:24px}
+}
+@media(min-width:1200px){
+  .app{
+    display:grid;grid-template-columns:250px 1fr;
+    grid-template-rows:auto 1fr;
+    grid-template-areas:"top top" "side main";
+  }
+  .topbar{grid-area:top}
+  .sidebar{
+    grid-area:side;display:block;background:#fff;
+    border-right:1px solid var(--line);padding:14px 12px;
+    position:sticky;top:56px;height:calc(100dvh - 56px);overflow-y:auto;
+  }
+  .sidebar .nav-title{
+    font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted);font-weight:600;padding:12px 12px 6px;
+  }
+  .sidebar a{
+    display:flex;align-items:center;gap:12px;padding:10px 12px;
+    border-radius:10px;color:var(--ink);font-size:14px;font-weight:500;
+    margin-bottom:2px;
+  }
+  .sidebar a svg{width:20px;height:20px;stroke:currentColor;fill:none;
+    stroke-width:1.8;flex:none}
+  .sidebar a:hover{background:var(--bg)}
+  .sidebar a.active{background:var(--brandsoft);color:var(--brand);font-weight:600}
+  .content{grid-area:main;padding:22px 26px}
+  .bottomnav{display:none}
+  .wrap{max-width:920px}
+}
+
+/* COMMON */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 16px;border-radius:10px;border:1px solid transparent;
+  background:#fff;color:var(--ink);font-weight:600;font-size:14px;
+  cursor:pointer;line-height:1.2;text-align:center;transition:.15s;
+  min-height:44px;
+}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:hover{background:#0a4f48}
+.btn.ghost{background:#fff;border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn.danger{background:#fff;border-color:#FCA5A5;color:var(--err)}
+.btn.danger:hover{background:var(--errbg);border-color:var(--err)}
+.btn.sm{padding:8px 13px;font-size:13px;min-height:38px}
+.btn.block{width:100%}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;
+  stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 9px;
+  border-radius:999px;font-size:11.5px;font-weight:600;background:#F1F5F9;
+  color:#334155;white-space:nowrap;
+}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.err{background:var(--errbg);color:var(--err)}
+.badge.info{background:var(--infobg);color:var(--info)}
+.badge.brand{background:var(--brandsoft);color:var(--brand)}
+.badge.neutral{background:#F1F5F9;color:#475569}
+.muted{color:var(--muted)}
+.sm{font-size:13px}
+.xs{font-size:11.5px}
+.link{color:var(--brand);font-weight:600;font-size:13.5px}
+
+/* HEAD */
+.page-head{margin-bottom:14px}
+.breadcrumb{
+  display:flex;align-items:center;gap:6px;font-size:12px;
+  color:var(--muted);margin-bottom:8px;flex-wrap:wrap;
+}
+.breadcrumb svg{width:12px;height:12px;stroke:currentColor;fill:none;
+  stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.page-head h1{font-size:22px;font-weight:700;margin:0 0 6px}
+.page-head p{color:var(--muted);font-size:13.5px;margin:0;max-width:640px}
+
+/* HERO */
+.profile-hero{
+  background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+  border-radius:16px;padding:22px 20px;margin-bottom:14px;position:relative;
+  overflow:hidden;
+}
+.profile-hero::before{
+  content:"";position:absolute;top:-50px;right:-50px;width:220px;height:220px;
+  border-radius:50%;background:rgba(255,255,255,.06);
+}
+.ph-head{
+  display:flex;gap:16px;align-items:center;position:relative;z-index:1;
+  margin-bottom:16px;flex-wrap:wrap;
+}
+.ph-avatar{
+  width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.2);
+  display:grid;place-items:center;flex:none;position:relative;
+  border:3px solid rgba(255,255,255,.35);
+}
+.ph-avatar b{
+  font-size:30px;font-weight:700;color:#fff;letter-spacing:.02em;
+}
+.ph-avatar .edit-av{
+  position:absolute;bottom:-2px;right:-2px;width:28px;height:28px;
+  border-radius:50%;background:#fff;color:var(--brand);
+  display:grid;place-items:center;cursor:pointer;border:2px solid var(--brand);
+}
+.ph-avatar .edit-av svg{width:13px;height:13px;stroke:currentColor;
+  fill:none;stroke-width:2.4}
+.ph-info{flex:1;min-width:200px}
+.ph-info h1{
+  font-size:21px;font-weight:700;margin:0 0 5px;line-height:1.25;
+}
+.ph-info .ph-sub{
+  font-size:13px;opacity:.9;margin:0 0 10px;
+}
+.ph-tags{display:flex;flex-wrap:wrap;gap:6px}
+.ph-tags .tag{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.15);padding:5px 10px;border-radius:999px;
+  font-size:11.5px;font-weight:600;
+}
+.ph-tags .tag svg{width:12px;height:12px;stroke:currentColor;fill:none;
+  stroke-width:2.2}
+
+/* COMPLETION */
+.ph-completion{
+  background:rgba(255,255,255,.14);border-radius:12px;padding:12px;
+  position:relative;z-index:1;
+}
+.ph-completion .phl{
+  display:flex;justify-content:space-between;font-size:11.5px;
+  margin-bottom:6px;font-weight:600;
+}
+.ph-completion .phbar{
+  height:7px;background:rgba(255,255,255,.22);border-radius:99px;
+  overflow:hidden;
+}
+.ph-completion .phbar>span{
+  display:block;height:100%;background:#fff;border-radius:99px;
+  transition:width .5s ease;
+}
+
+/* CARD */
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:16px;margin-bottom:14px;box-shadow:var(--sh);
+}
+.card-h{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  flex-wrap:wrap;
+}
+.card-h .c-ic{
+  width:34px;height:34px;border-radius:10px;background:var(--brandsoft);
+  display:grid;place-items:center;flex:none;
+}
+.card-h .c-ic svg{width:18px;height:18px;stroke:var(--brand);fill:none;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.card-h h2{font-size:15px;font-weight:700;margin:0;flex:1}
+.card-h .edit-link{
+  font-size:13px;color:var(--brand);font-weight:600;background:none;
+  border:0;cursor:pointer;padding:4px 8px;border-radius:6px;
+}
+.card-h .edit-link:hover{background:var(--brandsoft)}
+
+/* KV ROWS */
+.kv-list{
+  display:flex;flex-direction:column;gap:0;
+}
+.kv-row{
+  display:grid;grid-template-columns:24px 1fr auto;
+  gap:12px;align-items:center;padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+.kv-row:last-child{border-bottom:0}
+.kv-row .kv-ic{
+  width:24px;height:24px;display:grid;place-items:center;color:var(--muted);
+}
+.kv-row .kv-ic svg{width:18px;height:18px;stroke:currentColor;fill:none;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.kv-row .kv-l{
+  min-width:0;
+}
+.kv-row .kv-l small{
+  display:block;font-size:11px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.03em;font-weight:700;margin-bottom:2px;
+}
+.kv-row .kv-l b{
+  font-size:14px;font-weight:600;color:var(--ink);word-break:break-word;
+  display:block;
+}
+.kv-row .kv-tag{
+  flex:none;
+}
+
+/* QUICK ACTIONS */
+.qa-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  margin-bottom:14px;
+}
+@media(min-width:640px){.qa-grid{grid-template-columns:repeat(4,1fr)}}
+.qa{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:16px 10px;display:flex;flex-direction:column;align-items:center;
+  gap:9px;text-align:center;transition:.15s;box-shadow:var(--sh);
+  color:var(--ink);cursor:pointer;
+}
+.qa:hover{border-color:var(--brand);transform:translateY(-1px)}
+.qa .qa-ic{
+  width:42px;height:42px;border-radius:12px;background:var(--brandsoft);
+  display:grid;place-items:center;flex:none;
+}
+.qa .qa-ic svg{width:22px;height:22px;stroke:var(--brand);fill:none;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.qa b{font-size:13px;font-weight:600;line-height:1.25}
+.qa small{font-size:11px;color:var(--muted);line-height:1.3}
+
+/* EDIT FORM */
+.form-row{
+  margin-bottom:14px;
+}
+.form-row:last-child{margin-bottom:0}
+.form-row label{
+  display:block;font-size:13px;font-weight:600;margin-bottom:6px;
+  color:#334155;
+}
+.form-row .hint{
+  font-size:12px;color:var(--muted);margin-top:5px;
+}
+.form-row input,
+.form-row select,
+.form-row textarea{
+  width:100%;padding:11px 13px;border:1px solid var(--line);
+  border-radius:10px;background:#fff;font-size:15px;outline:0;
+  min-height:46px;transition:.15s;font-family:inherit;
+}
+.form-row textarea{resize:vertical;min-height:80px;line-height:1.5}
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus{
+  border-color:var(--brand);box-shadow:0 0 0 3px rgba(11,94,85,.12);
+}
+.form-row input[readonly]{
+  background:#F8FAFC;color:#475569;cursor:not-allowed;
+}
+.form-row.invalid input,
+.form-row.invalid select{border-color:var(--err)}
+.form-row .err{
+  font-size:12px;color:var(--err);margin-top:4px;display:none;
+}
+.form-row.invalid .err{display:block}
+.form-grid{
+  display:grid;grid-template-columns:1fr;gap:12px;
+}
+@media(min-width:560px){.form-grid{grid-template-columns:1fr 1fr}}
+.form-actions{
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;
+}
+.form-actions .btn{flex:1;min-width:140px}
+
+/* SECTION HEADER */
+.section-head{
+  font-size:11px;color:var(--muted);font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;
+  margin:16px 0 10px;display:flex;align-items:center;gap:8px;
+}
+.section-head:first-child{margin-top:0}
+.section-head::after{
+  content:"";flex:1;height:1px;background:var(--line);
+}
+
+/* ACCOUNT */
+.account-list{list-style:none;padding:0;margin:0}
+.account-list li{
+  display:flex;align-items:center;gap:12px;padding:14px 0;
+  border-bottom:1px solid var(--line);cursor:pointer;
+  transition:.15s;
+}
+.account-list li:last-child{border-bottom:0}
+.account-list li:hover{background:var(--bg);margin:0 -16px;padding:14px 16px}
+.account-list .al-ic{
+  width:36px;height:36px;border-radius:10px;background:var(--brandsoft);
+  display:grid;place-items:center;flex:none;
+}
+.account-list .al-ic svg{width:18px;height:18px;stroke:var(--brand);
+  fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.account-list .al-ic.danger{background:var(--errbg)}
+.account-list .al-ic.danger svg{stroke:var(--err)}
+.account-list .al-l{flex:1;min-width:0}
+.account-list .al-l b{
+  font-size:14px;font-weight:600;display:block;margin-bottom:1px;
+}
+.account-list .al-l small{font-size:12px;color:var(--muted);display:block}
+.account-list .chev{color:var(--muted)}
+.account-list .chev svg{width:18px;height:18px;stroke:currentColor;
+  fill:none;stroke-width:2.2}
+
+/* INFO BANNER */
+.info-banner{
+  display:flex;gap:12px;padding:13px 14px;border-radius:12px;
+  margin-bottom:14px;border:1px solid;
+  align-items:flex-start;
+}
+.info-banner svg{width:20px;height:20px;stroke:currentColor;fill:none;
+  stroke-width:1.9;flex:none;margin-top:1px}
+.info-banner p{margin:0;font-size:12.5px;line-height:1.55}
+.info-banner b{font-weight:700}
+.info-banner.info{background:var(--infobg);color:var(--info);border-color:#BFDBFE}
+.info-banner.info p{color:#1E3A8A}
+
+/* CONFIRM MODAL */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:500;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-bg.open{display:flex}
+.modal{
+  background:#fff;border-radius:16px;padding:22px;max-width:380px;
+  width:100%;box-shadow:0 20px 50px -20px rgba(0,0,0,.4);
+  animation:pop .25s ease;
+}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:none;opacity:1}}
+.modal h3{font-size:16px;margin:0 0 8px;font-weight:700}
+.modal p{margin:0 0 18px;font-size:13.5px;color:var(--muted);
+  line-height:1.5}
+.modal .modal-actions{display:flex;gap:10px;flex-wrap:wrap}
+.modal .modal-actions .btn{flex:1;min-width:120px}
+
+/* TOAST */
+.toast-wrap{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(88px + var(--safeb));z-index:600;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none;
+  align-items:center;width:calc(100% - 28px);max-width:420px;
+}
+@media(min-width:1200px){.toast-wrap{bottom:24px}}
+.toast{
+  background:#0F172A;color:#fff;padding:11px 16px;border-radius:10px;
+  font-size:13.5px;font-weight:500;
+  box-shadow:0 10px 30px -10px rgba(0,0,0,.35);
+  transition:opacity .3s;text-align:center;max-width:100%;
+}
+.toast.ok{background:var(--ok)}
+.toast.err{background:var(--err)}
+.toast.warn{background:var(--warn)}
+
+/* JAGO FAB */
+.jago-fab{
+  position:fixed;right:14px;bottom:calc(78px + var(--safeb));
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+  display:grid;place-items:center;
+  box-shadow:0 10px 24px -8px rgba(11,94,85,.6);
+  z-index:70;border:0;cursor:pointer;
+}
+.jago-fab svg{width:26px;height:26px;stroke:currentColor;fill:none;
+  stroke-width:1.8}
+@media(min-width:1200px){
+  .jago-fab{bottom:26px;right:26px;width:58px;height:58px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar" id="topbar"></header>
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content"><div class="wrap" id="page"></div></main>
+  <nav class="bottomnav" id="bottomnav"></nav>
+</div>
+
+<div class="modal-bg" id="logoutModal">
+  <div class="modal">
+    <h3>Logout?</h3>
+    <p>You will be signed out of Tribal Scholarship One on this device. Your saved data on the server is not affected. In this prototype, all local state will be cleared.</p>
+    <div class="modal-actions">
+      <button class="btn ghost" type="button" id="cancelLogout">Cancel</button>
+      <button class="btn danger" type="button" id="confirmLogout">Logout</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* =========================================================
+   ICONS
+   ========================================================= */
+var ICONS = {
+  dashboard:'<path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>',
+  schemes:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16"/>',
+  apps:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+  docs:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  pay:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+  jago:'<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 15c1.5 1.2 4.5 1.2 6 0"/>',
+  notif:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+  check:'<path d="M5 13l4 4L19 7"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>',
+  chevL:'<path d="M15 6l-6 6 6 6"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  close:'<path d="M18 6L6 18M6 6l12 12"/>',
+  book:'<path d="M4 19.5V5a2 2 0 0 1 2-2h11a1 1 0 0 1 1 1v15"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H18"/><path d="M20 5v14"/>',
+  grad:'<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/>',
+  star:'<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/>',
+  bank:'<path d="M3 10l9-6 9 6"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><path d="M12 17h.01"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  refresh:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>',
+  arrowR:'<path d="M5 12h14M13 5l7 7-7 7"/>',
+  eye:'<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>',
+  pen:'<path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18z"/><path d="M2 2l7.6 7.6"/><circle cx="11" cy="11" r="2"/>',
+  save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/>',
+  phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/>',
+  mapPin:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+  building:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M9 22v-6h6v6M9 8h.01M15 8h.01M9 12h.01M15 12h.01"/>',
+  hash:'<path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/>',
+  idcard:'<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2.5"/><path d="M13 10h5M13 14h5M5 16c.5-2 2-3 4-3s3.5 1 4 3"/>',
+  sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+  shieldC:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+  layers:'<path d="M12 2L2 7l10 5 10-5z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/>',
+  trash:'<path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>'
+};
+function icon(n, cls){
+  var p = ICONS[n] || ICONS.info;
+  return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
+}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+function toast(msg, type){
+  var w = document.getElementById('toastWrap');
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  w.appendChild(t);
+  setTimeout(function(){
+    t.style.opacity = '0';
+    setTimeout(function(){ t.remove(); }, 320);
+  }, 2400);
+}
+
+/* =========================================================
+   STATE
+   ========================================================= */
+var KEY = 'tso_state_v1';
+function S(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){
+      var p = JSON.parse(raw);
+      if(p && p.profile) return p;
+    }
+  }catch(e){}
+  return null;
+}
+
+/* =========================================================
+   SHELL
+   ========================================================= */
+var NAV = [
+  {id:'dashboard',   label:'Dashboard',    icon:'dashboard', href:'dashboard.html'},
+  {id:'schemes',     label:'Schemes',      icon:'schemes',   href:'schemes.html'},
+  {id:'applications',label:'Applications', icon:'apps',      href:'my-applications.html'},
+  {id:'documents',   label:'Documents',    icon:'docs',      href:'document-wallet.html'},
+  {id:'payments',    label:'Payments',     icon:'pay',       href:'payment-status.html'},
+  {id:'jago',        label:'JAGO',         icon:'jago',      href:'jago.html'},
+  {id:'notifications',label:'Notifications',icon:'notif',    href:'notifications.html'},
+  {id:'profile',     label:'Profile',      icon:'profile',   href:'profile.html'}
+];
+var MOBILE_NAV = ['dashboard','schemes','applications','jago','profile'];
+
+function mountShell(active, crumb){
+  var st = S();
+  var unread = st ? st.notifications.filter(function(n){ return !n.read; }).length : 0;
+
+  document.getElementById('topbar').innerHTML =
+    '<div class="brand">' +
+      '<span class="logo">' + icon('shield') + '</span>' +
+      '<span class="brand-t">' +
+        '<b>Tribal Scholarship One</b>' +
+        '<small>' + esc(crumb || 'Unified Scholarship Platform') + '</small>' +
+      '</span>' +
+    '</div>' +
+    '<div class="top-actions">' +
+      '<a class="iconbtn" href="notifications.html" aria-label="Notifications">' +
+        icon('notif') + (unread ? '<span class="dot-badge"></span>' : '') +
+      '</a>' +
+      '<a class="iconbtn" href="profile.html" aria-label="Profile">' + icon('user') + '</a>' +
+    '</div>';
+
+  document.getElementById('sidebar').innerHTML =
+    '<div class="nav-title">Menu</div>' +
+    NAV.map(function(n){
+      return '<a href="' + n.href + '" class="' + (n.id === active ? 'active' : '') + '">' +
+        icon(n.icon) + '<span>' + n.label + '</span>' +
+      '</a>';
+    }).join('') +
+    '<div class="nav-title">Support</div>' +
+    '<a href="help.html">' + icon('help') + '<span>Help</span></a>' +
+    '<a href="settings.html">' + icon('settings') + '<span>Settings</span></a>' +
+    '<a href="index.html" onclick="localStorage.removeItem(\'tso_state_v1\')">' +
+      icon('logout') + '<span>Logout</span></a>';
+
+  document.getElementById('bottomnav').innerHTML = MOBILE_NAV.map(function(id){
+    var n = NAV.find(function(x){ return x.id === id; });
+    return '<a class="bn-item ' + (id === active ? 'active' : '') + '" href="' + n.href + '">' +
+      icon(n.icon) + '<span>' + n.label + '</span>' +
+    '</a>';
+  }).join('');
+
+  if(!document.querySelector('.jago-fab')){
+    var f = document.createElement('button');
+    f.className = 'jago-fab';
+    f.setAttribute('aria-label','Open JAGO assistant');
+    f.innerHTML = icon('jago');
+    f.onclick = function(){ location.href = 'jago.html'; };
+    document.body.appendChild(f);
+  }
+}
+
+/* =========================================================
+   PAGE DATA
+   ========================================================= */
+var s = S();
+if(!s || !s.profile){ location.href = 'index.html'; }
+
+mountShell('profile', 'Home / Profile');
+
+/* =========================================================
+   FORM STATE
+   ========================================================= */
+var editing = false;
+var form = Object.assign({}, s.profile);
+
+/* Fields that can be edited from this page */
+var EDITABLE = [
+  'firstName','lastName','email','mobile','state','district',
+  'address','institution','course','branch','semester','enrollment',
+  'academicYear'
+];
+
+/* Required fields */
+var REQUIRED = ['firstName','lastName','mobile','email','state','district',
+                'institution','course','enrollment'];
+
+/* =========================================================
+   COMPLETION
+   ========================================================= */
+function computeCompletion(p){
+  var checks = [
+    p.firstName, p.lastName, p.dob, p.gender,
+    p.mobile, p.email, p.state, p.district,
+    p.address, p.institution, p.course, p.enrollment
+  ];
+  var filled = checks.filter(function(v){
+    return v !== undefined && v !== null && String(v).trim() !== '';
+  }).length;
+  return Math.round(filled / checks.length * 100);
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+var page = document.getElementById('page');
+var confirmCallback = null;
+
+function renderView(){
+  var p = s.profile;
+  var completion = computeCompletion(p);
+  var initials = (p.firstName || 'A').charAt(0) + (p.lastName || 'M').charAt(0);
+  initials = initials.toUpperCase();
+
+  page.innerHTML =
+    '<div class="page-head">' +
+      '<nav class="breadcrumb" aria-label="Breadcrumb">' +
+        '<a href="dashboard.html">Home</a>' + icon('chev') +
+        '<span>Profile</span>' +
+      '</nav>' +
+      '<h1>My Profile</h1>' +
+      '<p>Your personal, academic and contact information used across all your scholarship applications.</p>' +
+    '</div>' +
+
+    /* HERO */
+    '<section class="profile-hero">' +
+      '<div class="ph-head">' +
+        '<div class="ph-avatar">' +
+          '<b>' + esc(initials) + '</b>' +
+          '<span class="edit-av" id="editAvatar" role="button" tabindex="0" aria-label="Change avatar">' +
+            icon('pen') +
+          '</span>' +
+        '</div>' +
+        '<div class="ph-info">' +
+          '<h1>' + esc((p.firstName || '') + ' ' + (p.lastName || '')) + '</h1>' +
+          '<p class="ph-sub">' + esc(p.enrollment || 'Enrollment not set') + ' - ' + esc(p.course || 'Course not set') + '</p>' +
+          '<div class="ph-tags">' +
+            '<span class="tag">' + icon('shieldC') + ' ST' + (p.pvtg ? ' - PVTG' : '') + '</span>' +
+            '<span class="tag">' + icon('mapPin') + ' ' + esc(p.state || 'State') + '</span>' +
+            '<span class="tag">' + icon('grad') + ' ' + esc(p.institution || 'Institution') + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="ph-completion">' +
+        '<div class="phl">' +
+          '<span>Profile completion</span>' +
+          '<span>' + completion + '%</span>' +
+        '</div>' +
+        '<div class="phbar"><span style="width:' + completion + '%"></span></div>' +
+      '</div>' +
+    '</section>' +
+
+    /* INFO BANNER if completion is low */
+    (completion < 100
+      ? '<div class="info-banner info">' +
+          icon('info') +
+          '<p>Complete your profile to <b>auto-fill</b> most fields in every application and speed up verification.</p>' +
+        '</div>'
+      : '') +
+
+    /* QUICK ACTIONS */
+    '<section class="qa-grid">' +
+      '<a class="qa" href="my-applications.html">' +
+        '<span class="qa-ic">' + icon('apps') + '</span>' +
+        '<b>My Applications</b>' +
+        '<small>' + (s.applications ? s.applications.length : 0) + ' application' + ((s.applications && s.applications.length !== 1) ? 's' : '') + '</small>' +
+      '</a>' +
+      '<a class="qa" href="document-wallet.html">' +
+        '<span class="qa-ic">' + icon('docs') + '</span>' +
+        '<b>My Documents</b>' +
+        '<small>' + (s.documents ? s.documents.length : 0) + ' document' + ((s.documents && s.documents.length !== 1) ? 's' : '') + '</small>' +
+      '</a>' +
+      '<a class="qa" href="payment-status.html">' +
+        '<span class="qa-ic">' + icon('pay') + '</span>' +
+        '<b>Payment History</b>' +
+        '<small>View DBT records</small>' +
+      '</a>' +
+      '<a class="qa" href="verification.html">' +
+        '<span class="qa-ic">' + icon('shield') + '</span>' +
+        '<b>Verification</b>' +
+        '<small>Unified status</small>' +
+      '</a>' +
+    '</section>' +
+
+    /* ACADEMIC */
+    '<section class="card">' +
+      '<div class="card-h">' +
+        '<span class="c-ic">' + icon('grad') + '</span>' +
+        '<h2>Academic Details</h2>' +
+        '<button class="edit-link" type="button" data-edit="academic">Edit</button>' +
+      '</div>' +
+      '<div class="kv-list">' +
+        kvRow('building','Institution', p.institution) +
+        kvRow('book','Course / Program', p.course) +
+        kvRow('layers','Branch', p.branch) +
+        kvRow('hash','Enrollment Number', p.enrollment) +
+        kvRow('calendar','Academic Year', p.academicYear) +
+        kvRow('grad','Semester / Year', p.semester) +
+      '</div>' +
+    '</section>' +
+
+    /* PERSONAL */
+    '<section class="card">' +
+      '<div class="card-h">' +
+        '<span class="c-ic">' + icon('user') + '</span>' +
+        '<h2>Personal & Contact</h2>' +
+        '<button class="edit-link" type="button" data-edit="personal">Edit</button>' +
+      '</div>' +
+      '<div class="kv-list">' +
+        kvRow('user','Full Name', (p.firstName || '') + ' ' + (p.lastName || '')) +
+        kvRow('calendar','Date of Birth', p.dob) +
+        kvRow('user','Gender', p.gender) +
+        kvRow('mail','Email', p.email) +
+        kvRow('phone','Mobile', p.mobile) +
+        kvRow('mapPin','State / District', (p.state || '') + (p.district ? ' / ' + p.district : '')) +
+        kvRow('building','Address', p.address) +
+      '</div>' +
+    '</section>' +
+
+    /* CATEGORY */
+    '<section class="card">' +
+      '<div class="card-h">' +
+        '<span class="c-ic">' + icon('shieldC') + '</span>' +
+        '<h2>Category & Status</h2>' +
+      '</div>' +
+      '<div class="kv-list">' +
+        kvRow('shieldC','Category', 'Scheduled Tribe (ST)') +
+        kvRow('star','PVTG Status', p.pvtg ? 'PVTG' : 'Not PVTG') +
+        kvRow('bank','Annual Family Income', p.income ? 'Rs ' + Number(p.income).toLocaleString('en-IN') : 'Not set') +
+        kvRow('shield','Disability', p.disability ? 'Declared' : 'Not declared') +
+      '</div>' +
+      '<p class="muted xs" style="margin-top:10px">Category details are verified through mock integrated sources. To update, use the eligibility or verification pages.</p>' +
+    '</section>' +
+
+    /* ACCOUNT */
+    '<section class="card">' +
+      '<div class="card-h">' +
+        '<span class="c-ic">' + icon('settings') + '</span>' +
+        '<h2>Account</h2>' +
+      '</div>' +
+      '<ul class="account-list">' +
+        '<li data-nav="settings.html">' +
+          '<span class="al-ic">' + icon('settings') + '</span>' +
+          '<div class="al-l"><b>Settings</b><small>Language, notifications, privacy</small></div>' +
+          '<span class="chev">' + icon('chev') + '</span>' +
+        '</li>' +
+        '<li data-nav="help.html">' +
+          '<span class="al-ic">' + icon('help') + '</span>' +
+          '<div class="al-l"><b>Help &amp; Support</b><small>FAQs, grievance, contact</small></div>' +
+          '<span class="chev">' + icon('chev') + '</span>' +
+        '</li>' +
+        '<li data-nav="notifications.html">' +
+          '<span class="al-ic">' + icon('notif') + '</span>' +
+          '<div class="al-l"><b>Notifications</b><small>' +
+            (s.notifications ? s.notifications.filter(function(n){ return !n.read; }).length : 0) +
+            ' unread</small></div>' +
+          '<span class="chev">' + icon('chev') + '</span>' +
+        '</li>' +
+        '<li id="logoutItem">' +
+          '<span class="al-ic danger">' + icon('logout') + '</span>' +
+          '<div class="al-l"><b style="color:var(--err)">Logout</b><small>Sign out of this device</small></div>' +
+          '<span class="chev">' + icon('chev') + '</span>' +
+        '</li>' +
+      '</ul>' +
+    '</section>' +
+
+    /* HELP BLOCK */
+    '<section class="card" style="text-align:center">' +
+      '<p class="muted sm" style="margin:0 0 12px">' +
+        'Not sure what to do next? JAGO can help with your applications, documents and payments.' +
+      '</p>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">' +
+        '<a class="btn primary sm" href="jago.html">' + icon('jago') + ' Ask JAGO</a>' +
+        '<a class="btn ghost sm" href="settings.html">' + icon('settings') + ' Settings</a>' +
+      '</div>' +
+    '</section>';
+
+  bindView();
+}
+
+/* KV row helper */
+function kvRow(ic, label, value){
+  var v = (value === undefined || value === null || String(value).trim() === '')
+    ? '<span class="muted">Not set</span>'
+    : esc(value);
+  return (
+    '<div class="kv-row">' +
+      '<span class="kv-ic">' + icon(ic) + '</span>' +
+      '<div class="kv-l">' +
+        '<small>' + esc(label) + '</small>' +
+        '<b>' + v + '</b>' +
+      '</div>' +
+      '<span></span>' +
+    '</div>'
+  );
+}
+
+/* =========================================================
+   EDIT FORM
+   ========================================================= */
+function renderEdit(section){
+  var p = form;
+  var title = 'Edit Profile';
+
+  var academicFields =
+    formRow('Institution','institution','building','e.g. Demo University') +
+    formRow('Course / Program','course','book','e.g. B.Tech AI & Data Science') +
+    formRow('Branch','branch','layers','e.g. Artificial Intelligence') +
+    formRow('Enrollment Number','enrollment','hash','e.g. DEMO2023CS014') +
+    formRow('Academic Year','academicYear','calendar','e.g. 2025-26') +
+    formRow('Semester / Year','semester','grad','e.g. 6');
+
+  var personalFields =
+    '<div class="form-grid">' +
+      formRow('First Name','firstName','user','e.g. Anjali') +
+      formRow('Last Name','lastName','user','e.g. Murmu') +
+    '</div>' +
+    '<div class="form-grid">' +
+      formRow('Email','email','mail','you@example.com','email') +
+      formRow('Mobile','mobile','phone','+91 98765 43210','tel') +
+    '</div>' +
+    '<div class="form-grid">' +
+      formRow('State','state','mapPin','e.g. Odisha') +
+      formRow('District','district','mapPin','e.g. Mayurbhanj') +
+    '</div>' +
+    formRow('Address','address','building','House / street / village, PIN', null, 'textarea');
+
+  page.innerHTML =
+    '<div class="page-head">' +
+      '<nav class="breadcrumb" aria-label="Breadcrumb">' +
+        '<a href="profile.html">Profile</a>' + icon('chev') +
+        '<span>Edit</span>' +
+      '</nav>' +
+      '<h1>' + esc(title) + '</h1>' +
+      '<p>Update your information. Changes are saved locally to this device in the prototype.</p>' +
+    '</div>' +
+
+    '<div class="info-banner info">' +
+      icon('info') +
+      '<p>Some fields like <b>category</b>, <b>income</b>, and <b>PVTG status</b> are verified separately. Use the <a class="link" href="verification.html">verification</a> or <a class="link" href="eligibility-check.html">eligibility</a> pages to update those.</p>' +
+    '</div>' +
+
+    '<section class="card">' +
+      '<div class="card-h">' +
+        '<span class="c-ic">' + icon(section === 'academic' ? 'grad' : 'user') + '</span>' +
+        '<h2>' + esc(section === 'academic' ? 'Academic Details' : 'Personal & Contact') + '</h2>' +
+      '</div>' +
+      (section === 'academic' ? academicFields : personalFields) +
+      '<div class="form-actions">' +
+        '<button class="btn ghost" type="button" id="cancelBtn">' + icon('chevL') + ' Cancel</button>' +
+        '<button class="btn primary" type="button" id="saveBtn">' + icon('save') + ' Save Changes</button>' +
+      '</div>' +
+    '</section>';
+
+  /* Bind input changes to form state */
+  EDITABLE.forEach(function(key){
+    var el = document.getElementById('f_' + key);
+    if(!el) return;
+    el.addEventListener('input', function(){
+      form[key] = el.value;
+      clearInvalid(key);
+    });
+    el.addEventListener('change', function(){
+      form[key] = el.value;
+      clearInvalid(key);
+    });
+  });
+
+  /* Cancel */
+  document.getElementById('cancelBtn').addEventListener('click', function(){
+    form = Object.assign({}, s.profile);
+    editing = false;
+    renderView();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  /* Save */
+  document.getElementById('saveBtn').addEventListener('click', saveProfile);
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function formRow(label, key, ic, placeholder, type, inputType){
+  var value = form[key] != null ? form[key] : '';
+  var t = type || 'text';
+  var inputHtml = '';
+  if(inputType === 'textarea'){
+    inputHtml =
+      '<textarea id="f_' + key + '" placeholder="' + esc(placeholder || '') + '">' +
+        esc(value) +
+      '</textarea>';
+  } else {
+    inputHtml =
+      '<input id="f_' + key + '" type="' + t + '" value="' + esc(value) + '" placeholder="' +
+        esc(placeholder || '') + '">';
+  }
+  return (
+    '<div class="form-row" id="row_' + key + '">' +
+      '<label for="f_' + key + '">' +
+        icon(ic || 'info') + ' ' + esc(label) +
+      '</label>' +
+      inputHtml +
+      '<div class="err">Please enter a valid value.</div>' +
+    '</div>'
+  );
+}
+
+function clearInvalid(key){
+  var row = document.getElementById('row_' + key);
+  if(row) row.classList.remove('invalid');
+}
+
+function markInvalid(key){
+  var row = document.getElementById('row_' + key);
+  if(row) row.classList.add('invalid');
+}
+
+function saveProfile(){
+  /* Validate required fields */
+  var errors = [];
+  REQUIRED.forEach(function(key){
+    var v = form[key];
+    var ok = v !== undefined && v !== null && String(v).trim() !== '';
+    if(key === 'email'){
+      ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    }
+    if(key === 'mobile'){
+      var digits = String(v || '').replace(/\D/g,'');
+      ok = digits.length >= 10;
+    }
+    if(!ok){
+      errors.push(key);
+      markInvalid(key);
+    }
+  });
+
+  if(errors.length){
+    toast('Please check the highlighted fields', 'err');
+    var firstRow = document.getElementById('row_' + errors[0]);
+    if(firstRow){
+      var y = firstRow.getBoundingClientRect().top + window.scrollY - 110;
+      window.scrollTo({top:y, behavior:'smooth'});
+    }
+    return;
+  }
+
+  /* Apply changes to the state */
+  s.profile = Object.assign({}, s.profile, form);
+  s.profile.name = (s.profile.firstName || '') + ' ' + (s.profile.lastName || '');
+  s.profile.initials =
+    (s.profile.firstName || 'A').charAt(0) +
+    (s.profile.lastName || 'M').charAt(0);
+  s.profile.profileCompletion = computeCompletion(s.profile);
+
+  try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
+
+  /* Add a notification */
+  s.notifications.unshift({
+    id: 'n' + Date.now(),
+    type: 'success',
+    title: 'Profile updated',
+    body: 'Your profile details were updated successfully.',
+    date: 'Just now',
+    read: false,
+    action: 'profile.html'
+  });
+  try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
+
+  toast('Profile updated successfully', 'ok');
+  editing = false;
+  renderView();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* =========================================================
+   BIND VIEW
+   ========================================================= */
+function bindView(){
+  /* Edit buttons */
+  page.querySelectorAll('[data-edit]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var section = btn.dataset.edit;
+      editing = true;
+      renderEdit(section === 'academic' ? 'academic' : 'personal');
+    });
+  });
+
+  /* Edit avatar */
+  var editAv = document.getElementById('editAvatar');
+  if(editAv){
+    editAv.addEventListener('click', function(){
+      toast('Avatar upload is a demo feature', 'ok');
+    });
+    editAv.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        toast('Avatar upload is a demo feature', 'ok');
+      }
+    });
+  }
+
+  /* Account list navigation */
+  page.querySelectorAll('[data-nav]').forEach(function(li){
+    li.addEventListener('click', function(){
+      location.href = li.dataset.nav;
+    });
+  });
+
+  /* Logout */
+  var logoutItem = document.getElementById('logoutItem');
+  if(logoutItem){
+    logoutItem.addEventListener('click', function(){
+      document.getElementById('logoutModal').classList.add('open');
+    });
+  }
+}
+
+/* =========================================================
+   LOGOUT MODAL
+   ========================================================= */
+document.getElementById('cancelLogout').addEventListener('click', function(){
+  document.getElementById('logoutModal').classList.remove('open');
+});
+document.getElementById('logoutModal').addEventListener('click', function(e){
+  if(e.target === this) this.classList.remove('open');
+});
+document.getElementById('confirmLogout').addEventListener('click', function(){
+  try{
+    localStorage.removeItem(KEY);
+  }catch(e){}
+  toast('Signed out', 'ok');
+  setTimeout(function(){
+    location.href = 'index.html';
+  }, 500);
+});
+
+/* =========================================================
+   INIT
+   ========================================================= */
+renderView();
+</script>
+</body>
+</html>
