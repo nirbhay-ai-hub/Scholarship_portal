@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B5E55">
+<title>Document Wallet · Tribal Scholarship One</title>
+<style>
+:root{
+  --brand:#0B5E55;--brand2:#0E7C6F;--brandsoft:#E6F2F0;
+  --bg:#F4F6F8;--card:#fff;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0;
+  --ok:#0F9D58;--okbg:#E7F6EE;--warn:#B45309;--warnbg:#FEF3C7;
+  --err:#DC2626;--errbg:#FEE2E2;--info:#1D4ED8;--infobg:#DBEAFE;
+  --r:14px;--sh:0 1px 2px rgba(15,23,42,.06),0 8px 24px -14px rgba(15,23,42,.2);
+  --safeb:env(safe-area-inset-bottom,0px)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans Devanagari',sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+svg{display:block}
+
+/* ============ SHELL ============ */
+.app{min-height:100dvh;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:50;background:var(--brand);color:#fff;
+  display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:56px;
+  padding-top:calc(10px + env(safe-area-inset-top,0px));
+}
+.topbar .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.logo{
+  width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.15);
+  display:grid;place-items:center;flex:none;
+}
+.logo svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.brand-t{min-width:0}
+.brand-t b{display:block;font-size:14px;line-height:1.15;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.brand-t small{display:block;font-size:11px;opacity:.8;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.top-actions{display:flex;gap:4px}
+.iconbtn{
+  width:38px;height:38px;border-radius:10px;border:0;
+  background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;
+  cursor:pointer;position:relative;
+}
+.iconbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+.iconbtn .dot-badge{
+  position:absolute;top:6px;right:6px;width:8px;height:8px;
+  border-radius:50%;background:#FBBF24;border:2px solid var(--brand)
+}
+.sidebar{display:none}
+.bottomnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:60;background:#fff;
+  border-top:1px solid var(--line);display:flex;
+  padding:6px 4px calc(6px + var(--safeb));
+  box-shadow:0 -4px 16px -8px rgba(15,23,42,.1);
+}
+.bn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 2px;border-radius:10px;color:var(--muted);font-size:10.5px;
+  font-weight:500;min-width:0;
+}
+.bn-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7}
+.bn-item.active{color:var(--brand);background:var(--brandsoft)}
+.bn-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.content{flex:1;padding:14px 14px calc(88px + var(--safeb));min-width:0}
+.wrap{max-width:1000px;margin:0 auto}
+
+@media(min-width:768px){
+  .content{padding:18px 22px calc(92px + var(--safeb))}
+  .bottomnav{padding:8px 12px calc(8px + var(--safeb))}
+  .bn-item{font-size:11.5px}.bn-item svg{width:24px;height:24px}
+}
+@media(min-width:1200px){
+  .app{
+    display:grid;grid-template-columns:250px 1fr;
+    grid-template-rows:auto 1fr;
+    grid-template-areas:"top top" "side main";
+  }
+  .topbar{grid-area:top}
+  .sidebar{
+    grid-area:side;display:block;background:#fff;
+    border-right:1px solid var(--line);padding:14px 12px;
+    position:sticky;top:56px;height:calc(100dvh - 56px);overflow-y:auto;
+  }
+  .sidebar .nav-title{
+    font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted);font-weight:600;padding:12px 12px 6px;
+  }
+  .sidebar a{
+    display:flex;align-items:center;gap:12px;padding:10px 12px;
+    border-radius:10px;color:var(--ink);font-size:14px;font-weight:500;
+    margin-bottom:2px;
+  }
+  .sidebar a svg{width:20px;height:20px;stroke:currentColor;fill:none;
+    stroke-width:1.8;flex:none}
+  .sidebar a:hover{background:var(--bg)}
+  .sidebar a.active{background:var(--brandsoft);color:var(--brand);font-weight:600}
+  .content{grid-area:main;padding:22px 26px}
+  .bottomnav{display:none}
+  .wrap{max-width:1040px}
+}
+
+/* ============ COMMON ============ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 16px;border-radius:10px;border:1px solid transparent;
+  background:#fff;color:var(--ink);font-weight:600;font-size:14px;
+  cursor:pointer;line-height:1.2;text-align:center;transition:.15s;
+  min-height:44px;
+}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:hover{background:#0a4f48}
+.btn.ghost{background:#fff;border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn.sm{padding:8px 13px;font-size:13px;min-height:38px}
+.btn.xs{padding:6px 11px;font-size:12px;min-height:34px}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn.danger{color:var(--err);border-color:#FCA5A5}
+.btn.danger:hover{background:var(--errbg);border-color:var(--err)}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;
+  stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 9px;
+  border-radius:999px;font-size:11.5px;font-weight:600;background:#F1F5F9;
+  color:#334155;white-space:nowrap;
+}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.err{background:var(--errbg);color:var(--err)}
+.badge.info{background:var(--infobg);color:var(--info)}
+.badge.brand{background:var(--brandsoft);color:var(--brand)}
+.badge.neutral{background:#F1F5F9;color:#475569}
+.muted{color:var(--muted)}
+.sm{font-size:13px}
+.xs{font-size:11.5px}
+.link{color:var(--brand);font-weight:600;font-size:13.5px}
+
+/* ============ PAGE HEAD ============ */
+.page-head{margin-bottom:14px}
+.breadcrumb{
+  display:flex;align-items:center;gap:6px;font-size:12px;
+  color:var(--muted);margin-bottom:8px;flex-wrap:wrap;
+}
+.breadcrumb svg{width:12px;height:12px;stroke:currentColor;fill:none;
+  stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.page-head h1{font-size:22px;font-weight:700;margin:0 0 6px}
+.page-head p{color:var(--muted);font-size:13.5px;margin:0;max-width:640px}
+
+/* ============ INFO BANNERS ============ */
+.info-banner{
+  display:flex;gap:12px;padding:13px 14px;border-radius:12px;
+  margin-bottom:14px;border:1px solid;
+}
+.info-banner svg{width:20px;height:20px;stroke:currentColor;fill:none;
+  stroke-width:1.9;flex:none;margin-top:1px}
+.info-banner p{margin:0;font-size:12.5px;line-height:1.55}
+.info-banner b{font-weight:700}
+.info-banner.info{background:var(--infobg);color:var(--info);border-color:#BFDBFE}
+.info-banner.info p{color:#1E3A8A}
+.info-banner.brand{background:var(--brandsoft);color:var(--brand);border-color:#B7D8D3}
+.info-banner.brand p{color:#0B5E55}
+.info-banner.warn{background:var(--warnbg);color:var(--warn);border-color:#FCD34D}
+.info-banner.warn p{color:#78350F}
+
+/* ============ WALLET SUMMARY ============ */
+.wallet-summary{
+  background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+  border-radius:16px;padding:18px;margin-bottom:14px;position:relative;
+  overflow:hidden;
+}
+.wallet-summary::before{
+  content:"";position:absolute;top:-40px;right:-40px;width:180px;height:180px;
+  border-radius:50%;background:rgba(255,255,255,.06);
+}
+.wallet-summary .ws-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;position:relative;z-index:1;margin-bottom:14px;
+}
+.wallet-summary .ws-title b{display:block;font-size:16px;font-weight:700;
+  margin-bottom:2px}
+.wallet-summary .ws-title small{font-size:12px;opacity:.85}
+.wallet-summary .ws-ic{
+  width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.15);
+  display:grid;place-items:center;flex:none;
+}
+.wallet-summary .ws-ic svg{width:24px;height:24px;stroke:#fff;fill:none;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.wallet-summary .ws-metrics{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  position:relative;z-index:1;
+}
+.wallet-summary .ws-metric{
+  background:rgba(255,255,255,.12);border-radius:11px;padding:11px 8px;
+  text-align:center;
+}
+.wallet-summary .ws-metric b{display:block;font-size:20px;font-weight:700;
+  line-height:1.1}
+.wallet-summary .ws-metric small{font-size:10.5px;opacity:.85;display:block;
+  margin-top:3px;line-height:1.25}
+
+/* progress bar inside summary */
+.wallet-summary .ws-prog{
+  margin-top:12px;position:relative;z-index:1;
+}
+.wallet-summary .ws-prog .ws-bar{
+  height:6px;background:rgba(255,255,255,.2);border-radius:99px;
+  overflow:hidden;
+}
+.wallet-summary .ws-prog .ws-bar>span{
+  display:block;height:100%;background:#fff;border-radius:99px;
+  transition:width .4s;
+}
+.wallet-summary .ws-prog .ws-lbl{
+  display:flex;justify-content:space-between;font-size:11.5px;
+  margin-top:6px;opacity:.9;
+}
+
+/* ============ TOOLBAR ============ */
+.toolbar{
+  display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;
+  align-items:center;justify-content:space-between;
+}
+.toolbar .filters{
+  display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;flex:1;
+  min-width:0;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.toolbar .filters::-webkit-scrollbar{display:none}
+.filter{
+  flex:none;display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:999px;background:#fff;
+  border:1px solid var(--line);font-size:12.5px;font-weight:600;
+  color:var(--ink);cursor:pointer;transition:.15s;white-space:nowrap;
+  min-height:38px;
+}
+.filter svg{width:14px;height:14px;stroke:currentColor;fill:none;
+  stroke-width:2}
+.filter:hover{border-color:var(--brand);color:var(--brand)}
+.filter.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.filter .count{
+  background:rgba(0,0,0,.08);padding:1px 6px;border-radius:999px;
+  font-size:11px;font-weight:700;
+}
+.filter.active .count{background:rgba(255,255,255,.22)}
+
+/* ============ DOC LIST ============ */
+.doc-list{display:grid;gap:12px}
+.doc{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;box-shadow:var(--sh);transition:.15s;
+}
+.doc:hover{border-color:#CBD5E1}
+.doc.verified{border-left:4px solid var(--ok)}
+.doc.pending{border-left:4px solid #F59E0B}
+.doc.uploaded{border-left:4px solid var(--info)}
+.doc.rejected{border-left:4px solid var(--err)}
+.doc.expired{border-left:4px solid var(--muted)}
+.doc.notrequired{border-left:4px solid var(--line);opacity:.85}
+.doc.missing{border-left:4px solid var(--err);border-style:dashed}
+
+.doc-main{display:grid;grid-template-columns:52px 1fr;gap:13px;padding:14px}
+.doc-ic{
+  width:52px;height:52px;border-radius:12px;background:var(--brandsoft);
+  display:grid;place-items:center;flex:none;align-self:start;
+}
+.doc-ic svg{width:26px;height:26px;stroke:var(--brand);fill:none;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.doc.pending .doc-ic{background:var(--warnbg)}
+.doc.pending .doc-ic svg{stroke:var(--warn)}
+.doc.rejected .doc-ic,
+.doc.missing .doc-ic{background:var(--errbg)}
+.doc.rejected .doc-ic svg,
+.doc.missing .doc-ic svg{stroke:var(--err)}
+.doc.verified .doc-ic{background:var(--okbg)}
+.doc.verified .doc-ic svg{stroke:var(--ok)}
+
+.doc-body{min-width:0}
+.doc-head{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:10px;margin-bottom:6px;flex-wrap:wrap;
+}
+.doc-head h3{
+  font-size:14.5px;font-weight:700;margin:0;line-height:1.3;
+}
+.doc-head .badge{flex:none}
+.doc-meta{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;
+}
+.doc-meta .m-item{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--bg);padding:3px 8px;border-radius:6px;
+  font-size:11px;font-weight:600;color:#475569;
+}
+.doc-meta .m-item svg{width:11px;height:11px;stroke:currentColor;
+  fill:none;stroke-width:2.2}
+.doc-meta .m-item.src{
+  background:#F1F5F9;color:#334155;
+}
+.doc-meta .m-item.digilocker{
+  background:#EFF6FF;color:#1D4ED8;
+}
+.doc-note{font-size:12.5px;color:var(--muted);line-height:1.45;margin:0}
+
+/* Document actions row */
+.doc-actions{
+  display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px;
+  border-top:1px solid var(--line);background:var(--bg);
+}
+.doc-actions .btn{flex:none}
+
+/* Warnings for missing/rejected */
+.doc-warn{
+  display:flex;gap:10px;align-items:flex-start;padding:10px 14px;
+  background:var(--errbg);color:#7F1D1D;font-size:12.5px;
+  border-top:1px solid #FCA5A5;line-height:1.45;
+}
+.doc-warn svg{width:16px;height:16px;stroke:currentColor;fill:none;
+  stroke-width:2;flex:none;margin-top:1px}
+
+/* Progress indicator for pending */
+.doc-prog{
+  display:flex;align-items:center;gap:8px;padding:8px 14px;
+  background:var(--warnbg);color:#78350F;font-size:12px;font-weight:500;
+  border-top:1px solid #FCD34D;
+}
+.doc-prog .dp-bar{
+  flex:1;height:4px;background:rgba(180,83,9,.18);border-radius:99px;
+  overflow:hidden;
+}
+.doc-prog .dp-bar>span{
+  display:block;height:100%;background:var(--warn);
+  border-radius:99px;transition:width .4s;
+}
+.doc-prog b{flex:none;font-size:11px}
+
+/* ============ DIGILOCKER CARD ============ */
+.dl-card{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:15px;margin-bottom:14px;box-shadow:var(--sh);
+  display:flex;gap:13px;align-items:flex-start;flex-wrap:wrap;
+}
+.dl-card .dl-ic{
+  width:44px;height:44px;border-radius:11px;background:#EFF6FF;
+  display:grid;place-items:center;flex:none;
+}
+.dl-card .dl-ic svg{width:24px;height:24px;stroke:#1D4ED8;fill:none;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dl-card .dl-body{flex:1;min-width:220px}
+.dl-card .dl-body b{display:block;font-size:14px;font-weight:700;
+  margin-bottom:3px}
+.dl-card .dl-body p{margin:0;font-size:12.5px;color:var(--muted);
+  line-height:1.5}
+.dl-card .dl-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ============ EMPTY ============ */
+.empty{
+  text-align:center;padding:50px 20px;background:#fff;
+  border:1px dashed var(--line);border-radius:16px;
+}
+.empty svg{width:52px;height:52px;stroke:var(--muted);fill:none;
+  stroke-width:1.4;margin:0 auto 12px;opacity:.5}
+.empty h3{color:var(--ink);font-size:16px;margin:0 0 6px}
+.empty p{margin:0 0 16px;font-size:13.5px;color:var(--muted);
+  max-width:420px;margin-left:auto;margin-right:auto}
+
+/* ============ HELP BLOCK ============ */
+.help-block{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:16px;box-shadow:var(--sh);margin-bottom:14px;
+}
+.help-block h3{
+  margin:0 0 12px;font-size:15px;font-weight:700;
+  display:flex;align-items:center;gap:9px;
+}
+.help-block h3 svg{width:18px;height:18px;stroke:var(--brand);fill:none;
+  stroke-width:1.9}
+.help-block .row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+/* ============ SAVE BAR ============ */
+.save-bar{
+  position:sticky;bottom:calc(78px + var(--safeb));
+  display:flex;gap:10px;flex-wrap:wrap;
+  padding:12px;background:#fff;border:1px solid var(--line);
+  border-radius:14px;box-shadow:0 -6px 20px -12px rgba(15,23,42,.25);
+  z-index:40;margin-bottom:14px;
+}
+.save-bar .btn{flex:1;min-width:120px}
+@media(min-width:1200px){.save-bar{bottom:16px}}
+
+/* ============ TOAST ============ */
+.toast-wrap{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(88px + var(--safeb));z-index:500;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none;
+  align-items:center;width:calc(100% - 28px);max-width:420px;
+}
+@media(min-width:1200px){.toast-wrap{bottom:24px}}
+.toast{
+  background:#0F172A;color:#fff;padding:11px 16px;border-radius:10px;
+  font-size:13.5px;font-weight:500;
+  box-shadow:0 10px 30px -10px rgba(0,0,0,.35);
+  transition:opacity .3s;text-align:center;max-width:100%;
+}
+.toast.ok{background:var(--ok)}
+.toast.err{background:var(--err)}
+.toast.warn{background:var(--warn)}
+
+/* JAGO FAB */
+.jago-fab{
+  position:fixed;right:14px;bottom:calc(78px + var(--safeb));
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+  display:grid;place-items:center;
+  box-shadow:0 10px 24px -8px rgba(11,94,85,.6);
+  z-index:70;border:0;cursor:pointer;
+}
+.jago-fab svg{width:26px;height:26px;stroke:currentColor;fill:none;
+  stroke-width:1.8}
+@media(min-width:1200px){
+  .jago-fab{bottom:26px;right:26px;width:58px;height:58px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar" id="topbar"></header>
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content"><div class="wrap" id="page"></div></main>
+  <nav class="bottomnav" id="bottomnav"></nav>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* =========================================================
+   ICONS
+   ========================================================= */
+const ICONS = {
+  dashboard:'<path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>',
+  schemes:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16"/>',
+  apps:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+  docs:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  pay:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+  jago:'<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 15c1.5 1.2 4.5 1.2 6 0"/>',
+  notif:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+  check:'<path d="M5 13l4 4L19 7"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>',
+  chevL:'<path d="M15 6l-6 6 6 6"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  close:'<path d="M18 6L6 18M6 6l12 12"/>',
+  book:'<path d="M4 19.5V5a2 2 0 0 1 2-2h11a1 1 0 0 1 1 1v15"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H18"/><path d="M20 5v14"/>',
+  grad:'<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/>',
+  star:'<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/>',
+  bank:'<path d="M3 10l9-6 9 6"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><path d="M12 17h.01"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  refresh:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>',
+  upload:'<path d="M12 3v12M7 8l5-5 5 5"/><path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"/>',
+  sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+  arrowR:'<path d="M5 12h14M13 5l7 7-7 7"/>',
+  save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
+  database:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/>',
+  eye:'<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>',
+  trash:'<path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
+  file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h6"/>',
+  shieldC:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+  lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'
+};
+function icon(n, cls){
+  const p = ICONS[n] || ICONS.info;
+  return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
+}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+function toast(msg, type){
+  const w = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  w.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    setTimeout(() => t.remove(), 320);
+  }, 2400);
+}
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const KEY = 'tso_state_v1';
+function S(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){
+      const p = JSON.parse(raw);
+      if(p && p.profile) return p;
+    }
+  }catch(e){}
+  return null;
+}
+
+/* =========================================================
+   SHELL
+   ========================================================= */
+const NAV = [
+  {id:'dashboard',   label:'Dashboard',    icon:'dashboard', href:'dashboard.html'},
+  {id:'schemes',     label:'Schemes',      icon:'schemes',   href:'schemes.html'},
+  {id:'applications',label:'Applications', icon:'apps',      href:'my-applications.html'},
+  {id:'documents',   label:'Documents',    icon:'docs',      href:'document-wallet.html'},
+  {id:'payments',    label:'Payments',     icon:'pay',       href:'payment-status.html'},
+  {id:'jago',        label:'JAGO',         icon:'jago',      href:'jago.html'},
+  {id:'notifications',label:'Notifications',icon:'notif',    href:'notifications.html'},
+  {id:'profile',     label:'Profile',      icon:'profile',   href:'profile.html'}
+];
+const MOBILE_NAV = ['dashboard','schemes','applications','jago','profile'];
+
+function mountShell(active, crumb){
+  const st = S();
+  const unread = st ? st.notifications.filter(n => !n.read).length : 0;
+
+  document.getElementById('topbar').innerHTML =
+    '<div class="brand">' +
+      '<span class="logo">' + icon('shield') + '</span>' +
+      '<span class="brand-t">' +
+        '<b>Tribal Scholarship One</b>' +
+        '<small>' + esc(crumb || 'Unified Scholarship Platform') + '</small>' +
+      '</span>' +
+    '</div>' +
+    '<div class="top-actions">' +
+      '<a class="iconbtn" href="notifications.html" aria-label="Notifications">' +
+        icon('notif') + (unread ? '<span class="dot-badge"></span>' : '') +
+      '</a>' +
+      '<a class="iconbtn" href="profile.html" aria-label="Profile">' + icon('user') + '</a>' +
+    '</div>';
+
+  document.getElementById('sidebar').innerHTML =
+    '<div class="nav-title">Menu</div>' +
+    NAV.map(n =>
+      '<a href="' + n.href + '" class="' + (n.id === active ? 'active' : '') + '">' +
+        icon(n.icon) + '<span>' + n.label + '</span>' +
+      '</a>'
+    ).join('') +
+    '<div class="nav-title">Support</div>' +
+    '<a href="help.html">' + icon('help') + '<span>Help</span></a>' +
+    '<a href="settings.html">' + icon('settings') + '<span>Settings</span></a>' +
+    '<a href="index.html" onclick="localStorage.removeItem(\'tso_state_v1\')">' +
+      icon('logout') + '<span>Logout</span></a>';
+
+  document.getElementById('bottomnav').innerHTML = MOBILE_NAV.map(id => {
+    const n = NAV.find(x => x.id === id);
+    return '<a class="bn-item ' + (id === active ? 'active' : '') + '" href="' + n.href + '">' +
+      icon(n.icon) + '<span>' + n.label + '</span>' +
+    '</a>';
+  }).join('');
+
+  if(!document.querySelector('.jago-fab')){
+    const f = document.createElement('button');
+    f.className = 'jago-fab';
+    f.setAttribute('aria-label','Open JAGO assistant');
+    f.innerHTML = icon('jago');
+    f.onclick = () => { location.href = 'jago.html'; };
+    document.body.appendChild(f);
+  }
+}
+
+/* =========================================================
+   PAGE DATA
+   ========================================================= */
+const s = S();
+if(!s || !s.profile){ location.href = 'index.html'; }
+
+const params = new URLSearchParams(location.search);
+let schemeId = params.get('scheme') || 'post-matric';
+if(!s.schemes.find(x => x.id === schemeId)) schemeId = 'post-matric';
+const scheme = s.schemes.find(x => x.id === schemeId);
+
+mountShell('documents', 'Home / Documents / Wallet');
+
+/* =========================================================
+   DRAFT LINKAGE
+   ========================================================= */
+const draftKey = 'tso_draft_' + schemeId;
+
+function blankDraft(){
+  return {
+    schemeId: schemeId,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    personal: {},
+    academic: {},
+    documents: {uploaded: []},
+    verification: {checked: false, pct: 0},
+    completed: {personal: false, academic: false, documents: false, verification: false}
+  };
+}
+let draft;
+try{
+  const raw = localStorage.getItem(draftKey);
+  draft = raw ? JSON.parse(raw) : blankDraft();
+}catch(e){ draft = blankDraft(); }
+if(!draft.documents) draft.documents = {uploaded: []};
+
+/* =========================================================
+   DOCUMENT CATALOGUE
+   The wallet mirrors the state from tso_state_v1.documents,
+   but additionally shows REQUIRED documents as missing if not present.
+   ========================================================= */
+const DOC_META = {
+  'ST Certificate':{icon:'shieldC', note:'Issued by competent authority', source:'DigiLocker'},
+  'PVTG Certificate':{icon:'shieldC', note:'Issued for PVTG communities', source:'State e-District'},
+  'Income Certificate':{icon:'bank', note:'Issued by revenue / e-District', source:'State e-District'},
+  'Domicile Certificate':{icon:'shieldC', note:'Proof of residence', source:'State e-District'},
+  'Marksheet (last exam)':{icon:'book', note:'Latest exam marksheet', source:'Institution DB'},
+  'Aadhaar / Identity':{icon:'shieldC', note:'Identity verification', source:'UIDAI'},
+  'Disability Certificate':{icon:'shieldC', note:'Issued by medical authority', source:'State e-District'},
+  'Institution Certificate':{icon:'grad', note:'Bonafide from institution', source:'Institution DB'},
+  'NET/JRF Certificate':{icon:'star', note:'UGC/NTA certificate', source:'UGC/NTA'},
+  'Bank Passbook':{icon:'bank', note:'Aadhaar-linked account', source:'Manual'},
+  'Admission Letter':{icon:'grad', note:'Proof of admission', source:'Institution DB'},
+  'Fee Receipt':{icon:'bank', note:'Fee payment receipt', source:'Institution DB'},
+  'Research Proposal':{icon:'book', note:'For PhD applicants', source:'Manual'},
+  'Overseas Admission Letter':{icon:'globe', note:'Overseas university offer', source:'Manual'},
+  'Passport':{icon:'shieldC', note:'Valid Indian passport', source:'Manual'},
+  'IELTS/TOEFL':{icon:'star', note:'English proficiency', source:'Manual'}
+};
+
+/* Which docs are required per scheme (from scheme.documents) */
+const required = scheme.documents || [];
+
+/* Start from the state documents */
+const stateDocs = s.documents.map(d => Object.assign({}, d));
+
+/* For each required doc that isn't in state, add as missing */
+required.forEach(name => {
+  if(!stateDocs.find(d => d.type === name)){
+    const meta = DOC_META[name] || {icon:'docs', note:'Supporting document', source:'—'};
+    stateDocs.push({
+      id: 'doc_' + name.toLowerCase().replace(/\W+/g,'_'),
+      type: name,
+      status: 'Missing',
+      required: true,
+      source: meta.source,
+      fileName: '—',
+      size: '—',
+      uploaded: '—',
+      verifiedOn: '—'
+    });
+  }
+});
+
+/* Sort: Missing first, then Pending, then Uploaded, then Verified, then others */
+const STATUS_ORDER = {Missing:0, Rejected:1, Pending:2, Uploaded:3, Expired:4, Verified:5, 'Not Required':6};
+let documents = stateDocs.slice().sort((a, b) =>
+  (STATUS_ORDER[a.status] ?? 9) - (STATUS_ORDER[b.status] ?? 9)
+);
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function statusMeta(st){
+  const map = {
+    'Verified':{cls:'ok', label:'Verified', icon:'check', docClass:'verified'},
+    'Pending':{cls:'warn', label:'Pending', icon:'clock', docClass:'pending'},
+    'Uploaded':{cls:'info', label:'Uploaded', icon:'upload', docClass:'uploaded'},
+    'Rejected':{cls:'err', label:'Rejected', icon:'alert', docClass:'rejected'},
+    'Expired':{cls:'neutral', label:'Expired', icon:'clock', docClass:'expired'},
+    'Not Required':{cls:'neutral', label:'Not Required', icon:'info', docClass:'notrequired'},
+    'Missing':{cls:'err', label:'Missing', icon:'alert', docClass:'missing'}
+  };
+  return map[st] || map['Uploaded'];
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+const page = document.getElementById('page');
+
+/* Compute metrics */
+const verifiedCount = documents.filter(d => d.status === 'Verified').length;
+const pendingCount = documents.filter(d => d.status === 'Pending' || d.status === 'Uploaded').length;
+const missingCount = documents.filter(d => d.status === 'Missing' || d.status === 'Rejected').length;
+const totalDocs = documents.length;
+const verifiedPct = totalDocs ? Math.round(verifiedCount / totalDocs * 100) : 0;
+
+/* Filter options */
+const FILTERS = [
+  {id:'all',      label:'All',       icon:'docs'},
+  {id:'verified', label:'Verified',  icon:'check'},
+  {id:'pending',  label:'Pending',   icon:'clock'},
+  {id:'missing',  label:'Needs action', icon:'alert'}
+];
+let currentFilter = 'all';
+
+function filterMatch(d, f){
+  if(f === 'all') return true;
+  if(f === 'verified') return d.status === 'Verified';
+  if(f === 'pending') return d.status === 'Pending' || d.status === 'Uploaded';
+  if(f === 'missing') return d.status === 'Missing' || d.status === 'Rejected';
+  return true;
+}
+
+function docCard(d){
+  const meta = DOC_META[d.type] || {icon:'docs', note:'Supporting document', source:'—'};
+  const sm = statusMeta(d.status);
+  const isRequired = d.required;
+
+  /* Meta chips */
+  const chips = [];
+  if(isRequired) chips.push('<span class="m-item">' + icon('check') + ' Required</span>');
+  else chips.push('<span class="m-item">' + icon('info') + ' Optional</span>');
+  if(d.source && d.source !== '—'){
+    const isDigi = /digilocker/i.test(d.source);
+    chips.push(
+      '<span class="m-item src' + (isDigi ? ' digilocker' : '') + '">' +
+        icon('database') + ' ' + esc(d.source) + ' (mock)' +
+      '</span>'
+    );
+  }
+  if(d.fileName && d.fileName !== '—'){
+    chips.push('<span class="m-item">' + icon('file') + ' ' + esc(d.fileName) + '</span>');
+  }
+  if(d.size && d.size !== '—'){
+    chips.push('<span class="m-item">' + esc(d.size) + '</span>');
+  }
+  if(d.uploaded && d.uploaded !== '—'){
+    chips.push('<span class="m-item">' + icon('calendar') + ' Uploaded ' + esc(d.uploaded) + '</span>');
+  }
+  if(d.verifiedOn && d.verifiedOn !== '—'){
+    chips.push('<span class="m-item">' + icon('shield') + ' Verified ' + esc(d.verifiedOn) + '</span>');
+  }
+
+  /* Note line */
+  let note = meta.note;
+  if(d.status === 'Verified') note = 'Verified via ' + (d.source || 'integrated source') + ' (mock). Reused across all applications.';
+  else if(d.status === 'Pending') note = 'Verification pending with ' + (d.source || 'the source system') + '. This usually takes 1–3 working days.';
+  else if(d.status === 'Uploaded') note = 'Uploaded and awaiting verification.';
+  else if(d.status === 'Rejected') note = 'Rejected. Please re-upload a clearer or valid copy.';
+  else if(d.status === 'Expired') note = 'This document has expired. Please upload a fresh copy.';
+  else if(d.status === 'Missing') note = meta.note + ' — required for this scheme.';
+
+  /* Warning row */
+  let warnHtml = '';
+  if(d.status === 'Missing' || d.status === 'Rejected' || d.status === 'Expired'){
+    warnHtml =
+      '<div class="doc-warn">' + icon('alert') +
+        '<span>' +
+          (d.status === 'Missing'
+            ? 'This document is required for <b>' + esc(scheme.name) + '</b>. Please upload it to continue.'
+            : d.status === 'Rejected'
+            ? 'Your last upload was rejected. Please upload a valid copy.'
+            : 'This document has expired. Please upload a fresh copy.') +
+        '</span>' +
+      '</div>';
+  }
+
+  /* Progress row for pending */
+  let progHtml = '';
+  if(d.status === 'Pending' || d.status === 'Uploaded'){
+    progHtml =
+      '<div class="doc-prog">' +
+        '<span>Verification progress</span>' +
+        '<span class="dp-bar"><span style="width:' + (d.status === 'Pending' ? 60 : 25) + '%"></span></span>' +
+        '<b>' + (d.status === 'Pending' ? '60%' : '25%') + '</b>' +
+      '</div>';
+  }
+
+  /* Actions */
+  const actions = [];
+  if(d.status === 'Missing' || d.status === 'Rejected' || d.status === 'Expired'){
+    actions.push(
+      '<a class="btn primary xs" href="document-upload.html?scheme=' + schemeId + '&doc=' + encodeURIComponent(d.type) + '">' +
+        icon('upload') + ' Upload Now' +
+      '</a>'
+    );
+  } else if(d.status === 'Pending' || d.status === 'Uploaded'){
+    actions.push(
+      '<button class="btn ghost xs" type="button" data-action="view" data-id="' + esc(d.id) + '">' +
+        icon('eye') + ' View' +
+      '</button>'
+    );
+    actions.push(
+      '<a class="btn ghost xs" href="document-upload.html?scheme=' + schemeId + '&doc=' + encodeURIComponent(d.type) + '&replace=1">' +
+        icon('refresh') + ' Replace' +
+      '</a>'
+    );
+    actions.push(
+      '<button class="btn ghost xs" type="button" data-action="verify" data-id="' + esc(d.id) + '">' +
+        icon('shield') + ' Verify' +
+      '</button>'
+    );
+  } else if(d.status === 'Verified'){
+    actions.push(
+      '<button class="btn ghost xs" type="button" data-action="view" data-id="' + esc(d.id) + '">' +
+        icon('eye') + ' View' +
+      '</button>'
+    );
+    actions.push(
+      '<a class="btn ghost xs" href="document-upload.html?scheme=' + schemeId + '&doc=' + encodeURIComponent(d.type) + '&replace=1">' +
+        icon('refresh') + ' Replace' +
+      '</a>'
+    );
+  } else {
+    actions.push(
+      '<a class="btn ghost xs" href="document-upload.html?scheme=' + schemeId + '&doc=' + encodeURIComponent(d.type) + '">' +
+        icon('upload') + ' Upload' +
+      '</a>'
+    );
+  }
+
+  return (
+    '<article class="doc ' + sm.docClass + '" data-status="' + esc(d.status) + '" data-type="' + esc(d.type) + '">' +
+      '<div class="doc-main">' +
+        '<div class="doc-ic">' + icon(meta.icon) + '</div>' +
+        '<div class="doc-body">' +
+          '<div class="doc-head">' +
+            '<h3>' + esc(d.type) + '</h3>' +
+            '<span class="badge ' + sm.cls + '">' + icon(sm.icon) + ' ' + esc(sm.label) + '</span>' +
+          '</div>' +
+          '<div class="doc-meta">' + chips.join('') + '</div>' +
+          '<p class="doc-note">' + esc(note) + '</p>' +
+        '</div>' +
+      '</div>' +
+      warnHtml +
+      progHtml +
+      '<div class="doc-actions">' + actions.join('') + '</div>' +
+    '</article>'
+  );
+}
+
+/* Compose page */
+page.innerHTML =
+  // HEAD
+  '<div class="page-head">' +
+    '<nav class="breadcrumb" aria-label="Breadcrumb">' +
+      '<a href="dashboard.html">Home</a>' + icon('chev') +
+      '<a href="application.html?scheme=' + schemeId + '">Application</a>' + icon('chev') +
+      '<span>Document Wallet</span>' +
+    '</nav>' +
+    '<h1>Document Wallet</h1>' +
+    '<p>Step 3 of 5 · Manage all your scholarship documents in one place. Upload once and reuse across every scheme.</p>' +
+  '</div>' +
+
+  // SUMMARY
+  '<section class="wallet-summary">' +
+    '<div class="ws-head">' +
+      '<div class="ws-title">' +
+        '<b>Your documents</b>' +
+        '<small>Scheme: ' + esc(scheme.name) + '</small>' +
+      '</div>' +
+      '<span class="ws-ic">' + icon('docs') + '</span>' +
+    '</div>' +
+    '<div class="ws-metrics">' +
+      '<div class="ws-metric"><b>' + verifiedCount + '</b><small>Verified</small></div>' +
+      '<div class="ws-metric"><b>' + pendingCount + '</b><small>Pending</small></div>' +
+      '<div class="ws-metric"><b>' + missingCount + '</b><small>Needs action</small></div>' +
+    '</div>' +
+    '<div class="ws-prog">' +
+      '<div class="ws-bar"><span style="width:' + verifiedPct + '%"></span></div>' +
+      '<div class="ws-lbl"><span>' + verifiedPct + '% verified</span><span>' + verifiedCount + ' of ' + totalDocs + '</span></div>' +
+    '</div>' +
+  '</section>' +
+
+  // INFO
+  '<div class="info-banner info">' +
+    icon('info') +
+    '<p>Documents marked with <b>DigiLocker</b> are concept-linked for the prototype. In a real deployment, these would be fetched automatically with your consent. Uploaded documents stay in your browser.</p>' +
+  '</div>' +
+
+  // DIGILOCKER PANEL
+  '<section class="dl-card">' +
+    '<span class="dl-ic">' + icon('link') + '</span>' +
+    '<div class="dl-body">' +
+      '<b>Link DigiLocker (concept)</b>' +
+      '<p>In a production build, you could fetch verified documents like ST, income and domicile certificates from DigiLocker with a single tap.</p>' +
+    '</div>' +
+    '<div class="dl-actions">' +
+      '<button class="btn ghost sm" type="button" id="dlBtn">' + icon('lock') + ' Link (demo)</button>' +
+    '</div>' +
+  '</section>' +
+
+  // TOOLBAR
+  '<div class="toolbar">' +
+    '<div class="filters" role="tablist" aria-label="Filter documents">' +
+      FILTERS.map(f => {
+        let count = 0;
+        if(f.id === 'all') count = documents.length;
+        else if(f.id === 'verified') count = verifiedCount;
+        else if(f.id === 'pending') count = pendingCount;
+        else if(f.id === 'missing') count = missingCount;
+        return '<button class="filter ' + (f.id === currentFilter ? 'active' : '') + '" data-filter="' + f.id + '" type="button">' +
+          icon(f.icon) + '<span>' + f.label + '</span><span class="count">' + count + '</span>' +
+        '</button>';
+      }).join('') +
+    '</div>' +
+    '<a class="btn primary sm" href="document-upload.html?scheme=' + schemeId + '">' +
+      icon('upload') + ' Upload Document' +
+    '</a>' +
+  '</div>' +
+
+  // DOC LIST
+  '<div class="doc-list" id="docList">' +
+    documents.map(docCard).join('') +
+  '</div>' +
+
+  // EMPTY STATE (hidden by default)
+  '<div class="empty" id="emptyState" style="display:none;margin-top:14px">' +
+    icon('docs') +
+    '<h3>No documents in this view</h3>' +
+    '<p>Try a different filter or upload a new document.</p>' +
+    '<a class="btn primary" href="document-upload.html?scheme=' + schemeId + '">' + icon('upload') + ' Upload Document</a>' +
+  '</div>' +
+
+  // SAVE BAR
+  '<div class="save-bar" style="margin-top:14px">' +
+    '<button class="btn ghost" type="button" id="backBtn">' + icon('chevL') + ' Back</button>' +
+    '<button class="btn ghost" type="button" id="saveBtn">' + icon('save') + ' Save Draft</button>' +
+    '<button class="btn primary" type="button" id="nextBtn">Save &amp; Continue ' + icon('arrowR') + '</button>' +
+  '</div>' +
+
+  // HELP
+  '<section class="help-block">' +
+    '<h3>' + icon('help') + ' Need help?</h3>' +
+    '<p class="muted sm" style="margin:0">JAGO can explain which documents you need, in English or Hindi.</p>' +
+    '<div class="row-btns">' +
+      '<a class="btn ghost sm" href="jago.html">' + icon('jago') + ' Ask JAGO</a>' +
+      '<a class="btn ghost sm" href="verification.html?scheme=' + schemeId + '">' + icon('shield') + ' Verification Dashboard</a>' +
+    '</div>' +
+  '</section>';
+
+/* =========================================================
+   FILTER HANDLING
+   ========================================================= */
+function applyFilter(f){
+  currentFilter = f;
+  let visible = 0;
+  document.querySelectorAll('#docList .doc').forEach(el => {
+    const type = el.dataset.type;
+    const d = documents.find(x => x.type === type);
+    const on = d ? filterMatch(d, f) : true;
+    el.style.display = on ? '' : 'none';
+    if(on) visible++;
+  });
+  document.querySelectorAll('.filter').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.filter === f);
+  });
+  document.getElementById('emptyState').style.display = visible ? 'none' : 'block';
+}
+
+document.querySelectorAll('.filter').forEach(btn => {
+  btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
+});
+
+/* =========================================================
+   ACTION HANDLERS
+   ========================================================= */
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-action]');
+  if(!btn) return;
+  const action = btn.dataset.action;
+  const id = btn.dataset.id;
+  const doc = documents.find(d => d.id === id);
+  if(!doc) return;
+
+  if(action === 'view'){
+    // Simple demo: show a modal-like toast describing the file
+    toast('Opening ' + doc.type + ' (' + (doc.fileName || 'file') + ') — demo only', 'ok');
+  }
+  if(action === 'verify'){
+    btn.disabled = true;
+    btn.innerHTML = icon('clock') + ' Verifying…';
+    setTimeout(() => {
+      // Move to Verified (demo)
+      doc.status = 'Verified';
+      doc.verifiedOn = new Date().toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+      // Sync with state
+      const stateDoc = s.documents.find(x => x.type === doc.type);
+      if(stateDoc){
+        stateDoc.status = 'Verified';
+        stateDoc.verifiedOn = doc.verifiedOn;
+      } else {
+        s.documents.push(Object.assign({}, doc));
+      }
+      try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
+      // Sync with draft
+      syncDraftDocuments();
+
+      // Rebuild the list
+      rerenderDocList();
+      toast(doc.type + ' verified (demo)', 'ok');
+    }, 1400);
+  }
+});
+
+function rerenderDocList(){
+  document.getElementById('docList').innerHTML = documents.map(docCard).join('');
+  applyFilter(currentFilter);
+  refreshSummary();
+}
+
+function refreshSummary(){
+  const v = documents.filter(d => d.status === 'Verified').length;
+  const p = documents.filter(d => d.status === 'Pending' || d.status === 'Uploaded').length;
+  const m = documents.filter(d => d.status === 'Missing' || d.status === 'Rejected').length;
+  const total = documents.length;
+  const pct = total ? Math.round(v / total * 100) : 0;
+
+  // update metric blocks
+  const metrics = document.querySelectorAll('.wallet-summary .ws-metric b');
+  if(metrics.length >= 3){
+    metrics[0].textContent = v;
+    metrics[1].textContent = p;
+    metrics[2].textContent = m;
+  }
+  const bar = document.querySelector('.wallet-summary .ws-bar>span');
+  const lbl = document.querySelector('.wallet-summary .ws-lbl');
+  if(bar) bar.style.width = pct + '%';
+  if(lbl) lbl.innerHTML = '<span>' + pct + '% verified</span><span>' + v + ' of ' + total + '</span>';
+
+  // update filter counts
+  document.querySelectorAll('.filter').forEach(btn => {
+    const f = btn.dataset.filter;
+    const countEl = btn.querySelector('.count');
+    if(!countEl) return;
+    if(f === 'all') countEl.textContent = total;
+    else if(f === 'verified') countEl.textContent = v;
+    else if(f === 'pending') countEl.textContent = p;
+    else if(f === 'missing') countEl.textContent = m;
+  });
+}
+
+/* =========================================================
+   SYNC DRAFT
+   ========================================================= */
+function syncDraftDocuments(){
+  const uploaded = documents
+    .filter(d => d.status === 'Verified' || d.status === 'Pending' || d.status === 'Uploaded')
+    .map(d => d.type);
+  draft.documents = {uploaded: uploaded};
+  /* Mark documents step complete if all required docs are Verified or Pending */
+  const reqDocs = documents.filter(d => d.required);
+  const satisfied = reqDocs.filter(d => d.status === 'Verified' || d.status === 'Pending' || d.status === 'Uploaded' || d.status === 'Not Required');
+  draft.completed.documents = satisfied.length === reqDocs.length;
+  draft.updatedAt = Date.now();
+  try{ localStorage.setItem(draftKey, JSON.stringify(draft)); }catch(e){}
+}
+
+/* =========================================================
+   DIGILOCKER DEMO
+   ========================================================= */
+document.getElementById('dlBtn').addEventListener('click', () => {
+  const btn = document.getElementById('dlBtn');
+  btn.disabled = true;
+  btn.innerHTML = icon('clock') + ' Linking…';
+  setTimeout(() => {
+    // Mark ST Certificate as verified via DigiLocker
+    const stDoc = documents.find(d => /ST Certificate/i.test(d.type));
+    if(stDoc){
+      stDoc.status = 'Verified';
+      stDoc.source = 'DigiLocker (mock)';
+      stDoc.verifiedOn = new Date().toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+      const stateDoc = s.documents.find(x => x.type === stDoc.type);
+      if(stateDoc){
+        stateDoc.status = 'Verified';
+        stateDoc.source = 'DigiLocker (mock)';
+        stateDoc.verifiedOn = stDoc.verifiedOn;
+      }
+      try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
+    }
+    syncDraftDocuments();
+    rerenderDocList();
+    btn.innerHTML = icon('check') + ' Linked (demo)';
+    toast('DigiLocker linked (demo) — ST Certificate verified', 'ok');
+  }, 1400);
+});
+
+/* =========================================================
+   SAVE / CONTINUE / BACK
+   ========================================================= */
+document.getElementById('saveBtn').addEventListener('click', () => {
+  syncDraftDocuments();
+  toast('Draft saved', 'ok');
+});
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  syncDraftDocuments();
+  const missing = documents.filter(d => d.required && (d.status === 'Missing' || d.status === 'Rejected'));
+  if(missing.length){
+    toast('Please upload: ' + missing.map(m => m.type).join(', '), 'err');
+    applyFilter('missing');
+    return;
+  }
+  toast('Documents ready', 'ok');
+  setTimeout(() => {
+    location.href = 'verification.html?scheme=' + encodeURIComponent(schemeId);
+  }, 400);
+});
+
+document.getElementById('backBtn').addEventListener('click', () => {
+  syncDraftDocuments();
+  location.href = 'academic-details.html?scheme=' + encodeURIComponent(schemeId);
+});
+
+/* =========================================================
+   INIT
+   ========================================================= */
+applyFilter('all');
+syncDraftDocuments();
+refreshSummary();
+</script>
+</body>
+</html>

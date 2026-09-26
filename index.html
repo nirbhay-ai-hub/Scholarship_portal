@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B5E55">
+<title>Login · Tribal Scholarship One</title>
+<style>
+:root{--brand:#0B5E55;--brand2:#0E7C6F;--brandsoft:#E6F2F0;--bg:#F4F6F8;--card:#fff;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0;--ok:#0F9D58;--okbg:#E7F6EE;--warn:#B45309;--warnbg:#FEF3C7;--err:#DC2626;--errbg:#FEE2E2;--info:#1D4ED8;--infobg:#DBEAFE;--r:14px;--sh:0 1px 2px rgba(15,23,42,.06),0 8px 24px -14px rgba(15,23,42,.2);--safeb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#334155}
+.field .hint{font-size:12px;color:var(--muted);margin-top:4px}
+.field .err{font-size:12px;color:var(--err);margin-top:4px;display:none}
+.field.invalid .err{display:block}
+.field.invalid input{border-color:var(--err)}
+input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:15px;outline:0;transition:.15s;min-height:44px}
+input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(11,94,85,.12)}
+.input-group{position:relative}
+.input-group .suffix{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12.5px;color:var(--brand);background:none;border:0;cursor:pointer;font-weight:600;padding:6px 8px;border-radius:6px}
+.input-group input{padding-right:74px}
+.check{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;cursor:pointer;user-select:none;padding:4px 0}
+.check input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--brand)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:10px;border:1px solid transparent;background:#fff;color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;line-height:1.2;text-align:center;transition:.15s;min-height:44px}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:hover{background:#0a4f48}
+.btn.ghost{background:#fff;border-color:var(--line)}
+.btn.block{width:100%}
+.btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9}
+.link{color:var(--brand);font-weight:600;font-size:13.5px;background:none;border:0;cursor:pointer;padding:0}
+.muted{color:var(--muted)}.sm{font-size:13px}.xs{font-size:11.5px}
+.tabs{display:flex;gap:0;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:20px}
+.tabs button{flex:1;padding:9px;border:0;background:none;font-weight:600;font-size:13.5px;color:var(--muted);border-radius:8px;cursor:pointer}
+.tabs button.active{background:#fff;color:var(--brand);box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:16px 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.auth-bg{min-height:100dvh;background:linear-gradient(160deg,#0B5E55 0%,#0E7C6F 45%,#F4F6F8 45.1%);padding:24px 16px 40px;display:flex;align-items:flex-start;justify-content:center}
+.auth-card{width:100%;max-width:440px;background:#fff;border-radius:20px;box-shadow:0 20px 50px -20px rgba(15,23,42,.4);padding:26px 22px;margin-top:40px}
+.auth-brand{text-align:center;margin-bottom:22px}
+.auth-brand .l{width:60px;height:60px;border-radius:16px;background:var(--brand);display:grid;place-items:center;margin:0 auto 12px}
+.auth-brand .l svg{width:32px;height:32px;stroke:#fff;fill:none;stroke-width:1.7}
+.auth-brand h1{font-size:19px;font-weight:700;margin:0 0 4px}
+.auth-brand p{font-size:13px;color:var(--muted);margin:0}
+.row{display:flex;flex-wrap:wrap;align-items:center}
+.row.between{justify-content:space-between}
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:flex-end;justify-content:center;z-index:200;padding:0}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:18px 18px 0 0;width:100%;max-width:520px;padding:20px;animation:slideUp .25s}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+@media(min-width:768px){.modal-bg{align-items:center}.modal{border-radius:18px;padding:24px}}
+.modal-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.modal-h h3{margin:0;font-size:17px}
+.modal-h button{background:none;border:0;font-size:22px;color:var(--muted);cursor:pointer;line-height:1}
+.demo-note{background:var(--brandsoft);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--brand);font-weight:500;margin-top:14px}
+.foot{text-align:center;font-size:12px;color:var(--muted);margin-top:18px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="auth-bg">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="l" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+      </div>
+      <h1>Tribal Scholarship One</h1>
+      <p>Unified Scholarship Platform for ST Students</p>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="active" data-tab="login" role="tab">Login</button>
+      <button data-tab="register" role="tab">Register</button>
+    </div>
+
+    <!-- LOGIN -->
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="identifier">Mobile or Email</label>
+        <input id="identifier" type="text" inputmode="email" autocomplete="username" placeholder="9876543210 or you@example.com" required>
+        <div class="err" id="errIdentifier">Please enter your mobile or email.</div>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="input-group">
+          <input id="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
+          <button type="button" class="suffix" id="togglePw">Show</button>
+        </div>
+        <div class="err" id="errPassword">Password is required.</div>
+      </div>
+      <div class="row between" style="margin-bottom:16px">
+        <label class="check"><input type="checkbox" id="remember"> Keep me signed in</label>
+        <button type="button" class="link" id="forgotBtn">Forgot password?</button>
+      </div>
+      <button class="btn primary block" type="submit">Login</button>
+      <div class="divider">or</div>
+      <button class="btn ghost block" type="button" id="otpLogin">Login with OTP</button>
+      <div class="demo-note">Demo mode · Use any mobile/email and password to continue. Data is stored only in your browser.</div>
+    </form>
+
+    <!-- REGISTER TEASER -->
+    <div id="registerPane" hidden>
+      <p class="muted" style="font-size:13.5px;margin-bottom:16px">Create your unified scholarship profile once, and reuse it across all five MoTA schemes.</p>
+      <ul style="list-style:none;padding:0;margin:0 0 18px;font-size:13.5px;line-height:2">
+        <li>✓ Pre-Matric, Post-Matric, Top Class, NFST, NOS</li>
+        <li>✓ One digital document wallet</li>
+        <li>✓ Unified verification &amp; payment tracking</li>
+        <li>✓ AI assistant JAGO for guidance</li>
+      </ul>
+      <a class="btn primary block" href="register.html">Create Account</a>
+      <a class="btn ghost block" href="onboarding.html" style="margin-top:10px">Take a quick tour</a>
+    </div>
+
+    <div class="foot">Ministry of Tribal Affairs · Government of India<br>Prototype for demonstration only</div>
+  </div>
+</div>
+
+<!-- FORGOT MODAL -->
+<div class="modal-bg" id="forgotModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-h"><h3>Reset Password</h3><button onclick="closeModal('forgotModal')" aria-label="Close">×</button></div>
+    <p class="muted sm" style="margin-bottom:14px">Enter your registered mobile or email. A demo reset link will be simulated.</p>
+    <div class="field">
+      <label for="forgotId">Mobile or Email</label>
+      <input id="forgotId" type="text" placeholder="9876543210 or you@example.com">
+    </div>
+    <button class="btn primary block" id="sendReset">Send Reset Link</button>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ---------- tiny shared helpers ---------- */
+function toast(msg,type){let w=document.getElementById('toastWrap');const t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},2400);}
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+
+/* ---------- tabs ---------- */
+const tabs=document.querySelectorAll('.tabs button');
+const loginForm=document.getElementById('loginForm');
+const registerPane=document.getElementById('registerPane');
+tabs.forEach(b=>b.addEventListener('click',()=>{
+  tabs.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  const isLogin=b.dataset.tab==='login';
+  loginForm.hidden=!isLogin;
+  registerPane.hidden=isLogin;
+}));
+
+/* ---------- password toggle ---------- */
+document.getElementById('togglePw').addEventListener('click',function(){
+  const p=document.getElementById('password');
+  const show=p.type==='password';
+  p.type=show?'text':'password';
+  this.textContent=show?'Hide':'Show';
+});
+
+/* ---------- login submit ---------- */
+loginForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  const id=document.getElementById('identifier');
+  const pw=document.getElementById('password');
+  let ok=true;
+  id.parentElement.classList.toggle('invalid',!id.value.trim());
+  pw.parentElement.classList.toggle('invalid',!pw.value.trim());
+  if(!id.value.trim()||!pw.value.trim()){ok=false}
+  if(!ok){toast('Please fill all fields','err');return;}
+  // Seed state on first login (shared across pages)
+  try{
+    const KEY='tso_state_v1';
+    if(!localStorage.getItem(KEY)){
+      localStorage.setItem(KEY,JSON.stringify({
+        session:{loggedIn:true,at:Date.now()},
+        profile:{firstName:'Anjali',lastName:'Murmu',name:'Anjali Murmu',initials:'AM',email:'anjali.murmu@example.com',mobile:'+91 98765 43210',dob:'2003-06-14',gender:'Female',category:'ST',pvtg:false,state:'Odisha',district:'Mayurbhanj',address:'Village Baripada, PO Rairangpur, Mayurbhanj, Odisha - 757043',domicile:'Odisha',institution:'Demo University, Bhubaneswar',university:'Demo University',course:'B.Tech AI & Data Science',branch:'Artificial Intelligence',semester:'6',enrollment:'DEMO2023CS014',academicYear:'2025-26',marks:'82.4%',income:'180000',incomeCert:true,stCert:true,disability:false,profileCompletion:78},
+        schemes:[
+          {id:'pre-matric',name:'Pre-Matric Scholarship',for:'Class IX–X ST students',short:'For ST students studying in Class IX and X to reduce dropouts.',benefitShort:'Up to ₹3,500/yr',benefits:['Monthly maintenance allowance','Books & ad-hoc grant','Disability allowance (if applicable)'],eligibility:['ST category','Class IX or X','Family income ≤ ₹2.5 lakh','Studying in recognized school'],documents:['ST Certificate','Income Certificate','School Bonafide','Bank Passbook','Aadhaar'],process:['Register on Tribal Scholarship One','Fill personal & academic details','Upload documents','Institution verification','State verification & sanction','DBT payment'],conditions:['Only one scholarship per academic year','Attendance ≥ 60% required','Aadhaar-linked bank account mandatory'],faq:[['Can I apply if I already get another scholarship?','No. Only one scholarship per academic year is allowed.'],['When is the payment credited?','After state sanction and DBT processing.']]},
+          {id:'post-matric',name:'Post-Matric Scholarship',for:'Class XI to PhD ST students',short:'Financial assistance for ST students pursuing post-matriculation courses.',benefitShort:'Up to ₹1,20,000/yr',benefits:['Full tuition fee reimbursement','Maintenance allowance','Books & thesis allowance','Study tour charges'],eligibility:['ST category','Class XI and above','Family income ≤ ₹2.5 lakh','Enrolled in recognized institution'],documents:['ST Certificate','Income Certificate','Marksheet','Institution Certificate','Bank Passbook','Aadhaar'],process:['Register & complete profile','Fill application','Upload documents','Institution verification','State verification','Sanction & DBT'],conditions:['One scholarship per year','Minimum attendance required','No gap year without approval'],faq:[['Is this for PG students?','Yes, up to PhD level for eligible courses.'],['What is the income limit?','₹2.5 lakh per annum for most categories.']]},
+          {id:'top-class',name:'Top Class Scholarship',for:'ST students in top-ranked institutions',short:'For ST students admitted to top-ranked institutes (NIRF/QS ranked).',benefitShort:'Full course fee + living',benefits:['Full tuition & non-tuition fees','Living expenses','Books & study material'],eligibility:['ST category','Admitted to top-ranked institution','Family income ≤ ₹6 lakh','Not availing other scholarship'],documents:['ST Certificate','Income Certificate','Admission Letter','Fee Receipt','Bank Passbook'],process:['Profile & eligibility','Upload documents','Institution verification','Ministry review','Sanction','DBT'],conditions:['Institution must be in approved list','Annual renewal required'],faq:[['What counts as top-ranked?','Institutions in the MoTA approved list (NIRF/QS rankings).']]},
+          {id:'nfst',name:'National Fellowship for ST (NFST)',for:'ST students pursuing MPhil/PhD',short:'Fellowship for ST students pursuing MPhil or PhD in recognized universities.',benefitShort:'₹31,000/mo + HRA',benefits:['Monthly fellowship','Contingency grant','HRA as per rules','Escalation after 2 years'],eligibility:['ST category','MPhil/PhD admitted','NET/JRF or equivalent qualified','Not receiving other fellowship'],documents:['ST Certificate','NET/JRF Certificate','Admission Letter','Research Proposal','Bank Passbook'],process:['Register & profile','Upload research documents','Institution verification','UGC/NTA verification','Ministry sanction','Monthly DBT'],conditions:['Annual progress report required','No concurrent fellowship'],faq:[['Is NET/JRF mandatory?','Yes, or an equivalent qualifying exam as specified.']]},
+          {id:'nos',name:'National Overseas Scholarship (NOS)',for:'ST students for overseas masters/PhD',short:'For ST students pursuing Masters/PhD abroad in specified fields.',benefitShort:'Full tuition + living abroad',benefits:['Tuition fees','Living allowance','Airfare','Visa fees','Contingency'],eligibility:['ST category','Admitted to overseas university','Family income ≤ ₹6 lakh','Age ≤ 35','Not availing other overseas scholarship'],documents:['ST Certificate','Income Certificate','Overseas Admission Letter','Passport','IELTS/TOEFL','Bank Passbook'],process:['Profile & eligibility','Upload documents','Ministry screening','Interview','Sanction','Disbursement'],conditions:['Must return to India after completion','Approved universities only'],faq:[['Which countries are covered?','As per the current NOS guidelines — USA, UK, and others listed.']]}
+        ],
+        applications:[
+          {id:'TSO-2025-00412',schemeId:'post-matric',schemeName:'Post-Matric Scholarship',year:'2025-26',submitted:'12 Aug 2025',status:'Verification',stageIndex:3,amount:48500,lastUpdated:'2 days ago'},
+          {id:'TSO-2024-00287',schemeId:'pre-matric',schemeName:'Pre-Matric Scholarship',year:'2024-25',submitted:'05 Jul 2024',status:'Disbursed',stageIndex:6,amount:3500,lastUpdated:'12 Mar 2025'},
+          {id:'TSO-2023-00198',schemeId:'post-matric',schemeName:'Post-Matric Scholarship',year:'2023-24',submitted:'22 Jul 2023',status:'Disbursed',stageIndex:6,amount:42000,lastUpdated:'18 Jan 2024'}
+        ],
+        documents:[
+          {id:'doc1',type:'ST Certificate',status:'Verified',required:true,source:'DigiLocker (mock)',fileName:'st_certificate.pdf',size:'420 KB',uploaded:'10 Aug 2025',verifiedOn:'14 Aug 2025'},
+          {id:'doc2',type:'Income Certificate',status:'Pending',required:true,source:'State e-District (mock)',fileName:'income_cert.pdf',size:'315 KB',uploaded:'11 Aug 2025',verifiedOn:'—'},
+          {id:'doc3',type:'Domicile Certificate',status:'Verified',required:true,source:'State e-District (mock)',fileName:'domicile.pdf',size:'280 KB',uploaded:'10 Aug 2025',verifiedOn:'15 Aug 2025'},
+          {id:'doc4',type:'Marksheet (last exam)',status:'Verified',required:true,source:'Institution (mock)',fileName:'marksheet_sem5.pdf',size:'1.1 MB',uploaded:'10 Aug 2025',verifiedOn:'16 Aug 2025'},
+          {id:'doc5',type:'Aadhaar / Identity',status:'Verified',required:true,source:'UIDAI (mock)',fileName:'aadhaar_masked.pdf',size:'180 KB',uploaded:'10 Aug 2025',verifiedOn:'12 Aug 2025'},
+          {id:'doc6',type:'Institution Certificate',status:'Pending',required:true,source:'Institution (mock)',fileName:'institution_cert.pdf',size:'520 KB',uploaded:'12 Aug 2025',verifiedOn:'—'},
+          {id:'doc7',type:'Disability Certificate',status:'Not Required',required:false,source:'—',fileName:'—',size:'—',uploaded:'—',verifiedOn:'—'},
+          {id:'doc8',type:'NET/JRF Certificate',status:'Not Required',required:false,source:'UGC/NTA (mock)',fileName:'—',size:'—',uploaded:'—',verifiedOn:'—'}
+        ],
+        verification:{lastChecked:'2 days ago',sources:['DigiLocker','APAAR','UDISE+','State e-District','UIDAI','Institution DB','UGC/NTA'],checks:[
+          {label:'Identity (Aadhaar)',status:'Verified',src:'UIDAI (mock)'},
+          {label:'ST Certificate',status:'Verified',src:'DigiLocker (mock)'},
+          {label:'Income Certificate',status:'Mismatch',src:'State e-District (mock)'},
+          {label:'Academic Record',status:'Verified',src:'Institution DB (mock)'},
+          {label:'Institution Verification',status:'Verified',src:'Institution DB (mock)'},
+          {label:'Domicile',status:'Pending',src:'State e-District (mock)'},
+          {label:'Disability',status:'Not Required',src:'—'},
+          {label:'NET/JRF',status:'Not Required',src:'UGC/NTA (mock)'}
+        ]},
+        paymentSummary:{year:'2025-26',sanctioned:48500,status:'Processing',dbt:'Initiated',ref:'DBT-TSO-2025-00412',sanctionDate:'20 Aug 2025',paidDate:null},
+        payments:[
+          {year:'2024-25',scheme:'Pre-Matric Scholarship',amount:3500,status:'Paid',date:'12 Mar 2025',ref:'DBT-2024-8871'},
+          {year:'2023-24',scheme:'Post-Matric Scholarship',amount:42000,status:'Paid',date:'18 Jan 2024',ref:'DBT-2023-5540'},
+          {year:'2025-26',scheme:'Post-Matric Scholarship',amount:48500,status:'Processing',date:'—',ref:'DBT-TSO-2025-00412'}
+        ],
+        notifications:[
+          {id:'n1',type:'warn',title:'Income certificate mismatch',body:'A mismatch was detected between your uploaded income certificate and state records.',date:'2 hours ago',read:false,action:'verification.html'},
+          {id:'n2',type:'info',title:'Document verified',body:'Your ST Certificate has been verified via DigiLocker (mock).',date:'Yesterday',read:false},
+          {id:'n3',type:'success',title:'Application submitted',body:'Post-Matric Scholarship application TSO-2025-00412 submitted successfully.',date:'12 Aug 2025',read:true,action:'application-details.html?id=TSO-2025-00412'},
+          {id:'n4',type:'success',title:'Payment credited',body:'₹3,500 credited for Pre-Matric Scholarship AY 2024-25.',date:'12 Mar 2025',read:true,action:'payment-status.html'},
+          {id:'n5',type:'info',title:'Sanction letter generated',body:'Sanction letter for Post-Matric Scholarship AY 2025-26 is available.',date:'20 Aug 2025',read:true}
+        ],
+        pendingActions:[
+          {title:'Income certificate mismatch',desc:'Re-upload or request manual review to continue verification.',priority:'high',cta:'Resolve now',href:'document-upload.html'},
+          {title:'Complete institution certificate',desc:'Institution certificate upload is pending.',priority:'medium',cta:'Upload',href:'document-upload.html'},
+          {title:'Verify domicile',desc:'Domicile verification is pending at State e-District (mock).',priority:'low',cta:'View',href:'verification.html'}
+        ]
+      }));
+    }else{
+      const st=JSON.parse(localStorage.getItem(KEY)); st.session={loggedIn:true,at:Date.now()}; localStorage.setItem(KEY,JSON.stringify(st));
+    }
+  }catch(e){}
+  toast('Login successful','ok');
+  setTimeout(()=>location.href='dashboard.html',450);
+});
+
+/* ---------- OTP login ---------- */
+document.getElementById('otpLogin').addEventListener('click',()=>{
+  location.href='otp-verification.html';
+});
+
+/* ---------- forgot password ---------- */
+document.getElementById('forgotBtn').addEventListener('click',()=>openModal('forgotModal'));
+document.getElementById('sendReset').addEventListener('click',()=>{
+  const v=document.getElementById('forgotId').value.trim();
+  if(!v){toast('Please enter your mobile or email','err');return;}
+  closeModal('forgotModal');
+  toast('Demo reset link sent to '+v,'ok');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B5E55">
+<title>JAGO Assistant - Tribal Scholarship One</title>
+<style>
+:root{
+  --brand:#0B5E55;--brand2:#0E7C6F;--brandsoft:#E6F2F0;
+  --bg:#F4F6F8;--card:#fff;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0;
+  --ok:#0F9D58;--okbg:#E7F6EE;--warn:#B45309;--warnbg:#FEF3C7;
+  --err:#DC2626;--errbg:#FEE2E2;--info:#1D4ED8;--infobg:#DBEAFE;
+  --r:14px;--sh:0 1px 2px rgba(15,23,42,.06),0 8px 24px -14px rgba(15,23,42,.2);
+  --safeb:env(safe-area-inset-bottom,0px);
+  --safet:env(safe-area-inset-top,0px)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans Devanagari',sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow:hidden
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+svg{display:block}
+
+/* SHELL */
+.app{min-height:100dvh;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:50;background:var(--brand);color:#fff;
+  display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:56px;
+  padding-top:calc(10px + var(--safet))
+}
+.topbar .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.logo{
+  width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.15);
+  display:grid;place-items:center;flex:none
+}
+.logo svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.brand-t{min-width:0}
+.brand-t b{display:block;font-size:14px;line-height:1.15;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.brand-t small{display:block;font-size:11px;opacity:.8;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.top-actions{display:flex;gap:4px}
+.iconbtn{
+  width:38px;height:38px;border-radius:10px;border:0;
+  background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;
+  cursor:pointer;position:relative
+}
+.iconbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+.iconbtn.on{background:rgba(255,255,255,.28)}
+.iconbtn .dot-badge{
+  position:absolute;top:6px;right:6px;width:8px;height:8px;
+  border-radius:50%;background:#FBBF24;border:2px solid var(--brand)
+}
+.sidebar{display:none}
+.bottomnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:60;background:#fff;
+  border-top:1px solid var(--line);display:flex;
+  padding:6px 4px calc(6px + var(--safeb));
+  box-shadow:0 -4px 16px -8px rgba(15,23,42,.1)
+}
+.bn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 2px;border-radius:10px;color:var(--muted);font-size:10.5px;
+  font-weight:500;min-width:0
+}
+.bn-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7}
+.bn-item.active{color:var(--brand);background:var(--brandsoft)}
+.bn-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.content{
+  flex:1;min-height:0;display:flex;flex-direction:column;
+  padding:0 0 calc(72px + var(--safeb))
+}
+@media(min-width:768px){
+  .bottomnav{padding:8px 12px calc(8px + var(--safeb))}
+  .bn-item{font-size:11.5px}.bn-item svg{width:24px;height:24px}
+}
+@media(min-width:1200px){
+  body{overflow:auto}
+  .app{
+    display:grid;grid-template-columns:250px 1fr;
+    grid-template-rows:auto 1fr;
+    grid-template-areas:"top top" "side main";
+    min-height:100dvh
+  }
+  .topbar{grid-area:top}
+  .sidebar{
+    grid-area:side;display:block;background:#fff;
+    border-right:1px solid var(--line);padding:14px 12px;
+    position:sticky;top:56px;height:calc(100dvh - 56px);overflow-y:auto
+  }
+  .sidebar .nav-title{
+    font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted);font-weight:600;padding:12px 12px 6px
+  }
+  .sidebar a{
+    display:flex;align-items:center;gap:12px;padding:10px 12px;
+    border-radius:10px;color:var(--ink);font-size:14px;font-weight:500;
+    margin-bottom:2px
+  }
+  .sidebar a svg{width:20px;height:20px;stroke:currentColor;fill:none;
+    stroke-width:1.8;flex:none}
+  .sidebar a:hover{background:var(--bg)}
+  .sidebar a.active{background:var(--brandsoft);color:var(--brand);font-weight:600}
+  .content{
+    grid-area:main;padding:0;height:calc(100dvh - 56px);
+    padding-bottom:0
+  }
+  .bottomnav{display:none}
+}
+
+/* COMMON */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 16px;border-radius:10px;border:1px solid transparent;
+  background:#fff;color:var(--ink);font-weight:600;font-size:14px;
+  cursor:pointer;line-height:1.2;text-align:center;transition:.15s;
+  min-height:44px
+}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:hover{background:#0a4f48}
+.btn.ghost{background:#fff;border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn.sm{padding:8px 13px;font-size:13px;min-height:38px}
+.btn.xs{padding:6px 11px;font-size:12px;min-height:34px}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;
+  stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 9px;
+  border-radius:999px;font-size:11.5px;font-weight:600;background:#F1F5F9;
+  color:#334155;white-space:nowrap
+}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.err{background:var(--errbg);color:var(--err)}
+.badge.info{background:var(--infobg);color:var(--info)}
+.badge.brand{background:var(--brandsoft);color:var(--brand)}
+.muted{color:var(--muted)}
+.sm{font-size:13px}
+.xs{font-size:11.5px}
+.link{color:var(--brand);font-weight:600;font-size:13.5px}
+
+/* CHAT WRAPPER */
+.chat-wrap{
+  flex:1;display:flex;flex-direction:column;min-height:0;
+  max-width:900px;margin:0 auto;width:100%;
+  background:#fff
+}
+.chat-head{
+  padding:12px 16px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;background:#fff;
+  position:sticky;top:56px;z-index:20
+}
+.chat-orb{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  display:grid;place-items:center;flex:none;
+  box-shadow:0 4px 12px -4px rgba(11,94,85,.4)
+}
+.chat-orb svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:1.8}
+.chat-meta{flex:1;min-width:0}
+.chat-meta b{display:block;font-size:14.5px;font-weight:700;line-height:1.2}
+.chat-meta small{
+  display:flex;align-items:center;gap:5px;font-size:11.5px;
+  color:var(--muted);font-weight:500;margin-top:2px
+}
+.chat-meta small .live-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--ok);
+  animation:pulse 1.8s infinite
+}
+@keyframes pulse{
+  0%,100%{opacity:1}
+  50%{opacity:.4}
+}
+.chat-head-actions{display:flex;gap:4px}
+
+/* SCROLL AREA */
+.chat-body{
+  flex:1;overflow-y:auto;padding:18px 16px 8px;
+  background:linear-gradient(180deg,#F8FAFC 0%,#fff 200px);
+  -webkit-overflow-scrolling:touch;min-height:0
+}
+
+/* WELCOME */
+.welcome{
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  color:#fff;border-radius:16px;padding:20px;margin-bottom:18px;
+  position:relative;overflow:hidden
+}
+.welcome::before{
+  content:"";position:absolute;top:-30px;right:-30px;width:140px;height:140px;
+  border-radius:50%;background:rgba(255,255,255,.08)
+}
+.welcome .w-orb{
+  width:48px;height:48px;border-radius:50%;
+  background:rgba(255,255,255,.15);display:grid;place-items:center;
+  margin-bottom:12px;position:relative;z-index:1
+}
+.welcome .w-orb svg{width:26px;height:26px;stroke:#fff;fill:none;
+  stroke-width:1.8}
+.welcome h2{
+  font-size:17px;margin:0 0 6px;font-weight:700;position:relative;z-index:1
+}
+.welcome p{
+  font-size:13px;line-height:1.55;opacity:.92;margin:0;
+  position:relative;z-index:1;max-width:520px
+}
+
+/* MESSAGES */
+.msg{
+  display:flex;gap:10px;margin-bottom:16px;
+  animation:fadeIn .28s ease
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg-av{
+  width:32px;height:32px;border-radius:50%;flex:none;
+  display:grid;place-items:center
+}
+.msg-av svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8}
+.msg.jago .msg-av{
+  background:linear-gradient(135deg,var(--brand),var(--brand2))
+}
+.msg.user .msg-av{
+  background:#334155
+}
+.msg.user{
+  flex-direction:row-reverse
+}
+.bubble{
+  max-width:78%;padding:11px 14px;border-radius:14px;
+  font-size:14px;line-height:1.55;position:relative;
+  word-wrap:break-word
+}
+.msg.jago .bubble{
+  background:#F1F5F9;color:var(--ink);
+  border-top-left-radius:4px
+}
+.msg.user .bubble{
+  background:var(--brand);color:#fff;
+  border-top-right-radius:4px
+}
+.msg.user .bubble a{color:#fff;text-decoration:underline}
+.bubble b{font-weight:700}
+.bubble a{color:var(--brand);font-weight:600}
+.bubble ul{margin:8px 0 4px;padding-left:20px}
+.bubble li{margin-bottom:3px;font-size:13.5px}
+.bubble p{margin:0 0 6px}
+.bubble p:last-child{margin-bottom:0}
+.msg-time{
+  font-size:10.5px;color:var(--muted);margin-top:4px;
+  display:block
+}
+.msg.user .msg-time{text-align:right}
+
+/* TYPING */
+.typing .bubble{
+  background:#F1F5F9;padding:14px 18px
+}
+.typing-dots{display:flex;gap:4px;align-items:center}
+.typing-dots span{
+  width:7px;height:7px;border-radius:50%;background:var(--muted);
+  animation:typing 1.2s infinite
+}
+.typing-dots span:nth-child(2){animation-delay:.18s}
+.typing-dots span:nth-child(3){animation-delay:.36s}
+@keyframes typing{
+  0%,60%,100%{transform:translateY(0);opacity:.4}
+  30%{transform:translateY(-5px);opacity:1}
+}
+
+/* QUICK CHIPS */
+.chips-row{
+  display:flex;gap:8px;overflow-x:auto;padding:0 16px 10px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  background:#fff
+}
+.chips-row::-webkit-scrollbar{display:none}
+.chip{
+  flex:none;display:inline-flex;align-items:center;gap:6px;
+  padding:8px 13px;border-radius:999px;background:#fff;
+  border:1.5px solid var(--line);font-size:12.5px;font-weight:600;
+  color:var(--ink);cursor:pointer;transition:.15s;white-space:nowrap;
+  min-height:38px
+}
+.chip svg{width:14px;height:14px;stroke:var(--brand);fill:none;
+  stroke-width:2}
+.chip:hover{border-color:var(--brand);background:var(--brandsoft)}
+
+/* INPUT BAR */
+.chat-input{
+  border-top:1px solid var(--line);background:#fff;
+  padding:10px 12px calc(10px + var(--safeb));
+  display:flex;gap:8px;align-items:flex-end
+}
+.chat-input .input-wrap{
+  flex:1;position:relative;display:flex;align-items:flex-end;
+  background:var(--bg);border-radius:22px;padding:4px 4px 4px 14px;
+  border:1.5px solid var(--line);transition:.15s
+}
+.chat-input .input-wrap:focus-within{
+  border-color:var(--brand);background:#fff;
+  box-shadow:0 0 0 3px rgba(11,94,85,.1)
+}
+.chat-input textarea{
+  flex:1;border:0;background:transparent;outline:0;
+  font-size:14.5px;line-height:1.4;resize:none;
+  padding:8px 0;max-height:110px;font-family:inherit
+}
+.chat-input textarea::placeholder{color:var(--muted)}
+.send-btn{
+  width:42px;height:42px;border-radius:50%;flex:none;
+  background:var(--brand);color:#fff;border:0;cursor:pointer;
+  display:grid;place-items:center;transition:.15s
+}
+.send-btn:disabled{background:#CBD5E1;cursor:not-allowed}
+.send-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;
+  stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* TOAST */
+.toast-wrap{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(88px + var(--safeb));z-index:600;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none;
+  align-items:center;width:calc(100% - 28px);max-width:420px
+}
+@media(min-width:1200px){.toast-wrap{bottom:24px}}
+.toast{
+  background:#0F172A;color:#fff;padding:11px 16px;border-radius:10px;
+  font-size:13.5px;font-weight:500;
+  box-shadow:0 10px 30px -10px rgba(0,0,0,.35);
+  transition:opacity .3s;text-align:center;max-width:100%
+}
+.toast.ok{background:var(--ok)}
+.toast.err{background:var(--err)}
+.toast.warn{background:var(--warn)}
+
+@media(min-width:1200px){
+  .chat-wrap{max-width:980px;margin:0 auto;height:100%;
+    border-left:1px solid var(--line);border-right:1px solid var(--line)}
+  .chat-head{top:0}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar" id="topbar"></header>
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content">
+    <div class="chat-wrap">
+      <div class="chat-head">
+        <span class="chat-orb" id="headOrb"></span>
+        <div class="chat-meta">
+          <b>JAGO - Scholarship Assistant</b>
+          <small><span class="live-dot"></span> Online - English / Hindi</small>
+        </div>
+        <div class="chat-head-actions">
+          <button class="iconbtn" id="langBtn" aria-label="Switch language" style="background:var(--brandsoft);color:var(--brand)">
+            <span style="font-size:11.5px;font-weight:700" id="langLabel">EN</span>
+          </button>
+          <button class="iconbtn" id="clearBtn" aria-label="Clear chat" style="background:var(--brandsoft);color:var(--brand)">
+          </button>
+        </div>
+      </div>
+
+      <div class="chat-body" id="chatBody"></div>
+
+      <div class="chips-row" id="chipsRow"></div>
+
+      <form class="chat-input" id="chatForm" autocomplete="off">
+        <div class="input-wrap">
+          <textarea id="chatInput" rows="1" placeholder="Ask JAGO about scholarships, documents, payments..." aria-label="Message JAGO"></textarea>
+        </div>
+        <button class="send-btn" type="submit" id="sendBtn" aria-label="Send message" disabled>
+          <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </form>
+    </div>
+  </main>
+  <nav class="bottomnav" id="bottomnav"></nav>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* =========================================================
+   ICONS
+   ========================================================= */
+var ICONS = {
+  dashboard:'<path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>',
+  schemes:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16"/>',
+  apps:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+  docs:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  pay:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+  jago:'<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 15c1.5 1.2 4.5 1.2 6 0"/>',
+  notif:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+  check:'<path d="M5 13l4 4L19 7"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>',
+  chevL:'<path d="M15 6l-6 6 6 6"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  close:'<path d="M18 6L6 18M6 6l12 12"/>',
+  book:'<path d="M4 19.5V5a2 2 0 0 1 2-2h11a1 1 0 0 1 1 1v15"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H18"/><path d="M20 5v14"/>',
+  grad:'<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/>',
+  star:'<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/>',
+  bank:'<path d="M3 10l9-6 9 6"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><path d="M12 17h.01"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  refresh:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>',
+  upload:'<path d="M12 3v12M7 8l5-5 5 5"/><path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"/>',
+  arrowR:'<path d="M5 12h14M13 5l7 7-7 7"/>',
+  eye:'<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>',
+  trash:'<path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/>',
+  sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+  layers:'<path d="M12 2L2 7l10 5 10-5z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/>',
+  pen:'<path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18z"/><path d="M2 2l7.6 7.6"/><circle cx="11" cy="11" r="2"/>'
+};
+function icon(n, cls){
+  var p = ICONS[n] || ICONS.info;
+  return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
+}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+function fmtMoney(n){
+  return 'Rs ' + Number(n || 0).toLocaleString('en-IN');
+}
+function toast(msg, type){
+  var w = document.getElementById('toastWrap');
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  w.appendChild(t);
+  setTimeout(function(){
+    t.style.opacity = '0';
+    setTimeout(function(){ t.remove(); }, 320);
+  }, 2400);
+}
+function nowTime(){
+  var d = new Date();
+  return d.getHours().toString().padStart(2,'0') + ':' +
+         d.getMinutes().toString().padStart(2,'0');
+}
+
+/* =========================================================
+   STATE
+   ========================================================= */
+var KEY = 'tso_state_v1';
+function S(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){
+      var p = JSON.parse(raw);
+      if(p && p.profile) return p;
+    }
+  }catch(e){}
+  return null;
+}
+
+/* =========================================================
+   SHELL
+   ========================================================= */
+var NAV = [
+  {id:'dashboard',   label:'Dashboard',    icon:'dashboard', href:'dashboard.html'},
+  {id:'schemes',     label:'Schemes',      icon:'schemes',   href:'schemes.html'},
+  {id:'applications',label:'Applications', icon:'apps',      href:'my-applications.html'},
+  {id:'documents',   label:'Documents',    icon:'docs',      href:'document-wallet.html'},
+  {id:'payments',    label:'Payments',     icon:'pay',       href:'payment-status.html'},
+  {id:'jago',        label:'JAGO',         icon:'jago',      href:'jago.html'},
+  {id:'notifications',label:'Notifications',icon:'notif',    href:'notifications.html'},
+  {id:'profile',     label:'Profile',      icon:'profile',   href:'profile.html'}
+];
+var MOBILE_NAV = ['dashboard','schemes','applications','jago','profile'];
+
+function mountShell(active, crumb){
+  var st = S();
+  var unread = st ? st.notifications.filter(function(n){ return !n.read; }).length : 0;
+
+  document.getElementById('topbar').innerHTML =
+    '<div class="brand">' +
+      '<span class="logo">' + icon('shield') + '</span>' +
+      '<span class="brand-t">' +
+        '<b>Tribal Scholarship One</b>' +
+        '<small>' + esc(crumb || 'Unified Scholarship Platform') + '</small>' +
+      '</span>' +
+    '</div>' +
+    '<div class="top-actions">' +
+      '<a class="iconbtn" href="notifications.html" aria-label="Notifications">' +
+        icon('notif') + (unread ? '<span class="dot-badge"></span>' : '') +
+      '</a>' +
+      '<a class="iconbtn" href="profile.html" aria-label="Profile">' + icon('user') + '</a>' +
+    '</div>';
+
+  document.getElementById('sidebar').innerHTML =
+    '<div class="nav-title">Menu</div>' +
+    NAV.map(function(n){
+      return '<a href="' + n.href + '" class="' + (n.id === active ? 'active' : '') + '">' +
+        icon(n.icon) + '<span>' + n.label + '</span>' +
+      '</a>';
+    }).join('') +
+    '<div class="nav-title">Support</div>' +
+    '<a href="help.html">' + icon('help') + '<span>Help</span></a>' +
+    '<a href="settings.html">' + icon('settings') + '<span>Settings</span></a>' +
+    '<a href="index.html" onclick="localStorage.removeItem(\'tso_state_v1\')">' +
+      icon('logout') + '<span>Logout</span></a>';
+
+  document.getElementById('bottomnav').innerHTML = MOBILE_NAV.map(function(id){
+    var n = NAV.find(function(x){ return x.id === id; });
+    return '<a class="bn-item ' + (id === active ? 'active' : '') + '" href="' + n.href + '">' +
+      icon(n.icon) + '<span>' + n.label + '</span>' +
+    '</a>';
+  }).join('');
+}
+
+/* =========================================================
+   PAGE DATA
+   ========================================================= */
+var s = S();
+if(!s || !s.profile){ location.href = 'index.html'; }
+
+mountShell('jago', 'Home / JAGO Assistant');
+
+/* =========================================================
+   I18N STRINGS
+   ========================================================= */
+var I18N = {
+  en:{
+    title:'JAGO - Scholarship Assistant',
+    subtitle:'Online - English / Hindi',
+    placeholder:'Ask JAGO about scholarships, documents, payments...',
+    welcomeTitle:'Namaste! I am JAGO.',
+    welcomeText:'I can help you understand schemes, check eligibility, track applications, find missing documents, and view payment status. Ask me anything, or tap a suggestion below.',
+    chips:[
+      {id:'status',    label:'Check Status',        icon:'layers'},
+      {id:'eligibility',label:'Check Eligibility',  icon:'shield'},
+      {id:'documents', label:'Required Documents',  icon:'docs'},
+      {id:'payment',   label:'Payment Status',      icon:'pay'},
+      {id:'help',      label:'Application Help',    icon:'help'},
+      {id:'schemes',   label:'All Schemes',         icon:'schemes'}
+    ],
+    greeting:'Hello! How can I help you today?',
+    unknown:'I did not quite understand that. You can ask me about: scheme eligibility, documents required, application status, verification, or payments.',
+    clearConfirm:'Clear this conversation?'
+  },
+  hi:{
+    title:'JAGO - छात्रवृत्ति सहायक',
+    subtitle:'ऑनलाइन - अंग्रेज़ी / हिन्दी',
+    placeholder:'JAGO से छात्रवृत्ति, दस्तावेज़, भुगतान के बारे में पूछें...',
+    welcomeTitle:'नमस्ते! मैं JAGO हूँ।',
+    welcomeText:'मैं योजनाओं को समझने, पात्रता जाँचने, आवेदन ट्रैक करने, छूटे दस्तावेज़ खोजने और भुगतान स्थिति देखने में मदद कर सकता हूँ। कुछ भी पूछें, या नीचे सुझाव पर टैप करें।',
+    chips:[
+      {id:'status',    label:'स्थिति देखें',    icon:'layers'},
+      {id:'eligibility',label:'पात्रता जाँचें', icon:'shield'},
+      {id:'documents', label:'आवश्यक दस्तावेज़',icon:'docs'},
+      {id:'payment',   label:'भुगतान स्थिति',   icon:'pay'},
+      {id:'help',      label:'आवेदन सहायता',    icon:'help'},
+      {id:'schemes',   label:'सभी योजनाएँ',     icon:'schemes'}
+    ],
+    greeting:'नमस्ते! आज मैं आपकी कैसे मदद कर सकता हूँ?',
+    unknown:'मैं समझ नहीं पाया। आप मुझसे योजना पात्रता, आवश्यक दस्तावेज़, आवेदन स्थिति, सत्यापन या भुगतान के बारे में पूछ सकते हैं।',
+    clearConfirm:'यह बातचीत साफ़ करें?'
+  }
+};
+
+var lang = 'en';
+try{
+  var savedLang = localStorage.getItem('tso_jago_lang');
+  if(savedLang === 'hi' || savedLang === 'en') lang = savedLang;
+}catch(e){}
+
+/* =========================================================
+   CHAT STORAGE
+   ========================================================= */
+var CHAT_KEY = 'tso_jago_chat_v1';
+var messages = [];
+try{
+  var rawChat = localStorage.getItem(CHAT_KEY);
+  if(rawChat) messages = JSON.parse(rawChat);
+}catch(e){ messages = []; }
+if(!messages.length){
+  messages = [
+    {from:'jago', text:'Namaste! I am JAGO, your scholarship assistant.', time:nowTime()}
+  ];
+}
+
+function saveChat(){
+  try{
+    /* Keep only the last 60 messages */
+    var trimmed = messages.slice(-60);
+    localStorage.setItem(CHAT_KEY, JSON.stringify(trimmed));
+  }catch(e){}
+}
+
+/* =========================================================
+   RESPONSE ENGINE
+   ========================================================= */
+function buildGreeting(){
+  var t = I18N[lang];
+  var p = s.profile;
+  var first = (p.firstName || 'there');
+  var hi = lang === 'hi' ? 'नमस्ते ' + first + '!' : 'Hi ' + first + '!';
+  var body = lang === 'hi'
+    ? 'मैं आपका छात्रवृत्ति सहायक हूँ। आप मुझसे योजनाओं, पात्रता, दस्तावेज़ों, आवेदन स्थिति, सत्यापन या भुगतान के बारे में पूछ सकते हैं।'
+    : 'I am your scholarship assistant. Ask me about schemes, eligibility, documents, application status, verification, or payments.';
+  return '<p><b>' + esc(hi) + '</b> ' + esc(body) + '</p>';
+}
+
+function answerStatus(){
+  var apps = s.applications || [];
+  if(!apps.length){
+    return lang === 'hi'
+      ? '<p>आपने अभी तक कोई आवेदन नहीं किया है। <a href="schemes.html">योजनाएँ देखें</a> और एक चुनें।</p>'
+      : '<p>You have not applied yet. <a href="schemes.html">Browse schemes</a> and pick one to start.</p>';
+  }
+  var active = apps.find(function(a){ return a.status !== 'Disbursed'; }) || apps[0];
+  var STAGES = ['Submitted','Institution Verification','Document Verification','State Verification','Sanction','DBT Processing','Payment Credited'];
+  var stageName = STAGES[active.stageIndex || 0];
+  var pct = Math.round((active.stageIndex || 0) / 6 * 100);
+
+  if(lang === 'hi'){
+    return '<p><b>' + esc(active.schemeName) + '</b> का आवेदन <b>' + esc(active.id) + '</b></p>' +
+      '<ul>' +
+        '<li>स्थिति: <b>' + esc(active.status) + '</b></li>' +
+        '<li>चरण: <b>' + esc(stageName) + '</b> (' + pct + '%)</li>' +
+        '<li>राशि: <b>' + fmtMoney(active.amount) + '</b></li>' +
+      '</ul>' +
+      '<p><a href="application-details.html?id=' + encodeURIComponent(active.id) + '">पूरा विवरण देखें</a></p>';
+  }
+  return '<p><b>' + esc(active.schemeName) + '</b> - Application <b>' + esc(active.id) + '</b></p>' +
+    '<ul>' +
+      '<li>Status: <b>' + esc(active.status) + '</b></li>' +
+      '<li>Stage: <b>' + esc(stageName) + '</b> (' + pct + '%)</li>' +
+      '<li>Amount: <b>' + fmtMoney(active.amount) + '</b></li>' +
+    '</ul>' +
+    '<p><a href="application-details.html?id=' + encodeURIComponent(active.id) + '">View full details</a></p>';
+}
+
+function answerEligibility(){
+  if(lang === 'hi'){
+    return '<p>पात्रता जाँचने के लिए, कृपया नीचे दिए गए लिंक पर जाएँ। हम आपकी श्रेणी, आय, शिक्षा और संस्थान की जाँच करेंगे।</p>' +
+      '<p><a href="eligibility-check.html">पात्रता जाँचें</a> या <a href="scholarship-check.html">मौजूदा छात्रवृत्ति जाँचें</a></p>';
+  }
+  return '<p>To check your eligibility, use the eligibility checker. I will look at your category, income, education and institution.</p>' +
+    '<p><a href="eligibility-check.html">Check Eligibility</a> - <a href="scholarship-check.html">Check Existing Scholarship</a></p>';
+}
+
+function answerDocuments(){
+  var docs = s.documents || [];
+  var missing = docs.filter(function(d){ return d.required && (d.status === 'Missing' || d.status === 'Rejected'); });
+  var pending = docs.filter(function(d){ return d.status === 'Pending'; });
+
+  var intro = lang === 'hi'
+    ? '<p>आपकी योजना के लिए आवश्यक दस्तावेज़:</p>'
+    : '<p>Documents required for your application:</p>';
+
+  var body = '<ul>' +
+    '<li>' + (lang === 'hi' ? 'ST प्रमाण पत्र' : 'ST Certificate') + '</li>' +
+    '<li>' + (lang === 'hi' ? 'आय प्रमाण पत्र' : 'Income Certificate') + '</li>' +
+    '<li>' + (lang === 'hi' ? 'निवास प्रमाण पत्र' : 'Domicile Certificate') + '</li>' +
+    '<li>' + (lang === 'hi' ? 'अंकतालिका' : 'Marksheet') + '</li>' +
+    '<li>' + (lang === 'hi' ? 'संस्थान प्रमाण पत्र' : 'Institution Certificate') + '</li>' +
+    '<li>' + (lang === 'hi' ? 'आधार' : 'Aadhaar') + '</li>' +
+    '</ul>';
+
+  var alerts = '';
+  if(missing.length){
+    alerts += '<p><b>' + (lang === 'hi' ? 'ध्यान दें:' : 'Attention:') + '</b> ' +
+      (lang === 'hi' ? 'ये दस्तावेज़ छूटे हुए हैं: ' : 'Missing or rejected: ') +
+      missing.map(function(d){ return esc(d.type); }).join(', ') + '</p>';
+  }
+  if(pending.length){
+    alerts += '<p>' + (lang === 'hi' ? 'सत्यापन लंबित: ' : 'Pending verification: ') +
+      pending.map(function(d){ return esc(d.type); }).join(', ') + '</p>';
+  }
+
+  return intro + body + alerts +
+    '<p><a href="document-wallet.html">' +
+    (lang === 'hi' ? 'दस्तावेज़ वॉलेट खोलें' : 'Open Document Wallet') +
+    '</a></p>';
+}
+
+function answerPayment(){
+  var pay = s.payments || [];
+  var paid = pay.filter(function(p){ return p.status === 'Paid' || p.status === 'Credited'; });
+  var processing = pay.filter(function(p){ return p.status === 'Processing' || p.status === 'Initiated'; });
+  var totalPaid = paid.reduce(function(a, b){ return a + Number(b.amount || 0); }, 0);
+
+  if(!pay.length){
+    return lang === 'hi'
+      ? '<p>अभी तक कोई भुगतान रिकॉर्ड नहीं है। छात्रवृत्ति स्वीकृत होने के बाद भुगतान यहाँ दिखाई देगा।</p>'
+      : '<p>No payment records yet. Payments will appear here once your scholarship is sanctioned.</p>';
+  }
+
+  if(lang === 'hi'){
+    return '<p>आपके भुगतान का सारांश:</p>' +
+      '<ul>' +
+        '<li>कुल प्राप्त: <b>' + fmtMoney(totalPaid) + '</b></li>' +
+        '<li>प्रक्रियाधीन: <b>' + processing.length + '</b></li>' +
+        '<li>कुल रिकॉर्ड: <b>' + pay.length + '</b></li>' +
+      '</ul>' +
+      '<p><a href="payment-status.html">पूरा भुगतान इतिहास देखें</a></p>';
+  }
+  return '<p>Your payment summary:</p>' +
+    '<ul>' +
+      '<li>Total received: <b>' + fmtMoney(totalPaid) + '</b></li>' +
+      '<li>In processing: <b>' + processing.length + '</b></li>' +
+      '<li>Total records: <b>' + pay.length + '</b></li>' +
+    '</ul>' +
+    '<p><a href="payment-status.html">View full payment history</a></p>';
+}
+
+function answerHelp(){
+  if(lang === 'hi'){
+    return '<p>आवेदन प्रक्रिया में कई चरण शामिल हैं:</p>' +
+      '<ul>' +
+        '<li>व्यक्तिगत विवरण भरें</li>' +
+        '<li>शैक्षणिक विवरण भरें</li>' +
+        '<li>दस्तावेज़ अपलोड करें</li>' +
+        '<li>सत्यापन पूरा करें</li>' +
+        '<li>समीक्षा करें और सबमिट करें</li>' +
+      '</ul>' +
+      '<p><a href="application.html">आवेदन शुरू करें</a> या <a href="help.html">सहायता देखें</a></p>';
+  }
+  return '<p>The application process has several steps:</p>' +
+    '<ul>' +
+      '<li>Fill personal details</li>' +
+      '<li>Fill academic details</li>' +
+      '<li>Upload documents</li>' +
+      '<li>Complete verification</li>' +
+      '<li>Review and submit</li>' +
+    '</ul>' +
+    '<p><a href="application.html">Start an application</a> or <a href="help.html">view help</a></p>';
+}
+
+function answerSchemes(){
+  var schemes = s.schemes || [];
+  var list = '<ul>' + schemes.map(function(sc){
+    return '<li><a href="scheme-details.html?scheme=' + sc.id + '">' + esc(sc.name) + '</a> - ' + esc(sc.benefitShort || '') + '</li>';
+  }).join('') + '</ul>';
+  if(lang === 'hi'){
+    return '<p>पाँच MoTA छात्रवृत्ति योजनाएँ उपलब्ध हैं:</p>' + list +
+      '<p><a href="schemes.html">सभी योजनाएँ देखें</a></p>';
+  }
+  return '<p>There are five MoTA scholarship schemes available:</p>' + list +
+    '<p><a href="schemes.html">Browse all schemes</a></p>';
+}
+
+function answerExisting(){
+  var apps = s.applications || [];
+  var active = apps.find(function(a){ return a.status !== 'Disbursed'; });
+  if(active){
+    if(lang === 'hi'){
+      return '<p>आपके पास <b>' + esc(active.schemeName) + '</b> की सक्रिय छात्रवृत्ति है (आवेदन ' + esc(active.id) + ')।</p>' +
+        '<p>एक वर्ष में केवल एक छात्रवृत्ति की अनुमति है।</p>' +
+        '<p><a href="scholarship-check.html">मौजूदा छात्रवृत्ति जाँचें</a></p>';
+    }
+    return '<p>You have an active scholarship: <b>' + esc(active.schemeName) + '</b> (Application ' + esc(active.id) + ').</p>' +
+      '<p>Only one scholarship per academic year is permitted.</p>' +
+      '<p><a href="scholarship-check.html">Check existing scholarship</a></p>';
+  }
+  if(lang === 'hi'){
+    return '<p>आपके पास कोई सक्रिय छात्रवृत्ति नहीं मिली। आप नए आवेदन के लिए आगे बढ़ सकते हैं।</p>';
+  }
+  return '<p>I did not find any active scholarship. You can proceed with a new application.</p>';
+}
+
+function answerVerification(){
+  if(lang === 'hi'){
+    return '<p>सत्यापन में पहचान, ST प्रमाण पत्र, आय, शैक्षणिक रिकॉर्ड, संस्थान और निवास की जाँच शामिल है।</p>' +
+      '<p><a href="verification.html">सत्यापन डैशबोर्ड देखें</a></p>';
+  }
+  return '<p>Verification includes identity, ST certificate, income, academic record, institution and domicile checks.</p>' +
+    '<p><a href="verification.html">View verification dashboard</a></p>';
+}
+
+function answerNotifications(){
+  var unread = (s.notifications || []).filter(function(n){ return !n.read; }).length;
+  if(lang === 'hi'){
+    return '<p>आपके पास <b>' + unread + '</b> अपठित सूचनाएँ हैं।</p>' +
+      '<p><a href="notifications.html">सभी सूचनाएँ देखें</a></p>';
+  }
+  return '<p>You have <b>' + unread + '</b> unread notifications.</p>' +
+    '<p><a href="notifications.html">View all notifications</a></p>';
+}
+
+function answerProfile(){
+  if(lang === 'hi'){
+    return '<p>आपकी प्रोफ़ाइल आपकी व्यक्तिगत, शैक्षणिक और संपर्क जानकारी रखती है।</p>' +
+      '<p><a href="profile.html">प्रोफ़ाइल देखें</a></p>';
+  }
+  return '<p>Your profile holds your personal, academic and contact information.</p>' +
+    '<p><a href="profile.html">View profile</a></p>';
+}
+
+function answerUnknown(){
+  return '<p>' + esc(I18N[lang].unknown) + '</p>' +
+    (lang === 'hi'
+      ? '<p>आप पूछ सकते हैं: <b>मेरी स्थिति?</b> <b>मैं पात्र हूँ?</b> <b>कौन से दस्तावेज़?</b> <b>मेरा भुगतान?</b></p>'
+      : '<p>Try asking: <b>What is my status?</b> <b>Am I eligible?</b> <b>What documents?</b> <b>My payment?</b></p>');
+}
+
+/* =========================================================
+   KEYWORD ROUTER
+   ========================================================= */
+function detectIntent(text){
+  var t = text.toLowerCase();
+
+  if(/\b(status|track|where|progress|stage|स्थिति|कहाँ|ट्रैक)\b/.test(t)) return 'status';
+  if(/\b(eligib|qualify|पात्र|योग्य)\b/.test(t)) return 'eligibility';
+  if(/\b(document|certificate|upload|दस्तावेज़|प्रमाण)\b/.test(t)) return 'documents';
+  if(/\b(payment|paid|money|amount|dbt|sanction|भुगतान|राशि|पैसा)\b/.test(t)) return 'payment';
+  if(/\b(scheme|scholarship|benefit|योजना|छात्रवृत्ति)\b/.test(t)) return 'schemes';
+  if(/\b(existing|active|already|मौजूदा|सक्रिय)\b/.test(t)) return 'existing';
+  if(/\b(verif|verify|सत्यापन|जाँच)\b/.test(t)) return 'verification';
+  if(/\b(notif|alert|सूचना|अलर्ट)\b/.test(t)) return 'notifications';
+  if(/\b(profile|account|प्रोफ़ाइल|खाता)\b/.test(t)) return 'profile';
+  if(/\b(apply|application|start|how|help|आवेदन|मदद|कैसे)\b/.test(t)) return 'help';
+
+  return null;
+}
+
+function getResponse(intent){
+  switch(intent){
+    case 'status':        return answerStatus();
+    case 'eligibility':   return answerEligibility();
+    case 'documents':     return answerDocuments();
+    case 'payment':       return answerPayment();
+    case 'schemes':       return answerSchemes();
+    case 'existing':      return answerExisting();
+    case 'verification':  return answerVerification();
+    case 'notifications': return answerNotifications();
+    case 'profile':       return answerProfile();
+    case 'help':          return answerHelp();
+    default:              return answerUnknown();
+  }
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+var chatBody = document.getElementById('chatBody');
+var chipsRow = document.getElementById('chipsRow');
+var chatForm = document.getElementById('chatForm');
+var chatInput = document.getElementById('chatInput');
+var sendBtn = document.getElementById('sendBtn');
+var langBtn = document.getElementById('langBtn');
+var langLabel = document.getElementById('langLabel');
+var clearBtn = document.getElementById('clearBtn');
+
+/* Head orb + clear icon */
+document.getElementById('headOrb').innerHTML = icon('jago');
+clearBtn.innerHTML = icon('trash');
+
+/* Avatar SVGs */
+var AV_JAGO = icon('jago');
+var AV_USER = icon('user');
+
+function renderMessages(){
+  var html = '';
+
+  /* Welcome block on first visit only */
+  if(!messages.length || messages.length === 1){
+    var t = I18N[lang];
+    html +=
+      '<div class="welcome">' +
+        '<div class="w-orb">' + icon('jago') + '</div>' +
+        '<h2>' + esc(t.welcomeTitle) + '</h2>' +
+        '<p>' + esc(t.welcomeText) + '</p>' +
+      '</div>';
+  }
+
+  messages.forEach(function(m){
+    var isJago = m.from === 'jago';
+    html +=
+      '<div class="msg ' + (isJago ? 'jago' : 'user') + '">' +
+        '<span class="msg-av">' + (isJago ? AV_JAGO : AV_USER) + '</span>' +
+        '<div>' +
+          '<div class="bubble">' + m.text + '</div>' +
+          '<span class="msg-time">' + esc(m.time || '') + '</span>' +
+        '</div>' +
+      '</div>';
+  });
+
+  chatBody.innerHTML = html;
+  scrollBottom();
+}
+
+function renderChips(){
+  var t = I18N[lang];
+  chipsRow.innerHTML = t.chips.map(function(c){
+    return '<button class="chip" type="button" data-intent="' + c.id + '">' +
+      icon(c.icon) + '<span>' + esc(c.label) + '</span>' +
+    '</button>';
+  }).join('');
+
+  chipsRow.querySelectorAll('.chip').forEach(function(b){
+    b.addEventListener('click', function(){
+      var intent = b.dataset.intent;
+      /* Simulate user message */
+      addUserMessage(chipToText(intent));
+      setTimeout(function(){
+        addJagoMessage(getResponse(intent));
+      }, 480);
+    });
+  });
+}
+
+function chipToText(intent){
+  var map = {
+    en:{
+      status:'Check my application status',
+      eligibility:'Am I eligible?',
+      documents:'What documents do I need?',
+      payment:'What is my payment status?',
+      help:'How do I apply?',
+      schemes:'Show me all schemes'
+    },
+    hi:{
+      status:'मेरे आवेदन की स्थिति',
+      eligibility:'क्या मैं पात्र हूँ?',
+      documents:'मुझे कौन से दस्तावेज़ चाहिए?',
+      payment:'मेरी भुगतान स्थिति क्या है?',
+      help:'मैं आवेदन कैसे करूँ?',
+      schemes:'सभी योजनाएँ दिखाएँ'
+    }
+  };
+  return map[lang][intent] || map.en[intent] || intent;
+}
+
+function scrollBottom(){
+  requestAnimationFrame(function(){
+    chatBody.scrollTop = chatBody.scrollHeight;
+  });
+}
+
+function addUserMessage(text){
+  messages.push({from:'user', text:esc(text), time:nowTime()});
+  saveChat();
+  renderMessages();
+}
+
+function addJagoMessage(html){
+  messages.push({from:'jago', text:html, time:nowTime()});
+  saveChat();
+  renderMessages();
+}
+
+function showTyping(){
+  var el = document.createElement('div');
+  el.className = 'msg jago typing';
+  el.id = 'typingIndicator';
+  el.innerHTML =
+    '<span class="msg-av">' + AV_JAGO + '</span>' +
+    '<div><div class="bubble">' +
+      '<div class="typing-dots"><span></span><span></span><span></span></div>' +
+    '</div></div>';
+  chatBody.appendChild(el);
+  scrollBottom();
+}
+
+function hideTyping(){
+  var el = document.getElementById('typingIndicator');
+  if(el) el.remove();
+}
+
+/* =========================================================
+   INPUT HANDLING
+   ========================================================= */
+chatInput.addEventListener('input', function(){
+  /* Auto-resize */
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(chatInput.scrollHeight, 110) + 'px';
+  /* Enable/disable send */
+  sendBtn.disabled = !chatInput.value.trim();
+});
+
+chatInput.addEventListener('keydown', function(e){
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    if(chatInput.value.trim()) sendMessage();
+  }
+});
+
+chatForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  if(chatInput.value.trim()) sendMessage();
+});
+
+function sendMessage(){
+  var text = chatInput.value.trim();
+  if(!text) return;
+
+  addUserMessage(text);
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  sendBtn.disabled = true;
+
+  showTyping();
+  var intent = detectIntent(text);
+  var delay = 520 + Math.floor(Math.random() * 380);
+
+  setTimeout(function(){
+    hideTyping();
+    var resp = intent ? getResponse(intent) : answerUnknown();
+    addJagoMessage(resp);
+  }, delay);
+}
+
+/* =========================================================
+   LANGUAGE
+   ========================================================= */
+function applyLanguage(l){
+  lang = l;
+  try{ localStorage.setItem('tso_jago_lang', l); }catch(e){}
+  langLabel.textContent = l.toUpperCase();
+  document.querySelector('.chat-meta b').textContent = I18N[l].title;
+  document.querySelector('.chat-meta small').innerHTML =
+    '<span class="live-dot"></span> ' + esc(I18N[l].subtitle);
+  chatInput.placeholder = I18N[l].placeholder;
+  renderChips();
+  renderMessages();
+}
+
+langBtn.addEventListener('click', function(){
+  applyLanguage(lang === 'en' ? 'hi' : 'en');
+  toast(lang === 'hi' ? 'भाषा हिन्दी में बदल दी गई' : 'Language set to English', 'ok');
+});
+
+/* =========================================================
+   CLEAR CHAT
+   ========================================================= */
+clearBtn.addEventListener('click', function(){
+  if(!confirm(I18N[lang].clearConfirm)) return;
+  messages = [
+    {from:'jago', text:buildGreeting(), time:nowTime()}
+  ];
+  saveChat();
+  renderMessages();
+  toast('Chat cleared', 'ok');
+});
+
+/* =========================================================
+   INIT
+   ========================================================= */
+applyLanguage(lang);
+
+/* If the first message is the auto-greeting, replace it with the current language version */
+if(messages.length === 1 && messages[0].from === 'jago'){
+  messages[0].text = buildGreeting();
+  saveChat();
+  renderMessages();
+}
+</script>
+</body>
+</html>
