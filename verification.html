@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B5E55">
+<title>Verification - Tribal Scholarship One</title>
+<style>
+:root{
+  --brand:#0B5E55;--brand2:#0E7C6F;--brandsoft:#E6F2F0;
+  --bg:#F4F6F8;--card:#fff;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0;
+  --ok:#0F9D58;--okbg:#E7F6EE;--warn:#B45309;--warnbg:#FEF3C7;
+  --err:#DC2626;--errbg:#FEE2E2;--info:#1D4ED8;--infobg:#DBEAFE;
+  --r:14px;--sh:0 1px 2px rgba(15,23,42,.06),0 8px 24px -14px rgba(15,23,42,.2);
+  --safeb:env(safe-area-inset-bottom,0px)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+svg{display:block}
+
+/* SHELL */
+.app{min-height:100dvh;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:50;background:var(--brand);color:#fff;
+  display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:56px;
+  padding-top:calc(10px + env(safe-area-inset-top,0px));
+}
+.topbar .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.logo{
+  width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.15);
+  display:grid;place-items:center;flex:none;
+}
+.logo svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.brand-t{min-width:0}
+.brand-t b{display:block;font-size:14px;line-height:1.15;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.brand-t small{display:block;font-size:11px;opacity:.8;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.top-actions{display:flex;gap:4px}
+.iconbtn{
+  width:38px;height:38px;border-radius:10px;border:0;
+  background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;
+  cursor:pointer;position:relative;
+}
+.iconbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+.iconbtn .dot-badge{
+  position:absolute;top:6px;right:6px;width:8px;height:8px;
+  border-radius:50%;background:#FBBF24;border:2px solid var(--brand)
+}
+.sidebar{display:none}
+.bottomnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:60;background:#fff;
+  border-top:1px solid var(--line);display:flex;
+  padding:6px 4px calc(6px + var(--safeb));
+  box-shadow:0 -4px 16px -8px rgba(15,23,42,.1);
+}
+.bn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 2px;border-radius:10px;color:var(--muted);font-size:10.5px;
+  font-weight:500;min-width:0;
+}
+.bn-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7}
+.bn-item.active{color:var(--brand);background:var(--brandsoft)}
+.bn-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.content{flex:1;padding:14px 14px calc(88px + var(--safeb));min-width:0}
+.wrap{max-width:900px;margin:0 auto}
+
+@media(min-width:768px){
+  .content{padding:18px 22px calc(92px + var(--safeb))}
+  .bottomnav{padding:8px 12px calc(8px + var(--safeb))}
+  .bn-item{font-size:11.5px}.bn-item svg{width:24px;height:24px}
+}
+@media(min-width:1200px){
+  .app{
+    display:grid;grid-template-columns:250px 1fr;
+    grid-template-rows:auto 1fr;
+    grid-template-areas:"top top" "side main";
+  }
+  .topbar{grid-area:top}
+  .sidebar{
+    grid-area:side;display:block;background:#fff;
+    border-right:1px solid var(--line);padding:14px 12px;
+    position:sticky;top:56px;height:calc(100dvh - 56px);overflow-y:auto;
+  }
+  .sidebar .nav-title{
+    font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted);font-weight:600;padding:12px 12px 6px;
+  }
+  .sidebar a{
+    display:flex;align-items:center;gap:12px;padding:10px 12px;
+    border-radius:10px;color:var(--ink);font-size:14px;font-weight:500;
+    margin-bottom:2px;
+  }
+  .sidebar a svg{width:20px;height:20px;stroke:currentColor;fill:none;
+    stroke-width:1.8;flex:none}
+  .sidebar a:hover{background:var(--bg)}
+  .sidebar a.active{background:var(--brandsoft);color:var(--brand);font-weight:600}
+  .content{grid-area:main;padding:22px 26px}
+  .bottomnav{display:none}
+  .wrap{max-width:940px}
+}
+
+/* COMMON */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 16px;border-radius:10px;border:1px solid transparent;
+  background:#fff;color:var(--ink);font-weight:600;font-size:14px;
+  cursor:pointer;line-height:1.2;text-align:center;transition:.15s;
+  min-height:44px;
+}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:hover{background:#0a4f48}
+.btn.ghost{background:#fff;border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn.sm{padding:8px 13px;font-size:13px;min-height:38px}
+.btn.xs{padding:6px 11px;font-size:12px;min-height:34px}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;
+  stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 9px;
+  border-radius:999px;font-size:11.5px;font-weight:600;background:#F1F5F9;
+  color:#334155;white-space:nowrap;
+}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.err{background:var(--errbg);color:var(--err)}
+.badge.info{background:var(--infobg);color:var(--info)}
+.badge.brand{background:var(--brandsoft);color:var(--brand)}
+.badge.neutral{background:#F1F5F9;color:#475569}
+.muted{color:var(--muted)}
+.sm{font-size:13px}
+.xs{font-size:11.5px}
+.link{color:var(--brand);font-weight:600;font-size:13.5px}
+
+/* HEAD */
+.page-head{margin-bottom:14px}
+.breadcrumb{
+  display:flex;align-items:center;gap:6px;font-size:12px;
+  color:var(--muted);margin-bottom:8px;flex-wrap:wrap;
+}
+.breadcrumb svg{width:12px;height:12px;stroke:currentColor;fill:none;
+  stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.page-head h1{font-size:22px;font-weight:700;margin:0 0 6px}
+.page-head p{color:var(--muted);font-size:13.5px;margin:0;max-width:640px}
+
+/* MINI STEPPER */
+.mini-stepper{
+  display:flex;gap:6px;overflow-x:auto;padding:4px 2px 10px;margin-bottom:8px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.mini-stepper::-webkit-scrollbar{display:none}
+.ms-item{
+  flex:none;display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:10px;background:#fff;
+  border:1px solid var(--line);font-size:12.5px;font-weight:600;
+  color:var(--muted);white-space:nowrap;
+}
+.ms-item .ms-n{
+  width:20px;height:20px;border-radius:50%;background:#F1F5F9;
+  display:grid;place-items:center;font-size:11px;font-weight:700;
+  color:var(--muted);flex:none;
+}
+.ms-item.done{color:var(--brand);border-color:#B7D8D3;background:var(--brandsoft)}
+.ms-item.done .ms-n{background:var(--brand);color:#fff}
+.ms-item.current{color:#fff;background:var(--brand);border-color:var(--brand)}
+.ms-item.current .ms-n{background:rgba(255,255,255,.2);color:#fff}
+.ms-item svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.4}
+
+/* INFO BANNERS */
+.info-banner{
+  display:flex;gap:12px;padding:13px 14px;border-radius:12px;
+  margin-bottom:14px;border:1px solid;
+}
+.info-banner svg{width:20px;height:20px;stroke:currentColor;fill:none;
+  stroke-width:1.9;flex:none;margin-top:1px}
+.info-banner p{margin:0;font-size:12.5px;line-height:1.55}
+.info-banner b{font-weight:700}
+.info-banner.info{background:var(--infobg);color:var(--info);border-color:#BFDBFE}
+.info-banner.info p{color:#1E3A8A}
+
+/* HERO */
+.verify-hero{
+  background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+  border-radius:16px;padding:20px;margin-bottom:14px;position:relative;
+  overflow:hidden;
+}
+.verify-hero::before{
+  content:"";position:absolute;top:-40px;right:-40px;width:200px;height:200px;
+  border-radius:50%;background:rgba(255,255,255,.06);
+}
+.vh-top{
+  display:flex;gap:14px;align-items:center;
+  position:relative;z-index:1;margin-bottom:14px;
+}
+.vh-ring{width:80px;height:80px;position:relative;flex:none}
+.vh-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.vh-ring .ring-bg{stroke:rgba(255,255,255,.2)}
+.vh-ring .ring-fg{stroke:#fff;stroke-linecap:round;transition:stroke-dashoffset .6s ease}
+.vh-ring .vh-pct{
+  position:absolute;inset:0;display:grid;place-content:center;
+  text-align:center;line-height:1;
+}
+.vh-ring .vh-pct b{font-size:20px;font-weight:700}
+.vh-ring .vh-pct small{font-size:9px;opacity:.85;
+  text-transform:uppercase;letter-spacing:.05em;display:block;margin-top:2px}
+.vh-meta{flex:1;min-width:0}
+.vh-meta b{display:block;font-size:17px;font-weight:700;margin-bottom:4px}
+.vh-meta small{display:block;font-size:12.5px;opacity:.9;line-height:1.45}
+.vh-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  position:relative;z-index:1;
+}
+.vh-stat{
+  background:rgba(255,255,255,.12);border-radius:11px;padding:10px 6px;
+  text-align:center;
+}
+.vh-stat b{display:block;font-size:19px;font-weight:700;line-height:1.1}
+.vh-stat small{font-size:10.5px;opacity:.85;display:block;
+  margin-top:3px;line-height:1.25}
+
+/* SOURCES */
+.sources-strip{
+  display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;margin-bottom:6px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.sources-strip::-webkit-scrollbar{display:none}
+.src-pill{
+  flex:none;display:inline-flex;align-items:center;gap:6px;
+  padding:7px 12px;border-radius:999px;background:#fff;
+  border:1px solid var(--line);font-size:12px;font-weight:600;
+  color:#334155;white-space:nowrap;
+}
+.src-pill svg{width:14px;height:14px;stroke:var(--brand);fill:none;
+  stroke-width:1.9;flex:none}
+.src-pill .src-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--ok);flex:none;
+}
+.src-pill.offline .src-dot{background:var(--muted)}
+.src-pill.offline{color:var(--muted)}
+
+/* ACTIONS */
+.action-row{
+  display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;
+}
+.action-row .btn{flex:1;min-width:140px}
+
+/* FILTERS */
+.filters{
+  display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:12px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.filters::-webkit-scrollbar{display:none}
+.filter{
+  flex:none;display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:999px;background:#fff;
+  border:1px solid var(--line);font-size:12.5px;font-weight:600;
+  color:var(--ink);cursor:pointer;transition:.15s;white-space:nowrap;
+  min-height:38px;
+}
+.filter svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.filter:hover{border-color:var(--brand);color:var(--brand)}
+.filter.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.filter .count{background:rgba(0,0,0,.08);padding:1px 6px;
+  border-radius:999px;font-size:11px;font-weight:700}
+.filter.active .count{background:rgba(255,255,255,.22)}
+
+/* CHECK LIST */
+.check-list{display:grid;gap:10px}
+.check{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;box-shadow:var(--sh);transition:.15s;
+}
+.check:hover{border-color:#CBD5E1}
+.check.verified{border-left:4px solid var(--ok)}
+.check.pending{border-left:4px solid #F59E0B}
+.check.mismatch{border-left:4px solid var(--err)}
+.check.notreq{border-left:4px solid var(--muted);opacity:.85}
+
+.check-main{
+  display:grid;grid-template-columns:44px 1fr;gap:13px;padding:14px;
+}
+.check-ic{
+  width:44px;height:44px;border-radius:11px;background:var(--okbg);
+  display:grid;place-items:center;flex:none;align-self:start;
+}
+.check-ic svg{width:22px;height:22px;fill:none;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round;color:var(--ok)}
+.check.pending .check-ic{background:var(--warnbg);color:var(--warn)}
+.check.mismatch .check-ic{background:var(--errbg);color:var(--err)}
+.check.notreq .check-ic{background:#F1F5F9;color:var(--muted)}
+
+.check-body{min-width:0}
+.check-head{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:10px;margin-bottom:6px;flex-wrap:wrap;
+}
+.check-head h3{font-size:14.5px;font-weight:700;margin:0;line-height:1.3}
+.check-head .badge{flex:none}
+.check-desc{font-size:12.5px;color:var(--muted);line-height:1.5;
+  margin:0 0 8px}
+.check-meta{display:flex;gap:6px;flex-wrap:wrap}
+.check-meta .m-item{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--bg);padding:3px 8px;border-radius:6px;
+  font-size:11px;font-weight:600;color:#475569;
+}
+.check-meta .m-item svg{width:11px;height:11px;stroke:currentColor;
+  fill:none;stroke-width:2.2}
+
+.check-alert{
+  display:flex;gap:10px;align-items:flex-start;padding:11px 14px;
+  background:var(--errbg);color:#7F1D1D;font-size:12.5px;
+  border-top:1px solid #FCA5A5;line-height:1.5;
+}
+.check-alert svg{width:16px;height:16px;stroke:currentColor;fill:none;
+  stroke-width:2;flex:none;margin-top:1px}
+.check-alert b{font-weight:700}
+.check-alert.pending{
+  background:var(--warnbg);color:#78350F;border-top-color:#FCD34D;
+}
+.check-alert.notreq{
+  background:#F1F5F9;color:#475569;border-top-color:var(--line);
+}
+
+.check-actions{
+  display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px;
+  border-top:1px solid var(--line);background:var(--bg);
+}
+
+/* MISMATCH PANEL */
+.mismatch-panel{
+  background:#fff;border:1.5px solid var(--err);border-radius:14px;
+  padding:16px;margin-bottom:14px;box-shadow:var(--sh);
+}
+.mismatch-panel .mp-head{
+  display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;
+}
+.mismatch-panel .mp-ic{
+  width:44px;height:44px;border-radius:11px;background:var(--errbg);
+  display:grid;place-items:center;flex:none;
+}
+.mismatch-panel .mp-ic svg{width:24px;height:24px;stroke:var(--err);
+  fill:none;stroke-width:1.9}
+.mismatch-panel .mp-h-t b{display:block;font-size:15px;font-weight:700;
+  color:#7F1D1D;margin-bottom:3px}
+.mismatch-panel .mp-h-t small{font-size:12.5px;color:var(--muted);
+  line-height:1.4;display:block}
+.mismatch-compare{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  margin-bottom:12px;
+}
+@media(max-width:480px){.mismatch-compare{grid-template-columns:1fr}}
+.mismatch-compare>div{
+  padding:11px 13px;border-radius:10px;border:1px solid var(--line);
+  background:var(--bg);
+}
+.mismatch-compare .mc-label{
+  font-size:11px;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--muted);font-weight:700;margin-bottom:4px;
+  display:flex;align-items:center;gap:6px;
+}
+.mismatch-compare .mc-label svg{width:12px;height:12px;
+  stroke:currentColor;fill:none;stroke-width:2.2}
+.mismatch-compare b{font-size:14px;font-weight:700;color:var(--ink)}
+.mismatch-compare .mc-diff{color:var(--err)}
+.mp-actions{display:flex;gap:10px;flex-wrap:wrap}
+.mp-actions .btn{flex:1;min-width:140px}
+
+/* MANUAL REVIEW */
+.manual-card{
+  background:#fff;border:1.5px solid #BFDBFE;border-radius:14px;
+  padding:16px;margin-bottom:14px;box-shadow:var(--sh);
+}
+.manual-card .mr-h{
+  display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;
+}
+.manual-card .mr-ic{
+  width:44px;height:44px;border-radius:11px;background:var(--infobg);
+  display:grid;place-items:center;flex:none;
+}
+.manual-card .mr-ic svg{width:22px;height:22px;stroke:var(--info);
+  fill:none;stroke-width:1.9}
+.manual-card .mr-h b{display:block;font-size:14.5px;font-weight:700;
+  color:#1E3A8A;margin-bottom:3px}
+.manual-card .mr-h small{font-size:12.5px;color:var(--muted);
+  line-height:1.4;display:block}
+
+/* SAVE BAR */
+.save-bar{
+  position:sticky;bottom:calc(78px + var(--safeb));
+  display:flex;gap:10px;flex-wrap:wrap;
+  padding:12px;background:#fff;border:1px solid var(--line);
+  border-radius:14px;box-shadow:0 -6px 20px -12px rgba(15,23,42,.25);
+  z-index:40;margin-bottom:14px;
+}
+.save-bar .btn{flex:1;min-width:120px}
+@media(min-width:1200px){.save-bar{bottom:16px}}
+
+/* CARD */
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:16px;margin-bottom:14px;box-shadow:var(--sh);
+}
+.card h3{
+  font-size:15px;font-weight:700;margin:0 0 12px;
+  display:flex;align-items:center;gap:9px;
+}
+.card h3 svg{width:18px;height:18px;stroke:var(--brand);fill:none;
+  stroke-width:1.9}
+.card p{font-size:13px;color:var(--muted);line-height:1.55;margin:0}
+
+/* RUN OVERLAY */
+.run-overlay{
+  position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:400;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.run-overlay.open{display:flex}
+.run-modal{
+  background:#fff;border-radius:16px;padding:22px;max-width:400px;
+  width:100%;box-shadow:0 20px 50px -20px rgba(0,0,0,.4);
+  animation:pop .25s ease;
+}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:none;opacity:1}}
+.run-modal .rm-head{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.run-modal .rm-ic{
+  width:48px;height:48px;border-radius:14px;background:var(--brandsoft);
+  display:grid;place-items:center;flex:none;
+}
+.run-modal .rm-ic svg{width:26px;height:26px;stroke:var(--brand);
+  fill:none;stroke-width:1.9}
+.run-modal h3{font-size:16px;margin:0 0 3px;font-weight:700}
+.run-modal .rm-sub{font-size:12.5px;color:var(--muted);margin:0}
+.run-modal .rm-bar{
+  height:6px;border-radius:99px;background:#E2E8F0;overflow:hidden;
+  margin:14px 0 12px;
+}
+.run-modal .rm-bar>span{
+  display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--brand),var(--brand2));
+  border-radius:99px;transition:width .3s;
+}
+.run-modal .rm-steps{
+  list-style:none;padding:0;margin:0;
+  font-size:12.5px;color:var(--muted);
+  max-height:200px;overflow-y:auto;
+}
+.run-modal .rm-steps li{
+  display:flex;align-items:center;gap:9px;padding:5px 0;
+}
+.run-modal .rm-steps .rm-chk{
+  width:18px;height:18px;border-radius:50%;border:2px solid var(--line);
+  display:grid;place-items:center;flex:none;transition:.2s;
+}
+.run-modal .rm-steps .rm-chk svg{width:11px;height:11px;stroke:transparent;
+  fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.run-modal .rm-steps li.done .rm-chk{background:var(--ok);border-color:var(--ok)}
+.run-modal .rm-steps li.done .rm-chk svg{stroke:#fff}
+.run-modal .rm-steps li.done{color:var(--ink)}
+
+/* TOAST */
+.toast-wrap{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(88px + var(--safeb));z-index:500;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none;
+  align-items:center;width:calc(100% - 28px);max-width:420px;
+}
+@media(min-width:1200px){.toast-wrap{bottom:24px}}
+.toast{
+  background:#0F172A;color:#fff;padding:11px 16px;border-radius:10px;
+  font-size:13.5px;font-weight:500;
+  box-shadow:0 10px 30px -10px rgba(0,0,0,.35);
+  transition:opacity .3s;text-align:center;max-width:100%;
+}
+.toast.ok{background:var(--ok)}
+.toast.err{background:var(--err)}
+.toast.warn{background:var(--warn)}
+
+/* JAGO FAB */
+.jago-fab{
+  position:fixed;right:14px;bottom:calc(78px + var(--safeb));
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+  display:grid;place-items:center;
+  box-shadow:0 10px 24px -8px rgba(11,94,85,.6);
+  z-index:70;border:0;cursor:pointer;
+}
+.jago-fab svg{width:26px;height:26px;stroke:currentColor;fill:none;
+  stroke-width:1.8}
+@media(min-width:1200px){
+  .jago-fab{bottom:26px;right:26px;width:58px;height:58px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar" id="topbar"></header>
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content"><div class="wrap" id="page"></div></main>
+  <nav class="bottomnav" id="bottomnav"></nav>
+</div>
+<div class="run-overlay" id="runOverlay">
+  <div class="run-modal">
+    <div class="rm-head">
+      <span class="rm-ic" id="rmIcon"></span>
+      <div>
+        <h3 id="rmTitle">Running verification</h3>
+        <p class="rm-sub" id="rmSub">Connecting to mock integrated sources.</p>
+      </div>
+    </div>
+    <div class="rm-bar"><span id="rmBar"></span></div>
+    <ul class="rm-steps" id="rmSteps"></ul>
+  </div>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* =========================================================
+   ICONS - all paths kept short and balanced
+   ========================================================= */
+var ICONS = {
+  dashboard:'<path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>',
+  schemes:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16"/>',
+  apps:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+  docs:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  pay:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+  jago:'<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 15c1.5 1.2 4.5 1.2 6 0"/>',
+  notif:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+  check:'<path d="M5 13l4 4L19 7"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>',
+  chevL:'<path d="M15 6l-6 6 6 6"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  close:'<path d="M18 6L6 18M6 6l12 12"/>',
+  book:'<path d="M4 19.5V5a2 2 0 0 1 2-2h11a1 1 0 0 1 1 1v15"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H18"/><path d="M20 5v14"/>',
+  grad:'<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/>',
+  star:'<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/>',
+  bank:'<path d="M3 10l9-6 9 6"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><path d="M12 17h.01"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  refresh:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>',
+  upload:'<path d="M12 3v12M7 8l5-5 5 5"/><path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"/>',
+  sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+  arrowR:'<path d="M5 12h14M13 5l7 7-7 7"/>',
+  save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
+  database:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/>',
+  eye:'<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>',
+  file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h6"/>',
+  shieldC:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  scan:'<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M3 12h18"/>'
+};
+function icon(n, cls){
+  var p = ICONS[n] || ICONS.info;
+  return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
+}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+function toast(msg, type){
+  var w = document.getElementById('toastWrap');
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  w.appendChild(t);
+  setTimeout(function(){
+    t.style.opacity = '0';
+    setTimeout(function(){ t.remove(); }, 320);
+  }, 2400);
+}
+function fmtNow(){
+  var d = new Date();
+  return d.toLocaleString('en-GB', {
+    day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
+  });
+}
+
+/* =========================================================
+   STATE
+   ========================================================= */
+var KEY = 'tso_state_v1';
+function S(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){
+      var p = JSON.parse(raw);
+      if(p && p.profile) return p;
+    }
+  }catch(e){}
+  return null;
+}
+
+/* =========================================================
+   SHELL
+   ========================================================= */
+var NAV = [
+  {id:'dashboard',   label:'Dashboard',    icon:'dashboard', href:'dashboard.html'},
+  {id:'schemes',     label:'Schemes',      icon:'schemes',   href:'schemes.html'},
+  {id:'applications',label:'Applications', icon:'apps',      href:'my-applications.html'},
+  {id:'documents',   label:'Documents',    icon:'docs',      href:'document-wallet.html'},
+  {id:'payments',    label:'Payments',     icon:'pay',       href:'payment-status.html'},
+  {id:'jago',        label:'JAGO',         icon:'jago',      href:'jago.html'},
+  {id:'notifications',label:'Notifications',icon:'notif',    href:'notifications.html'},
+  {id:'profile',     label:'Profile',      icon:'profile',   href:'profile.html'}
+];
+var MOBILE_NAV = ['dashboard','schemes','applications','jago','profile'];
+
+function mountShell(active, crumb){
+  var st = S();
+  var unread = st ? st.notifications.filter(function(n){ return !n.read; }).length : 0;
+
+  document.getElementById('topbar').innerHTML =
+    '<div class="brand">' +
+      '<span class="logo">' + icon('shield') + '</span>' +
+      '<span class="brand-t">' +
+        '<b>Tribal Scholarship One</b>' +
+        '<small>' + esc(crumb || 'Unified Scholarship Platform') + '</small>' +
+      '</span>' +
+    '</div>' +
+    '<div class="top-actions">' +
+      '<a class="iconbtn" href="notifications.html" aria-label="Notifications">' +
+        icon('notif') + (unread ? '<span class="dot-badge"></span>' : '') +
+      '</a>' +
+      '<a class="iconbtn" href="profile.html" aria-label="Profile">' + icon('user') + '</a>' +
+    '</div>';
+
+  document.getElementById('sidebar').innerHTML =
+    '<div class="nav-title">Menu</div>' +
+    NAV.map(function(n){
+      return '<a href="' + n.href + '" class="' + (n.id === active ? 'active' : '') + '">' +
+        icon(n.icon) + '<span>' + n.label + '</span>' +
+      '</a>';
+    }).join('') +
+    '<div class="nav-title">Support</div>' +
+    '<a href="help.html">' + icon('help') + '<span>Help</span></a>' +
+    '<a href="settings.html">' + icon('settings') + '<span>Settings</span></a>' +
+    '<a href="index.html" onclick="localStorage.removeItem(\'tso_state_v1\')">' +
+      icon('logout') + '<span>Logout</span></a>';
+
+  document.getElementById('bottomnav').innerHTML = MOBILE_NAV.map(function(id){
+    var n = NAV.find(function(x){ return x.id === id; });
+    return '<a class="bn-item ' + (id === active ? 'active' : '') + '" href="' + n.href + '">' +
+      icon(n.icon) + '<span>' + n.label + '</span>' +
+    '</a>';
+  }).join('');
+
+  if(!document.querySelector('.jago-fab')){
+    var f = document.createElement('button');
+    f.className = 'jago-fab';
+    f.setAttribute('aria-label','Open JAGO assistant');
+    f.innerHTML = icon('jago');
+    f.onclick = function(){ location.href = 'jago.html'; };
+    document.body.appendChild(f);
+  }
+}
+
+/* =========================================================
+   PAGE DATA
+   ========================================================= */
+var s = S();
+if(!s || !s.profile){ location.href = 'index.html'; }
+
+var params = new URLSearchParams(location.search);
+var schemeId = params.get('scheme') || 'post-matric';
+if(!s.schemes.find(function(x){ return x.id === schemeId; })) schemeId = 'post-matric';
+var scheme = s.schemes.find(function(x){ return x.id === schemeId; });
+
+mountShell('documents', 'Home / Verification');
+
+/* =========================================================
+   DRAFT
+   ========================================================= */
+var draftKey = 'tso_draft_' + schemeId;
+
+function blankDraft(){
+  return {
+    schemeId: schemeId,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    personal: {},
+    academic: {},
+    documents: {uploaded: []},
+    verification: {checked: false, pct: 0, lastChecked: ''},
+    completed: {personal: false, academic: false, documents: false, verification: false}
+  };
+}
+var draft;
+try{
+  var rawDraft = localStorage.getItem(draftKey);
+  draft = rawDraft ? JSON.parse(rawDraft) : blankDraft();
+}catch(e){ draft = blankDraft(); }
+if(!draft.verification) draft.verification = {checked: false, pct: 0, lastChecked: ''};
+
+/* =========================================================
+   SOURCES + CHECK CATALOGUE
+   ========================================================= */
+var SOURCES = (s.verification && s.verification.sources) || [
+  'DigiLocker','APAAR','UDISE+','State e-District','UIDAI','Institution DB','UGC/NTA'
+];
+var SOURCE_META = {
+  'DigiLocker':       {icon:'link',     live:true, label:'DigiLocker'},
+  'APAAR':            {icon:'database', live:true, label:'APAAR'},
+  'UDISE+':           {icon:'database', live:true, label:'UDISE+'},
+  'State e-District': {icon:'shieldC',  live:true, label:'State e-District'},
+  'UIDAI':            {icon:'shieldC',  live:true, label:'UIDAI'},
+  'Institution DB':   {icon:'grad',     live:true, label:'Institution DB'},
+  'UGC/NTA':          {icon:'star',     live:true, label:'UGC/NTA'}
+};
+
+var CHECK_CATALOGUE = [
+  {id:'identity',    label:'Identity (Aadhaar)',     source:'UIDAI',           icon:'shieldC',
+   desc:'Verifies your identity using Aadhaar-linked details.'},
+  {id:'st',          label:'ST Certificate',         source:'DigiLocker',      icon:'shieldC',
+   desc:'Verifies your Scheduled Tribe certificate from the issuing authority.'},
+  {id:'pvtg',        label:'PVTG Status',            source:'State e-District', icon:'shieldC',
+   desc:'Confirms whether you belong to a Particularly Vulnerable Tribal Group.'},
+  {id:'income',      label:'Income Certificate',     source:'State e-District', icon:'bank',
+   desc:'Matches your declared family income with the state income certificate.'},
+  {id:'academic',    label:'Academic Record',        source:'Institution DB',  icon:'book',
+   desc:'Checks your last exam marks against your institution record.'},
+  {id:'institution', label:'Institution Verification', source:'Institution DB', icon:'grad',
+   desc:'Confirms your enrollment and bonafide from your institution.'},
+  {id:'domicile',    label:'Domicile Certificate',   source:'State e-District', icon:'shieldC',
+   desc:'Verifies your state of permanent residence.'},
+  {id:'disability',  label:'Disability Certificate', source:'State e-District', icon:'shieldC',
+   desc:'Verified only if you have declared a disability.'},
+  {id:'netjr',       label:'NET / JRF',              source:'UGC/NTA',          icon:'star',
+   desc:'Relevant for the National Fellowship for ST students.'}
+];
+
+function deriveCheckState(chk){
+  var p = s.profile;
+  var personal = draft.personal || {};
+  var academic = draft.academic || {};
+  var documents = s.documents || [];
+
+  if(chk.id === 'disability'){
+    if(!p.disability && !personal.disability) return {status:'Not Required', note:'Not required for your profile.'};
+  }
+  if(chk.id === 'pvtg'){
+    if(!p.pvtg && !personal.pvtg) return {status:'Not Required', note:'Not required - you have not declared PVTG status.'};
+  }
+  if(chk.id === 'netjr'){
+    var level = academic.courseLevel || '';
+    if(!/MPhil|PhD/i.test(level) && !/Fellowship/i.test(scheme.name))
+      return {status:'Not Required', note:'Relevant only for MPhil/PhD (NFST) applicants.'};
+  }
+
+  var doc = documents.find(function(d){
+    if(chk.id === 'st') return /ST Certificate/i.test(d.type);
+    if(chk.id === 'pvtg') return /PVTG Certificate/i.test(d.type);
+    if(chk.id === 'income') return /Income Certificate/i.test(d.type);
+    if(chk.id === 'domicile') return /Domicile Certificate/i.test(d.type);
+    if(chk.id === 'academic') return /Marksheet/i.test(d.type);
+    if(chk.id === 'institution') return /Institution Certificate/i.test(d.type);
+    if(chk.id === 'disability') return /Disability Certificate/i.test(d.type);
+    if(chk.id === 'netjr') return /NET\/JRF/i.test(d.type);
+    if(chk.id === 'identity') return /Aadhaar/i.test(d.type);
+    return false;
+  });
+
+  if(doc){
+    if(doc.status === 'Verified') return {status:'Verified', note:'Verified via ' + (doc.source || chk.source) + ' (mock).', ts:'Verified ' + (doc.verifiedOn || '-')};
+    if(doc.status === 'Pending')  return {status:'Pending',  note:'Verification pending with ' + (doc.source || chk.source) + '.', ts:'Uploaded ' + (doc.uploaded || '-')};
+    if(doc.status === 'Rejected') return {status:'Mismatch', note:'Document was rejected. Please upload a valid copy.', ts:'Rejected ' + (doc.uploaded || '-')};
+    if(doc.status === 'Expired')  return {status:'Mismatch', note:'Document expired. Please upload a fresh copy.', ts:'Expired ' + (doc.uploaded || '-')};
+    if(doc.status === 'Uploaded') return {status:'Pending',  note:'Uploaded and awaiting verification.', ts:'Uploaded ' + (doc.uploaded || '-')};
+  }
+
+  if(chk.id === 'identity' && p.stCert) return {status:'Verified', note:'Verified via UIDAI (mock).', ts:'Verified today'};
+  if(chk.id === 'st' && p.stCert)       return {status:'Verified', note:'Verified via DigiLocker (mock).', ts:'Verified today'};
+  if(chk.id === 'income'){
+    if(p.incomeCert) return {status:'Mismatch', note:'Income certificate mismatch detected. Manual review required.', ts:'Checked today'};
+    return {status:'Pending', note:'Income certificate not uploaded.', ts:'Awaiting upload'};
+  }
+  if(chk.id === 'academic' && p.marks)       return {status:'Verified', note:'Verified via Institution DB (mock).', ts:'Verified today'};
+  if(chk.id === 'institution' && p.institution) return {status:'Verified', note:'Verified via Institution DB (mock).', ts:'Verified today'};
+  if(chk.id === 'domicile') return {status:'Pending', note:'Domicile verification in progress at State e-District (mock).', ts:'Submitted today'};
+
+  return {status:'Pending', note:'Awaiting verification.', ts:'Not yet checked'};
+}
+
+function buildChecks(){
+  return CHECK_CATALOGUE.map(function(chk){
+    var st = deriveCheckState(chk);
+    return Object.assign({}, chk, st);
+  });
+}
+
+var checks = buildChecks();
+
+function metrics(){
+  var total = checks.filter(function(c){ return c.status !== 'Not Required'; }).length;
+  var verified = checks.filter(function(c){ return c.status === 'Verified'; }).length;
+  var pending = checks.filter(function(c){ return c.status === 'Pending'; }).length;
+  var mismatch = checks.filter(function(c){ return c.status === 'Mismatch'; }).length;
+  var pct = total ? Math.round(verified / total * 100) : 0;
+  return {total: total, verified: verified, pending: pending, mismatch: mismatch, pct: pct};
+}
+
+function lastChecked(){
+  if(draft.verification && draft.verification.lastChecked) return draft.verification.lastChecked;
+  return (s.verification && s.verification.lastChecked) || '2 days ago';
+}
+
+/* =========================================================
+   RENDER HELPERS
+   ========================================================= */
+var page = document.getElementById('page');
+var currentFilter = 'all';
+
+function statusMeta(st){
+  var m = {
+    'Verified':     {cls:'ok',      label:'Verified',     icon:'check',  check:'verified'},
+    'Pending':      {cls:'warn',    label:'Pending',      icon:'clock',  check:'pending'},
+    'Mismatch':     {cls:'err',     label:'Mismatch',     icon:'alert',  check:'mismatch'},
+    'Not Required': {cls:'neutral', label:'Not required', icon:'info',   check:'notreq'}
+  };
+  return m[st] || m['Pending'];
+}
+
+function checkMatchesFilter(c, f){
+  if(f === 'all') return true;
+  if(f === 'verified') return c.status === 'Verified';
+  if(f === 'pending')  return c.status === 'Pending';
+  if(f === 'mismatch') return c.status === 'Mismatch';
+  return true;
+}
+
+function checkCard(c){
+  var sm = statusMeta(c.status);
+  var meta = SOURCE_META[c.source] || {icon:'database', label:c.source};
+
+  var chips = [
+    '<span class="m-item">' + icon('database') + ' ' + esc(meta.label) + ' (mock)</span>'
+  ];
+  if(c.ts){
+    chips.push('<span class="m-item">' + icon('calendar') + ' ' + esc(c.ts) + '</span>');
+  }
+
+  var alertHtml = '';
+  if(c.status === 'Mismatch'){
+    alertHtml = '<div class="check-alert">' + icon('alert') +
+      '<span><b>Mismatch detected.</b> ' + esc(c.note) + '</span></div>';
+  } else if(c.status === 'Pending'){
+    alertHtml = '<div class="check-alert pending">' + icon('clock') +
+      '<span>' + esc(c.note) + '</span></div>';
+  } else if(c.status === 'Not Required'){
+    alertHtml = '<div class="check-alert notreq">' + icon('info') +
+      '<span>' + esc(c.note) + '</span></div>';
+  }
+
+  var actions = [];
+  actions.push(
+    '<button class="btn ghost xs" type="button" data-check-view="' + c.id + '">' +
+      icon('eye') + ' Details' +
+    '</button>'
+  );
+  if(c.status === 'Mismatch'){
+    var reuploadDoc = c.label.indexOf('Income') >= 0 ? 'Income Certificate' : c.label;
+    actions.push(
+      '<a class="btn primary xs" href="document-upload.html?scheme=' + schemeId +
+        '&doc=' + encodeURIComponent(reuploadDoc) + '&replace=1">' +
+        icon('upload') + ' Re-upload' +
+      '</a>'
+    );
+    actions.push(
+      '<button class="btn ghost xs" type="button" data-check-review="' + c.id + '">' +
+        icon('shield') + ' Request Review' +
+      '</button>'
+    );
+  } else if(c.status === 'Pending'){
+    actions.push(
+      '<button class="btn ghost xs" type="button" data-check-verify="' + c.id + '">' +
+        icon('shield') + ' Check now' +
+      '</button>'
+    );
+  } else if(c.status === 'Verified'){
+    actions.push(
+      '<a class="btn ghost xs" href="document-wallet.html?scheme=' + schemeId + '">' +
+        icon('docs') + ' View Document' +
+      '</a>'
+    );
+  }
+
+  return (
+    '<article class="check ' + sm.check + '" data-check="' + c.id + '" data-status="' + c.status + '">' +
+      '<div class="check-main">' +
+        '<div class="check-ic">' + icon(sm.icon) + '</div>' +
+        '<div class="check-body">' +
+          '<div class="check-head">' +
+            '<h3>' + esc(c.label) + '</h3>' +
+            '<span class="badge ' + sm.cls + '">' + icon(sm.icon) + ' ' + esc(sm.label) + '</span>' +
+          '</div>' +
+          '<p class="check-desc">' + esc(c.desc) + '</p>' +
+          '<div class="check-meta">' + chips.join('') + '</div>' +
+        '</div>' +
+      '</div>' +
+      alertHtml +
+      '<div class="check-actions">' + actions.join('') + '</div>' +
+    '</article>'
+  );
+}
+
+function sourcesStrip(){
+  return SOURCES.map(function(src){
+    var m = SOURCE_META[src] || {icon:'database', label:src, live:true};
+    return (
+      '<span class="src-pill ' + (m.live ? '' : 'offline') + '">' +
+        icon(m.icon) + ' ' + esc(m.label) +
+        '<span class="src-dot"></span>' +
+      '</span>'
+    );
+  }).join('');
+}
+
+function renderHero(){
+  var m = metrics();
+  var dash = 2 * Math.PI * 32;
+  var offset = dash - (m.pct / 100) * dash;
+
+  return (
+    '<section class="verify-hero">' +
+      '<div class="vh-top">' +
+        '<div class="vh-ring">' +
+          '<svg viewBox="0 0 80 80">' +
+            '<circle class="ring-bg" cx="40" cy="40" r="32" fill="none" stroke-width="7"/>' +
+            '<circle class="ring-fg" cx="40" cy="40" r="32" fill="none" stroke-width="7" ' +
+              'stroke-dasharray="' + dash + '" stroke-dashoffset="' + offset + '"/>' +
+          '</svg>' +
+          '<div class="vh-pct"><b>' + m.pct + '%</b><small>Verified</small></div>' +
+        '</div>' +
+        '<div class="vh-meta">' +
+          '<b>Unified verification</b>' +
+          '<small>Last checked <b>' + esc(lastChecked()) + '</b>. Sources shown are mock integrations.</small>' +
+        '</div>' +
+      '</div>' +
+      '<div class="vh-stats">' +
+        '<div class="vh-stat"><b>' + m.verified + '</b><small>Verified</small></div>' +
+        '<div class="vh-stat"><b>' + m.pending + '</b><small>Pending</small></div>' +
+        '<div class="vh-stat"><b>' + m.mismatch + '</b><small>Mismatch</small></div>' +
+      '</div>' +
+    '</section>'
+  );
+}
+
+function renderMismatchPanel(){
+  var mm = checks.filter(function(c){ return c.status === 'Mismatch'; });
+  if(!mm.length) return '';
+
+  var first = mm[0];
+  if(/income/i.test(first.id)){
+    var declared = Number(s.profile.income) || 180000;
+    var stateVal = declared + 40000;
+    return (
+      '<section class="mismatch-panel">' +
+        '<div class="mp-head">' +
+          '<span class="mp-ic">' + icon('alert') + '</span>' +
+          '<div class="mp-h-t">' +
+            '<b>Income certificate mismatch detected</b>' +
+            '<small>A difference was found between the income you declared and the income on record at the state e-District system.</small>' +
+          '</div>' +
+        '</div>' +
+        '<div class="mismatch-compare">' +
+          '<div>' +
+            '<div class="mc-label">' + icon('user') + ' Declared by you</div>' +
+            '<b>Rs ' + declared.toLocaleString('en-IN') + '</b>' +
+          '</div>' +
+          '<div>' +
+            '<div class="mc-label mc-diff">' + icon('database') + ' State record (mock)</div>' +
+            '<b class="mc-diff">Rs ' + stateVal.toLocaleString('en-IN') + '</b>' +
+          '</div>' +
+        '</div>' +
+        '<div class="mp-actions">' +
+          '<a class="btn primary" href="document-upload.html?scheme=' + schemeId +
+            '&doc=' + encodeURIComponent('Income Certificate') + '&replace=1">' +
+            icon('upload') + ' Re-upload Income Certificate' +
+          '</a>' +
+          '<button class="btn ghost" type="button" id="requestReviewBtn">' +
+            icon('shield') + ' Request Manual Review' +
+          '</button>' +
+        '</div>' +
+      '</section>'
+    );
+  }
+
+  return (
+    '<section class="mismatch-panel">' +
+      '<div class="mp-head">' +
+        '<span class="mp-ic">' + icon('alert') + '</span>' +
+        '<div class="mp-h-t">' +
+          '<b>' + esc(first.label) + ' mismatch</b>' +
+          '<small>' + esc(first.note) + '</small>' +
+        '</div>' +
+      '</div>' +
+      '<div class="mp-actions">' +
+        '<button class="btn primary" type="button" id="requestReviewBtn">' +
+          icon('shield') + ' Request Manual Review' +
+        '</button>' +
+        '<a class="btn ghost" href="document-wallet.html?scheme=' + schemeId + '">' +
+          icon('docs') + ' Open Document Wallet' +
+        '</a>' +
+      '</div>' +
+    '</section>'
+  );
+}
+
+function renderManualCard(){
+  var hasItems = checks.some(function(c){
+    return c.status === 'Pending' || c.status === 'Mismatch';
+  });
+  if(!hasItems) return '';
+
+  return (
+    '<section class="manual-card">' +
+      '<div class="mr-h">' +
+        '<span class="mr-ic">' + icon('info') + '</span>' +
+        '<div>' +
+          '<b>Manual review</b>' +
+          '<small>Some verifications require manual review by a verification officer. You can continue with your application; pending items will be resolved during processing.</small>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
+        '<button class="btn ghost sm" type="button" id="viewManualBtn">' +
+          icon('shield') + ' Learn more' +
+        '</button>' +
+        '<a class="btn ghost sm" href="jago.html">' +
+          icon('jago') + ' Ask JAGO' +
+        '</a>' +
+      '</div>' +
+    '</section>'
+  );
+}
+
+function renderChecksList(){
+  var filtered = checks.filter(function(c){ return checkMatchesFilter(c, currentFilter); });
+  if(!filtered.length){
+    return '<div class="card" style="text-align:center"><p class="muted sm">No checks in this view.</p></div>';
+  }
+  return '<div class="check-list">' + filtered.map(checkCard).join('') + '</div>';
+}
+
+function render(){
+  var countAll = checks.length;
+  var countVerified = checks.filter(function(c){ return c.status === 'Verified'; }).length;
+  var countPending = checks.filter(function(c){ return c.status === 'Pending'; }).length;
+  var countMismatch = checks.filter(function(c){ return c.status === 'Mismatch'; }).length;
+
+  page.innerHTML =
+    '<div class="page-head">' +
+      '<nav class="breadcrumb" aria-label="Breadcrumb">' +
+        '<a href="dashboard.html">Home</a>' + icon('chev') +
+        '<a href="application.html?scheme=' + schemeId + '">Application</a>' + icon('chev') +
+        '<span>Verification</span>' +
+      '</nav>' +
+      '<h1>Verification</h1>' +
+      '<p>Step 4 of 5 - Unified verification across identity, category, income, academic and institution records.</p>' +
+    '</div>' +
+
+    '<div class="mini-stepper" role="tablist" aria-label="Application steps">' +
+      '<span class="ms-item done"><span class="ms-n">' + icon('check') + '</span> Personal</span>' +
+      '<span class="ms-item done"><span class="ms-n">' + icon('check') + '</span> Academic</span>' +
+      '<span class="ms-item done"><span class="ms-n">' + icon('check') + '</span> Documents</span>' +
+      '<span class="ms-item current"><span class="ms-n">4</span> Verification</span>' +
+      '<span class="ms-item"><span class="ms-n">5</span> Review</span>' +
+    '</div>' +
+
+    renderHero() +
+
+    '<div class="info-banner info">' +
+      icon('info') +
+      '<p>All sources shown here are <b>mock integrations</b> for the prototype. In production, these would connect to DigiLocker, APAAR, UDISE+, UIDAI, State e-District, Institution DB and UGC/NTA with your consent.</p>' +
+    '</div>' +
+
+    '<div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px">Connected sources (mock)</div>' +
+    '<div class="sources-strip" aria-label="Integrated sources">' + sourcesStrip() + '</div>' +
+
+    '<div class="action-row">' +
+      '<button class="btn primary" type="button" id="runBtn">' +
+        icon('scan') + ' Run Verification' +
+      '</button>' +
+      '<a class="btn ghost" href="document-wallet.html?scheme=' + schemeId + '">' +
+        icon('docs') + ' Open Document Wallet' +
+      '</a>' +
+    '</div>' +
+
+    renderMismatchPanel() +
+
+    '<div class="filters" role="tablist" aria-label="Filter checks">' +
+      '<button class="filter ' + (currentFilter === 'all' ? 'active' : '') + '" data-filter="all" type="button">' +
+        icon('shield') + ' All <span class="count">' + countAll + '</span>' +
+      '</button>' +
+      '<button class="filter ' + (currentFilter === 'verified' ? 'active' : '') + '" data-filter="verified" type="button">' +
+        icon('check') + ' Verified <span class="count">' + countVerified + '</span>' +
+      '</button>' +
+      '<button class="filter ' + (currentFilter === 'pending' ? 'active' : '') + '" data-filter="pending" type="button">' +
+        icon('clock') + ' Pending <span class="count">' + countPending + '</span>' +
+      '</button>' +
+      '<button class="filter ' + (currentFilter === 'mismatch' ? 'active' : '') + '" data-filter="mismatch" type="button">' +
+        icon('alert') + ' Mismatch <span class="count">' + countMismatch + '</span>' +
+      '</button>' +
+    '</div>' +
+
+    '<div id="checkListContainer">' + renderChecksList() + '</div>' +
+
+    renderManualCard() +
+
+    '<div class="save-bar">' +
+      '<button class="btn ghost" type="button" id="backBtn">' + icon('chevL') + ' Back</button>' +
+      '<button class="btn ghost" type="button" id="saveBtn">' + icon('save') + ' Save Draft</button>' +
+      '<button class="btn primary" type="button" id="nextBtn">Continue to Review ' + icon('arrowR') + '</button>' +
+    '</div>' +
+
+    '<section class="card">' +
+      '<h3>' + icon('help') + ' Need help?</h3>' +
+      '<p style="margin-bottom:12px">JAGO can explain what each verification means and what to do if something is pending or mismatched.</p>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
+        '<a class="btn ghost sm" href="jago.html">' + icon('jago') + ' Ask JAGO</a>' +
+        '<a class="btn ghost sm" href="help.html">' + icon('help') + ' View Help</a>' +
+      '</div>' +
+    '</section>';
+
+  bindAll();
+}
+
+/* =========================================================
+   BINDINGS
+   ========================================================= */
+function bindAll(){
+  document.querySelectorAll('.filter').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      currentFilter = btn.dataset.filter;
+      document.querySelectorAll('.filter').forEach(function(b){
+        b.classList.toggle('active', b === btn);
+      });
+      document.getElementById('checkListContainer').innerHTML = renderChecksList();
+      bindAll();
+    });
+  });
+
+  document.querySelectorAll('[data-check-view]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var id = btn.dataset.checkView;
+      var c = checks.find(function(x){ return x.id === id; });
+      if(!c) return;
+      var sm = statusMeta(c.status);
+      var meta = SOURCE_META[c.source] || {label: c.source};
+      toast(c.label + ' - ' + sm.label + ' - Source: ' + meta.label + ' (mock)', 'ok');
+    });
+  });
+
+  document.querySelectorAll('[data-check-verify]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      runSingleCheck(btn.dataset.checkVerify, btn);
+    });
+  });
+
+  document.querySelectorAll('[data-check-review]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      requestReview(btn.dataset.checkReview, btn);
+    });
+  });
+
+  var runBtn = document.getElementById('runBtn');
+  if(runBtn) runBtn.addEventListener('click', runFullVerification);
+
+  var requestReviewBtn = document.getElementById('requestReviewBtn');
+  if(requestReviewBtn){
+    requestReviewBtn.addEventListener('click', function(){
+      var mm = checks.find(function(c){ return c.status === 'Mismatch'; });
+      if(mm){
+        mm.status = 'Pending';
+        mm.note = 'Manual review requested. Awaiting officer response.';
+        mm.ts = 'Review requested just now';
+        draft.verification.lastChecked = fmtNow();
+        try{ localStorage.setItem(draftKey, JSON.stringify(draft)); }catch(e){}
+        render();
+        toast('Manual review requested', 'ok');
+      }
+    });
+  }
+
+  var viewManualBtn = document.getElementById('viewManualBtn');
+  if(viewManualBtn){
+    viewManualBtn.addEventListener('click', function(){
+      toast('A verification officer reviews pending or mismatched items during application processing.', 'ok');
+    });
+  }
+
+  var saveBtn = document.getElementById('saveBtn');
+  if(saveBtn){
+    saveBtn.addEventListener('click', function(){
+      draft.verification.checked = true;
+      draft.verification.pct = metrics().pct;
+      draft.verification.lastChecked = fmtNow();
+      draft.updatedAt = Date.now();
+      try{ localStorage.setItem(draftKey, JSON.stringify(draft)); }catch(e){}
+      toast('Draft saved', 'ok');
+    });
+  }
+
+  var backBtn = document.getElementById('backBtn');
+  if(backBtn){
+    backBtn.addEventListener('click', function(){
+      draft.verification.checked = true;
+      draft.verification.pct = metrics().pct;
+      draft.verification.lastChecked = fmtNow();
+      try{ localStorage.setItem(draftKey, JSON.stringify(draft)); }catch(e){}
+      location.href = 'document-wallet.html?scheme=' + encodeURIComponent(schemeId);
+    });
+  }
+
+  var nextBtn = document.getElementById('nextBtn');
+  if(nextBtn){
+    nextBtn.addEventListener('click', function(){
+      var m = metrics();
+      var critical = checks.filter(function(c){ return c.status === 'Mismatch'; }).length;
+
+      draft.verification.checked = true;
+      draft.verification.pct = m.pct;
+      draft.verification.lastChecked = fmtNow();
+      draft.completed.verification = (m.pct >= 60 && critical === 0);
+      draft.updatedAt = Date.now();
+      try{ localStorage.setItem(draftKey, JSON.stringify(draft)); }catch(e){}
+
+      if(critical > 0){
+        toast('Some items need attention. You can still continue; they will be reviewed during processing.', 'warn');
+      } else {
+        toast('Verification saved', 'ok');
+      }
+
+      setTimeout(function(){
+        location.href = 'application.html?scheme=' + encodeURIComponent(schemeId) + '#review';
+      }, 500);
+    });
+  }
+}
+
+/* =========================================================
+   RUN FULL VERIFICATION
+   ========================================================= */
+var runOverlay = document.getElementById('runOverlay');
+var rmIcon = document.getElementById('rmIcon');
+var rmTitle = document.getElementById('rmTitle');
+var rmSub = document.getElementById('rmSub');
+var rmBar = document.getElementById('rmBar');
+var rmSteps = document.getElementById('rmSteps');
+
+function runFullVerification(){
+  rmIcon.innerHTML = icon('scan');
+  rmTitle.textContent = 'Running verification';
+  rmSub.textContent = 'Connecting to mock integrated sources.';
+
+  var steps = [
+    'Connecting to UIDAI (mock)',
+    'Connecting to DigiLocker (mock)',
+    'Connecting to State e-District (mock)',
+    'Connecting to Institution DB (mock)',
+    'Connecting to UGC/NTA (mock)',
+    'Matching records with your profile',
+    'Preparing results'
+  ];
+
+  rmSteps.innerHTML = steps.map(function(s, i){
+    return '<li data-i="' + i + '"><span class="rm-chk">' + icon('check') +
+      '</span>' + esc(s) + '</li>';
+  }).join('');
+  rmBar.style.width = '0%';
+  runOverlay.classList.add('open');
+
+  var i = 0;
+  var tick = function(){
+    if(i < steps.length){
+      var li = rmSteps.querySelector('li[data-i="' + i + '"]');
+      if(li) li.classList.add('done');
+      rmBar.style.width = Math.round((i + 1) / steps.length * 100) + '%';
+      i++;
+      setTimeout(tick, 340);
+    } else {
+      setTimeout(function(){
+        runOverlay.classList.remove('open');
+        finishVerification();
+      }, 400);
+    }
+  };
+  setTimeout(tick, 240);
+}
+
+function finishVerification(){
+  s.documents.forEach(function(d){
+    if(d.status === 'Pending'){
+      if(Math.random() < 0.5){
+        d.status = 'Verified';
+        d.verifiedOn = new Date().toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+      }
+    }
+  });
+  try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
+
+  checks = buildChecks();
+
+  var now = fmtNow();
+  draft.verification.checked = true;
+  draft.verification.lastChecked = now;
+  draft.verification.pct = metrics().pct;
+  draft.updatedAt = Date.now();
+  try{ localStorage.setItem(draftKey, JSON.stringify(draft)); }catch(e){}
+
+  s.notifications.unshift({
+    id: 'n' + Date.now(),
+    type: 'info',
+    title: 'Verification completed',
+    body: 'Unified verification re-run across mock sources. Overall ' + metrics().pct + '% verified.',
+    date: 'Just now',
+    read: false,
+    action: 'verification.html?scheme=' + schemeId
+  });
+  try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
+
+  render();
+  toast('Verification complete - ' + metrics().pct + '% verified', 'ok');
+}
+
+/* =========================================================
+   SINGLE CHECK
+   ========================================================= */
+function runSingleCheck(id, btn){
+  var c = checks.find(function(x){ return x.id === id; });
+  if(!c) return;
+  btn.disabled = true;
+  btn.innerHTML = icon('clock') + ' Checking...';
+  setTimeout(function(){
+    c.status = 'Verified';
+    c.note = 'Verified via ' + c.source + ' (mock).';
+    c.ts = 'Verified just now';
+    draft.verification.lastChecked = fmtNow();
+    try{ localStorage.setItem(draftKey, JSON.stringify(draft)); }catch(e){}
+    render();
+    toast(c.label + ' verified (mock)', 'ok');
+  }, 1400);
+}
+
+/* =========================================================
+   REQUEST REVIEW
+   ========================================================= */
+function requestReview(id, btn){
+  var c = checks.find(function(x){ return x.id === id; });
+  if(!c) return;
+  btn.disabled = true;
+  btn.innerHTML = icon('clock') + ' Requesting...';
+  setTimeout(function(){
+    c.status = 'Pending';
+    c.note = 'Manual review requested. A verification officer will review this shortly.';
+    c.ts = 'Review requested just now';
+    render();
+    toast('Manual review requested', 'ok');
+  }, 1200);
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+render();
+</script>
+</body>
+</html>

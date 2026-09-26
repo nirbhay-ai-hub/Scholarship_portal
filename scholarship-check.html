@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B5E55">
+<title>Existing Scholarship Check · Tribal Scholarship One</title>
+<style>
+:root{
+  --brand:#0B5E55;--brand2:#0E7C6F;--brandsoft:#E6F2F0;
+  --bg:#F4F6F8;--card:#fff;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0;
+  --ok:#0F9D58;--okbg:#E7F6EE;--warn:#B45309;--warnbg:#FEF3C7;
+  --err:#DC2626;--errbg:#FEE2E2;--info:#1D4ED8;--infobg:#DBEAFE;
+  --r:14px;--sh:0 1px 2px rgba(15,23,42,.06),0 8px 24px -14px rgba(15,23,42,.2);
+  --safeb:env(safe-area-inset-bottom,0px)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans Devanagari',sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+svg{display:block}
+
+/* ============ SHELL ============ */
+.app{min-height:100dvh;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:50;background:var(--brand);color:#fff;
+  display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:56px;
+  padding-top:calc(10px + env(safe-area-inset-top,0px))}
+.topbar .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.logo{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.15);
+  display:grid;place-items:center;flex:none}
+.logo svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.brand-t{min-width:0}
+.brand-t b{display:block;font-size:14px;line-height:1.15;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.brand-t small{display:block;font-size:11px;opacity:.8;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.top-actions{display:flex;gap:4px}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:0;
+  background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;
+  cursor:pointer;position:relative}
+.iconbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+.iconbtn .dot-badge{position:absolute;top:6px;right:6px;width:8px;height:8px;
+  border-radius:50%;background:#FBBF24;border:2px solid var(--brand)}
+.sidebar{display:none}
+.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:#fff;
+  border-top:1px solid var(--line);display:flex;padding:6px 4px calc(6px + var(--safeb));
+  box-shadow:0 -4px 16px -8px rgba(15,23,42,.1)}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 2px;border-radius:10px;color:var(--muted);font-size:10.5px;
+  font-weight:500;min-width:0}
+.bn-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7}
+.bn-item.active{color:var(--brand);background:var(--brandsoft)}
+.bn-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.content{flex:1;padding:14px 14px calc(88px + var(--safeb));min-width:0}
+.wrap{max-width:900px;margin:0 auto}
+@media(min-width:768px){
+  .content{padding:18px 22px calc(92px + var(--safeb))}
+  .bottomnav{padding:8px 12px calc(8px + var(--safeb))}
+  .bn-item{font-size:11.5px}.bn-item svg{width:24px;height:24px}
+}
+@media(min-width:1200px){
+  .app{display:grid;grid-template-columns:250px 1fr;
+    grid-template-rows:auto 1fr;grid-template-areas:"top top" "side main"}
+  .topbar{grid-area:top}
+  .sidebar{grid-area:side;display:block;background:#fff;border-right:1px solid var(--line);
+    padding:14px 12px;position:sticky;top:56px;height:calc(100dvh - 56px);overflow-y:auto}
+  .sidebar .nav-title{font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted);font-weight:600;padding:12px 12px 6px}
+  .sidebar a{display:flex;align-items:center;gap:12px;padding:10px 12px;
+    border-radius:10px;color:var(--ink);font-size:14px;font-weight:500;margin-bottom:2px}
+  .sidebar a svg{width:20px;height:20px;stroke:currentColor;fill:none;
+    stroke-width:1.8;flex:none}
+  .sidebar a:hover{background:var(--bg)}
+  .sidebar a.active{background:var(--brandsoft);color:var(--brand);font-weight:600}
+  .content{grid-area:main;padding:22px 26px}
+  .bottomnav{display:none}
+  .wrap{max-width:920px}
+}
+
+/* ============ COMMON ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 16px;border-radius:10px;border:1px solid transparent;background:#fff;
+  color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;line-height:1.2;
+  text-align:center;transition:.15s;min-height:44px}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:hover{background:#0a4f48}
+.btn.ghost{background:#fff;border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn.sm{padding:8px 13px;font-size:13px;min-height:38px}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;
+  stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;
+  border-radius:999px;font-size:11.5px;font-weight:600;background:#F1F5F9;
+  color:#334155;white-space:nowrap}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.err{background:var(--errbg);color:var(--err)}
+.badge.info{background:var(--infobg);color:var(--info)}
+.badge.brand{background:var(--brandsoft);color:var(--brand)}
+.badge.neutral{background:#F1F5F9;color:#475569}
+.muted{color:var(--muted)}.sm{font-size:13px}.xs{font-size:11.5px}
+.link{color:var(--brand);font-weight:600;font-size:13.5px}
+
+/* ============ PAGE HEAD ============ */
+.page-head{margin-bottom:14px}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;
+  color:var(--muted);margin-bottom:8px;flex-wrap:wrap}
+.breadcrumb svg{width:12px;height:12px;stroke:currentColor;fill:none;
+  stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.page-head h1{font-size:22px;font-weight:700;margin:0 0 6px}
+.page-head p{color:var(--muted);font-size:13.5px;margin:0;max-width:640px}
+
+/* ============ INFO BANNERS ============ */
+.info-banner{display:flex;gap:12px;padding:13px 14px;border-radius:12px;
+  margin-bottom:14px;border:1px solid}
+.info-banner svg{width:20px;height:20px;stroke:currentColor;fill:none;
+  stroke-width:1.9;flex:none;margin-top:1px}
+.info-banner p{margin:0;font-size:12.5px;line-height:1.55}
+.info-banner b{font-weight:700}
+.info-banner.info{background:var(--infobg);color:var(--info);border-color:#BFDBFE}
+.info-banner.info p{color:#1E3A8A}
+.info-banner.warn{background:var(--warnbg);color:var(--warn);border-color:#FCD34D}
+.info-banner.warn p{color:#78350F}
+.info-banner.brand{background:var(--brandsoft);color:var(--brand);border-color:#B7D8D3}
+.info-banner.brand p{color:#0B5E55}
+
+/* ============ CARD ============ */
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:16px;margin-bottom:14px;box-shadow:var(--sh)}
+.card-h{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.card-h .c-ic{width:34px;height:34px;border-radius:10px;background:var(--brandsoft);
+  display:grid;place-items:center;flex:none}
+.card-h .c-ic svg{width:18px;height:18px;stroke:var(--brand);fill:none;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.card-h h2{font-size:15px;font-weight:700;margin:0;flex:1}
+
+/* ============ SCAN PANEL ============ */
+.scan-panel{background:linear-gradient(135deg,#0F172A,#1E293B);color:#fff;
+  border-radius:16px;padding:20px;margin-bottom:14px;position:relative;
+  overflow:hidden}
+.scan-panel::before{content:"";position:absolute;top:-50px;right:-50px;
+  width:200px;height:200px;border-radius:50%;background:rgba(11,94,85,.35)}
+.scan-panel .sp-h{display:flex;align-items:center;gap:12px;margin-bottom:14px;
+  position:relative;z-index:1}
+.scan-panel .sp-ic{width:44px;height:44px;border-radius:12px;
+  background:rgba(255,255,255,.12);display:grid;place-items:center;flex:none}
+.scan-panel .sp-ic svg{width:24px;height:24px;stroke:#fff;fill:none;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.scan-panel h2{font-size:16px;margin:0 0 3px;font-weight:700}
+.scan-panel p{margin:0;font-size:12.5px;opacity:.8;line-height:1.4}
+.scan-panel .sp-sources{position:relative;z-index:1;display:flex;gap:8px;
+  flex-wrap:wrap;margin-top:12px}
+.scan-panel .src-pill{display:inline-flex;align-items:center;gap:6px;
+  padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.12);
+  font-size:11.5px;font-weight:600}
+.scan-panel .src-pill svg{width:13px;height:13px;stroke:currentColor;
+  fill:none;stroke-width:2}
+.scan-panel .sp-actions{position:relative;z-index:1;margin-top:14px;
+  display:flex;gap:10px;flex-wrap:wrap}
+.scan-panel .sp-actions .btn{flex:1;min-width:140px}
+.scan-panel .btn.primary{background:#fff;color:var(--brand)}
+.scan-panel .btn.primary:hover{background:#F1F5F9}
+.scan-panel .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.25)}
+.scan-panel .btn.ghost:hover{border-color:#fff}
+
+/* Scan progress */
+.scan-progress{display:none;position:relative;z-index:1;margin-top:14px}
+.scan-progress.show{display:block}
+.scan-progress .sp-bar{height:6px;background:rgba(255,255,255,.15);
+  border-radius:99px;overflow:hidden}
+.scan-progress .sp-bar>span{display:block;height:100%;width:0;
+  background:linear-gradient(90deg,#10B981,#34D399);transition:width .3s}
+.scan-progress .sp-steps{margin-top:12px;display:flex;flex-direction:column;
+  gap:6px}
+.scan-progress .sp-step{display:flex;align-items:center;gap:9px;
+  font-size:12.5px;color:rgba(255,255,255,.75)}
+.scan-progress .sp-step .chk{width:18px;height:18px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.25);display:grid;place-items:center;
+  flex:none;transition:.2s}
+.scan-progress .sp-step.done .chk{background:#10B981;border-color:#10B981}
+.scan-progress .sp-step.done .chk svg{stroke:#fff}
+.scan-progress .sp-step .chk svg{width:11px;height:11px;stroke:transparent;
+  fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.scan-progress .sp-step.done{color:#fff}
+
+/* ============ RESULT ============ */
+.result-wrap{display:none}
+.result-wrap.show{display:block;animation:pop .35s ease}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* Verdict banner */
+.verdict{display:flex;align-items:center;gap:14px;padding:18px;
+  border-radius:16px;margin-bottom:14px;border:1.5px solid;
+  box-shadow:var(--sh)}
+.verdict.conflict{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-color:#FCD34D}
+.verdict.clear{background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border-color:#6EE7B7}
+.verdict .v-ic{width:56px;height:56px;border-radius:16px;background:#fff;
+  display:grid;place-items:center;flex:none}
+.verdict .v-ic svg{width:28px;height:28px;fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.verdict.conflict .v-ic{color:var(--warn)}
+.verdict.clear .v-ic{color:var(--ok)}
+.verdict .v-t{flex:1;min-width:0}
+.verdict .v-t b{display:block;font-size:17px;font-weight:700;margin-bottom:3px}
+.verdict.conflict .v-t b{color:#92400E}
+.verdict.clear .v-t b{color:#065F46}
+.verdict .v-t small{font-size:12.5px;color:var(--muted);line-height:1.4;display:block}
+
+/* Scholarship record card */
+.record{background:#fff;border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;margin-bottom:14px;box-shadow:var(--sh)}
+.record-head{display:flex;align-items:flex-start;gap:12px;padding:15px;
+  border-bottom:1px solid var(--line)}
+.record-head .r-ic{width:44px;height:44px;border-radius:11px;
+  background:var(--brandsoft);display:grid;place-items:center;flex:none}
+.record-head .r-ic svg{width:22px;height:22px;stroke:var(--brand);fill:none;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.record-head .r-t{flex:1;min-width:0}
+.record-head .r-t b{display:block;font-size:15px;font-weight:700;margin-bottom:2px;
+  line-height:1.3}
+.record-head .r-t small{font-size:12px;color:var(--muted);display:block}
+.record-head .r-status{flex:none;text-align:right}
+.record-body{padding:14px 15px}
+.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.kv-grid>div small{display:block;font-size:11.5px;color:var(--muted);
+  margin-bottom:2px;text-transform:uppercase;letter-spacing:.03em;font-weight:600}
+.kv-grid>div b{font-size:14px;font-weight:600;color:var(--ink);display:block;
+  word-break:break-word}
+.record-foot{padding:13px 15px;background:var(--bg);border-top:1px solid var(--line);
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.record-foot .rf-l{font-size:12px;color:var(--muted);display:flex;align-items:center;
+  gap:6px;font-weight:500}
+.record-foot .rf-l svg{width:14px;height:14px;stroke:currentColor;fill:none;
+  stroke-width:1.9}
+.record-foot .rf-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Source badge */
+.source-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;
+  border-radius:6px;background:#F1F5F9;color:#475569;font-size:11px;
+  font-weight:700;letter-spacing:.02em;text-transform:uppercase}
+.source-badge svg{width:12px;height:12px;stroke:currentColor;fill:none;
+  stroke-width:2.2}
+
+/* History section */
+.history-card{background:#fff;border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;box-shadow:var(--sh);margin-bottom:14px}
+.history-card .hc-h{padding:14px 15px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:10px}
+.history-card .hc-h h3{margin:0;font-size:14px;font-weight:700;flex:1}
+.history-card .hc-h .c-ic{width:30px;height:30px;border-radius:8px;
+  background:var(--brandsoft);display:grid;place-items:center;flex:none}
+.history-card .hc-h .c-ic svg{width:16px;height:16px;stroke:var(--brand);
+  fill:none;stroke-width:1.9}
+.hist-list{list-style:none;padding:0;margin:0}
+.hist-list li{padding:12px 15px;border-bottom:1px solid var(--line);
+  display:flex;gap:12px;align-items:center}
+.hist-list li:last-child{border-bottom:0}
+.hist-list .h-year{width:58px;flex:none;font-size:12px;font-weight:700;
+  color:var(--muted);font-variant-numeric:tabular-nums}
+.hist-list .h-info{flex:1;min-width:0}
+.hist-list .h-info b{display:block;font-size:13px;font-weight:600;
+  margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-list .h-info small{font-size:11.5px;color:var(--muted);display:block}
+.hist-list .h-amt{font-size:13px;font-weight:700;color:var(--brand);
+  font-variant-numeric:tabular-nums;flex:none}
+
+/* Next-step panel */
+.next-steps{background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:16px;box-shadow:var(--sh);margin-bottom:14px}
+.next-steps h3{margin:0 0 12px;font-size:15px;font-weight:700;
+  display:flex;align-items:center;gap:9px}
+.next-steps h3 svg{width:18px;height:18px;stroke:var(--brand);fill:none;
+  stroke-width:1.9}
+.ns-grid{display:grid;gap:10px}
+@media(min-width:600px){.ns-grid{grid-template-columns:1fr 1fr}}
+.ns-item{display:flex;gap:11px;align-items:flex-start;padding:13px;
+  background:var(--bg);border-radius:11px;font-size:13px;line-height:1.45}
+.ns-item .ns-ic{width:32px;height:32px;border-radius:9px;background:#fff;
+  display:grid;place-items:center;flex:none}
+.ns-item .ns-ic svg{width:17px;height:17px;stroke:var(--brand);fill:none;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ns-item b{display:block;font-weight:600;margin-bottom:2px}
+.ns-item small{font-size:12px;color:var(--muted);display:block;line-height:1.4}
+
+/* Help block */
+.help-block{background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:16px;box-shadow:var(--sh);margin-bottom:14px}
+.help-block h3{margin:0 0 12px;font-size:15px;font-weight:700;
+  display:flex;align-items:center;gap:9px}
+.help-block h3 svg{width:18px;height:18px;stroke:var(--brand);fill:none;
+  stroke-width:1.9}
+.help-block .row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+/* Empty / not-yet-scanned */
+.pending{text-align:center;padding:44px 20px;background:#fff;
+  border:1px dashed var(--line);border-radius:16px;margin-bottom:14px}
+.pending svg{width:52px;height:52px;stroke:var(--muted);fill:none;
+  stroke-width:1.4;margin:0 auto 12px;opacity:.5}
+.pending h3{color:var(--ink);font-size:16px;margin:0 0 6px;font-weight:700}
+.pending p{margin:0 0 16px;font-size:13.5px;color:var(--muted);
+  max-width:420px;margin-left:auto;margin-right:auto}
+
+/* ============ TOAST ============ */
+.toast-wrap{position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(88px + var(--safeb));z-index:300;display:flex;flex-direction:column;
+  gap:8px;pointer-events:none;align-items:center;width:calc(100% - 28px);
+  max-width:420px}
+@media(min-width:1200px){.toast-wrap{bottom:24px}}
+.toast{background:#0F172A;color:#fff;padding:11px 16px;border-radius:10px;
+  font-size:13.5px;font-weight:500;box-shadow:0 10px 30px -10px rgba(0,0,0,.35);
+  transition:opacity .3s;text-align:center;max-width:100%}
+.toast.ok{background:var(--ok)}.toast.err{background:var(--err)}
+.toast.warn{background:var(--warn)}
+
+/* JAGO FAB */
+.jago-fab{position:fixed;right:14px;bottom:calc(78px + var(--safeb));
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+  display:grid;place-items:center;
+  box-shadow:0 10px 24px -8px rgba(11,94,85,.6);z-index:70;border:0;cursor:pointer}
+.jago-fab svg{width:26px;height:26px;stroke:currentColor;fill:none;
+  stroke-width:1.8}
+@media(min-width:1200px){.jago-fab{bottom:26px;right:26px;width:58px;height:58px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar" id="topbar"></header>
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content"><div class="wrap" id="page"></div></main>
+  <nav class="bottomnav" id="bottomnav"></nav>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* =========================================================
+   ICONS
+   ========================================================= */
+const ICONS={
+  dashboard:'<path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>',
+  schemes:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16"/>',
+  apps:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+  docs:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  pay:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+  jago:'<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 15c1.5 1.2 4.5 1.2 6 0"/>',
+  notif:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+  check:'<path d="M5 13l4 4L19 7"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>',
+  chevL:'<path d="M15 6l-6 6 6 6"/>',
+  chevD:'<path d="M6 9l6 6 6-6"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  close:'<path d="M18 6L6 18M6 6l12 12"/>',
+  book:'<path d="M4 19.5V5a2 2 0 0 1 2-2h11a1 1 0 0 1 1 1v15"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H18"/><path d="M20 5v14"/>',
+  grad:'<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/>',
+  star:'<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/>',
+  bank:'<path d="M3 10l9-6 9 6"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><path d="M12 17h.01"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  refresh:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>',
+  x:'<path d="M18 6L6 18M6 6l12 12"/>',
+  shieldC:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+  database:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/>',
+  sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+  history:'<path d="M3 3v6h6"/><path d="M3.5 9a9 9 0 1 0 2.1-3.4L3 9"/><path d="M12 7v5l3 2"/>',
+  arrowR:'<path d="M5 12h14M13 5l7 7-7 7"/>'
+};
+function icon(n,cls){const p=ICONS[n]||ICONS.info;
+  return `<svg class="${cls||''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmtMoney(n){return '₹'+Number(n||0).toLocaleString('en-IN')}
+function toast(msg,type){
+  const w=document.getElementById('toastWrap');
+  const t=document.createElement('div');
+  t.className='toast '+(type||'');t.textContent=msg;
+  w.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),320)},2400);
+}
+function statusClass(st){
+  const m={Verified:'ok',Approved:'ok',Disbursed:'ok',Paid:'ok',Sanctioned:'ok',
+    Submitted:'info',Verification:'info','In progress':'info',
+    Pending:'warn',Processing:'warn',
+    Mismatch:'err',Rejected:'err'};
+  return m[st]||'neutral';
+}
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const KEY='tso_state_v1';
+function S(){try{const raw=localStorage.getItem(KEY);
+  if(raw){const p=JSON.parse(raw);if(p&&p.profile)return p}}catch(e){}return null}
+
+/* =========================================================
+   SHELL
+   ========================================================= */
+const NAV=[
+  {id:'dashboard',label:'Dashboard',icon:'dashboard',href:'dashboard.html'},
+  {id:'schemes',label:'Schemes',icon:'schemes',href:'schemes.html'},
+  {id:'applications',label:'Applications',icon:'apps',href:'my-applications.html'},
+  {id:'documents',label:'Documents',icon:'docs',href:'document-wallet.html'},
+  {id:'payments',label:'Payments',icon:'pay',href:'payment-status.html'},
+  {id:'jago',label:'JAGO',icon:'jago',href:'jago.html'},
+  {id:'notifications',label:'Notifications',icon:'notif',href:'notifications.html'},
+  {id:'profile',label:'Profile',icon:'profile',href:'profile.html'}
+];
+const MOBILE_NAV=['dashboard','schemes','applications','jago','profile'];
+
+function mountShell(active,crumb){
+  const s=S();const unread=s?s.notifications.filter(n=>!n.read).length:0;
+  document.getElementById('topbar').innerHTML=`
+    <div class="brand">
+      <span class="logo">${icon('shield')}</span>
+      <span class="brand-t">
+        <b>Tribal Scholarship One</b>
+        <small>${esc(crumb||'Unified Scholarship Platform')}</small>
+      </span>
+    </div>
+    <div class="top-actions">
+      <a class="iconbtn" href="notifications.html" aria-label="Notifications">
+        ${icon('notif')}${unread?'<span class="dot-badge"></span>':''}
+      </a>
+      <a class="iconbtn" href="profile.html" aria-label="Profile">${icon('user')}</a>
+    </div>`;
+  document.getElementById('sidebar').innerHTML=`
+    <div class="nav-title">Menu</div>
+    ${NAV.map(n=>`<a href="${n.href}" class="${n.id===active?'active':''}">${icon(n.icon)}<span>${n.label}</span></a>`).join('')}
+    <div class="nav-title">Support</div>
+    <a href="help.html">${icon('help')}<span>Help</span></a>
+    <a href="settings.html">${icon('settings')}<span>Settings</span></a>
+    <a href="index.html" onclick="localStorage.removeItem('tso_state_v1')">${icon('logout')}<span>Logout</span></a>`;
+  document.getElementById('bottomnav').innerHTML=MOBILE_NAV.map(id=>{
+    const n=NAV.find(x=>x.id===id);
+    return `<a class="bn-item ${id===active?'active':''}" href="${n.href}">${icon(n.icon)}<span>${n.label}</span></a>`;
+  }).join('');
+  if(!document.querySelector('.jago-fab')){
+    const f=document.createElement('button');
+    f.className='jago-fab';f.setAttribute('aria-label','Open JAGO assistant');
+    f.innerHTML=icon('jago');
+    f.onclick=()=>location.href='jago.html';
+    document.body.appendChild(f);
+  }
+}
+
+/* =========================================================
+   PRESENTATION DATA
+   ========================================================= */
+const PRESENT={
+  'pre-matric':{icon:'book'},
+  'post-matric':{icon:'grad'},
+  'top-class':{icon:'star'},
+  'nfst':{icon:'shield'},
+  'nos':{icon:'globe'}
+};
+
+/* =========================================================
+   MOCK EXTERNAL RECORDS
+   Simulates records found on NSP, SFMP, NOS portals.
+   For the demo, this is derived from applications + extra seed.
+   ========================================================= */
+const s=S();
+if(!s||!s.profile){location.href='index.html'}
+
+const params=new URLSearchParams(location.search);
+const focusScheme=params.get('scheme')||'';
+
+/* Build the "external records" catalogue (mock) */
+function buildMockRecords(){
+  const records=[];
+  // From the student's own applications (mirror as external records)
+  s.applications.forEach(a=>{
+    const sourceMap={
+      'pre-matric':'NSP',
+      'post-matric':'SFMP',
+      'top-class':'SFMP',
+      'nfst':'SFMP',
+      'nos':'NOS Portal'
+    };
+    records.push({
+      id:a.id,
+      schemeId:a.schemeId,
+      schemeName:a.schemeName,
+      year:a.year,
+      status:a.status,
+      amount:a.amount,
+      amountReceived:a.status==='Disbursed'?a.amount:0,
+      source:sourceMap[a.schemeId]||'NSP',
+      lastUpdated:a.lastUpdated,
+      isActive:a.status!=='Disbursed',
+      reference:refFromId(a.id,a.schemeId)
+    });
+  });
+  // Extra seeded records from a fictional state system (mock)
+  records.push({
+    id:'SFMP-2022-STATE-0912',
+    schemeId:'pre-matric',
+    schemeName:'Pre-Matric Scholarship',
+    year:'2022-23',
+    status:'Disbursed',
+    amount:3200,
+    amountReceived:3200,
+    source:'SFMP',
+    lastUpdated:'Closed · 2 years ago',
+    isActive:false,
+    reference:'DBT-2022-4512'
+  });
+  return records;
+}
+function refFromId(id,schemeId){
+  const prefix=(schemeId||'').split('-')[0].toUpperCase().slice(0,3);
+  return 'DBT-'+prefix+'-'+id.split('-').pop();
+}
+
+/* Current academic year for conflict detection */
+const CURRENT_YEAR='2025-26';
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+mountShell('schemes','Home / Schemes / Existing Scholarship Check');
+
+const page=document.getElementById('page');
+page.innerHTML=`
+  <div class="page-head">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="dashboard.html">Home</a>
+      ${icon('chev')}
+      <a href="schemes.html">Schemes</a>
+      ${icon('chev')}
+      <span>Existing Scholarship Check</span>
+    </nav>
+    <h1>Existing Scholarship Check</h1>
+    <p>Before applying, check whether you already have an active scholarship. This helps prevent duplicate or conflicting applications.</p>
+  </div>
+
+  <div class="info-banner info">
+    ${icon('info')}
+    <p>Only <b>one government scholarship per academic year</b> is permitted under MoTA schemes. This check scans your records across mock integrated sources to detect conflicts.</p>
+  </div>
+
+  <!-- SCAN PANEL -->
+  <section class="scan-panel" id="scanPanel">
+    <div class="sp-h">
+      <span class="sp-ic">${icon('search')}</span>
+      <div>
+        <h2>Scan for existing records</h2>
+        <p>Searching across NSP, SFMP and NOS Portal (mock)</p>
+      </div>
+    </div>
+    <div class="sp-sources">
+      <span class="src-pill">${icon('database')} NSP</span>
+      <span class="src-pill">${icon('database')} SFMP</span>
+      <span class="src-pill">${icon('database')} NOS Portal</span>
+      <span class="src-pill">${icon('link')} APAAR</span>
+    </div>
+    <div class="sp-actions">
+      <button class="btn primary" id="scanBtn" type="button">
+        ${icon('search')} Scan Now
+      </button>
+      <button class="btn ghost" id="rescanBtn" type="button" style="display:none">
+        ${icon('refresh')} Rescan
+      </button>
+    </div>
+
+    <div class="scan-progress" id="scanProgress">
+      <div class="sp-bar"><span id="scanBar"></span></div>
+      <div class="sp-steps" id="scanSteps">
+        <div class="sp-step" data-step="0"><span class="chk">${icon('check')}</span> Connecting to NSP (mock)</div>
+        <div class="sp-step" data-step="1"><span class="chk">${icon('check')}</span> Connecting to SFMP (mock)</div>
+        <div class="sp-step" data-step="2"><span class="chk">${icon('check')}</span> Connecting to NOS Portal (mock)</div>
+        <div class="sp-step" data-step="3"><span class="chk">${icon('check')}</span> Cross-matching with your profile</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <div class="result-wrap" id="resultWrap"></div>
+
+  <!-- HISTORY -->
+  <div class="history-card" id="historyCard" style="display:none">
+    <div class="hc-h">
+      <span class="c-ic">${icon('history')}</span>
+      <h3>Historical Scholarship Records</h3>
+      <span class="badge neutral" id="historyCount">0</span>
+    </div>
+    <ul class="hist-list" id="historyList"></ul>
+  </div>
+
+  <!-- NEXT STEPS -->
+  <div class="next-steps" id="nextSteps" style="display:none">
+    <h3>${icon('sparkle')} Recommended next steps</h3>
+    <div class="ns-grid" id="nsGrid"></div>
+  </div>
+
+  <!-- HELP -->
+  <section class="help-block">
+    <h3>${icon('help')} Need help?</h3>
+    <p class="muted sm" style="margin-bottom:12px">Not sure what to do next? JAGO can explain your options in English or Hindi.</p>
+    <div class="row-btns">
+      <a class="btn ghost sm" href="jago.html">${icon('jago')} Ask JAGO</a>
+      <a class="btn ghost sm" href="eligibility-check.html${focusScheme?'?scheme='+focusScheme:''}">
+        ${icon('shield')} Review Eligibility
+      </a>
+      <a class="btn ghost sm" href="schemes.html">${icon('schemes')} Browse Schemes</a>
+    </div>
+  </section>
+
+  <!-- PENDING STATE -->
+  <div class="pending" id="pendingState">
+    ${icon('search')}
+    <h3>No scan yet</h3>
+    <p>Tap "Scan Now" to check for any existing scholarships associated with your profile across the mock integrated sources.</p>
+  </div>
+`;
+
+/* =========================================================
+   SCAN LOGIC
+   ========================================================= */
+const scanBtn=document.getElementById('scanBtn');
+const rescanBtn=document.getElementById('rescanBtn');
+const scanProgress=document.getElementById('scanProgress');
+const scanBar=document.getElementById('scanBar');
+const scanSteps=document.getElementById('scanSteps');
+const resultWrap=document.getElementById('resultWrap');
+const pendingState=document.getElementById('pendingState');
+const historyCard=document.getElementById('historyCard');
+const historyList=document.getElementById('historyList');
+const historyCount=document.getElementById('historyCount');
+const nextSteps=document.getElementById('nextSteps');
+const nsGrid=document.getElementById('nsGrid');
+
+let records=[];
+let scanned=false;
+
+function runScan(){
+  if(scanned)return;
+  scanned=true;
+  scanBtn.style.display='none';
+  scanProgress.classList.add('show');
+  scanBar.style.width='0%';
+
+  const steps=[...scanSteps.querySelectorAll('.sp-step')];
+  steps.forEach(s=>s.classList.remove('done'));
+
+  let i=0;
+  const tick=()=>{
+    if(i<steps.length){
+      steps[i].classList.add('done');
+      scanBar.style.width=Math.round((i+1)/steps.length*100)+'%';
+      i++;
+      setTimeout(tick,380);
+    } else {
+      setTimeout(finishScan,300);
+    }
+  };
+  setTimeout(tick,200);
+}
+
+function finishScan(){
+  scanProgress.classList.remove('show');
+  rescanBtn.style.display='inline-flex';
+
+  records=buildMockRecords();
+  const activeRecords=records.filter(r=>r.isActive);
+  const pastRecords=records.filter(r=>!r.isActive);
+
+  /* Hide pending */
+  pendingState.style.display='none';
+
+  /* Build result wrap */
+  const hasConflict=activeRecords.length>0;
+
+  /* Verdict banner */
+  let verdictHtml='';
+  if(hasConflict){
+    const primary=activeRecords[0];
+    verdictHtml=`
+      <div class="verdict conflict">
+        <span class="v-ic">${icon('alert')}</span>
+        <div class="v-t">
+          <b>Active scholarship found</b>
+          <small>An active <b>${esc(primary.schemeName)}</b> record (AY ${esc(primary.year)}) was found in <b>${esc(primary.source)}</b>. Review it before applying for another scheme.</small>
+        </div>
+      </div>`;
+  } else {
+    verdictHtml=`
+      <div class="verdict clear">
+        <span class="v-ic">${icon('check')}</span>
+        <div class="v-t">
+          <b>No active scholarship found</b>
+          <small>You currently don't have an active scholarship for the ${esc(CURRENT_YEAR)} academic year across the scanned sources. You can proceed with a new application.</small>
+        </div>
+      </div>`;
+  }
+
+  /* Active records cards */
+  const activeCardsHtml=activeRecords.map(r=>recordCard(r,true)).join('');
+
+  /* Historical records list */
+  if(pastRecords.length){
+    historyCard.style.display='block';
+    historyCount.textContent=pastRecords.length+' record'+(pastRecords.length>1?'s':'');
+    historyList.innerHTML=pastRecords.map(r=>`
+      <li>
+        <span class="h-year">${esc(r.year)}</span>
+        <div class="h-info">
+          <b>${esc(r.schemeName)}</b>
+          <small>${esc(r.source)} · Ref ${esc(r.reference)} · ${esc(r.lastUpdated)}</small>
+        </div>
+        <span class="h-amt">${fmtMoney(r.amountReceived||r.amount)}</span>
+      </li>`).join('');
+  } else {
+    historyCard.style.display='none';
+  }
+
+  /* Next steps */
+  nextSteps.style.display='block';
+  if(hasConflict){
+    nsGrid.innerHTML=`
+      <div class="ns-item">
+        <span class="ns-ic">${icon('apps')}</span>
+        <span>
+          <b>Review your active scholarship</b>
+          <small>Open the record to see sanctions, verification and payment status.</small>
+        </span>
+      </div>
+      <div class="ns-item">
+        <span class="ns-ic">${icon('shield')}</span>
+        <span>
+          <b>Review eligibility first</b>
+          <small>Only one scholarship per year is permitted — confirm before applying.</small>
+        </span>
+      </div>
+      <div class="ns-item">
+        <span class="ns-ic">${icon('jago')}</span>
+        <span>
+          <b>Ask JAGO</b>
+          <small>Get help understanding your options in English or Hindi.</small>
+        </span>
+      </div>
+      <div class="ns-item">
+        <span class="ns-ic">${icon('help')}</span>
+        <span>
+          <b>Read scheme guidelines</b>
+          <small>Refer to official MoTA rules for authoritative guidance.</small>
+        </span>
+      </div>`;
+  } else {
+    nsGrid.innerHTML=`
+      <div class="ns-item">
+        <span class="ns-ic">${icon('shield')}</span>
+        <span>
+          <b>Check your eligibility</b>
+          <small>Confirm you meet the scheme conditions before applying.</small>
+        </span>
+      </div>
+      <div class="ns-item">
+        <span class="ns-ic">${icon('docs')}</span>
+        <span>
+          <b>Prepare documents</b>
+          <small>Upload or link your ST, income, domicile and academic documents.</small>
+        </span>
+      </div>
+      <div class="ns-item">
+        <span class="ns-ic">${icon('apps')}</span>
+        <span>
+          <b>Start your application</b>
+          <small>Begin a new application for the scheme you choose.</small>
+        </span>
+      </div>
+      <div class="ns-item">
+        <span class="ns-ic">${icon('jago')}</span>
+        <span>
+          <b>Ask JAGO</b>
+          <small>Get instant answers about schemes, documents and payments.</small>
+        </span>
+      </div>`;
+  }
+
+  /* Compose result */
+  resultWrap.classList.add('show');
+  resultWrap.innerHTML=`
+    ${verdictHtml}
+    ${activeCardsHtml}
+    <p class="muted xs" style="margin:0 0 14px;text-align:center">
+      ${icon('info')} Records shown are from <b>mock</b> integrated sources (NSP, SFMP, NOS Portal, APAAR). Not live data.
+    </p>
+  `;
+
+  /* Scroll into view */
+  setTimeout(()=>{
+    const y=resultWrap.getBoundingClientRect().top+window.scrollY-90;
+    window.scrollTo({top:y,behavior:'smooth'});
+  },60);
+
+  toast(hasConflict?'Active scholarship record found':'No active scholarship found',hasConflict?'warn':'ok');
+}
+
+/* Record card builder */
+function recordCard(r,isActive){
+  const present=PRESENT[r.schemeId]||{icon:'schemes'};
+  const statusCls=statusClass(r.status);
+  return `
+    <article class="record">
+      <div class="record-head">
+        <span class="r-ic">${icon(present.icon)}</span>
+        <div class="r-t">
+          <b>${esc(r.schemeName)}</b>
+          <small>${esc(r.source)} · Application ID ${esc(r.id)}</small>
+        </div>
+        <div class="r-status">
+          <span class="badge ${statusCls}">${esc(r.status)}</span>
+        </div>
+      </div>
+      <div class="record-body">
+        <div class="kv-grid">
+          <div><small>Academic Year</small><b>${esc(r.year)}</b></div>
+          <div><small>Sanctioned Amount</small><b>${fmtMoney(r.amount)}</b></div>
+          <div><small>Received So Far</small><b>${fmtMoney(r.amountReceived)}</b></div>
+          <div><small>Source System</small><b>${esc(r.source)}</b></div>
+          <div><small>Reference No.</small><b>${esc(r.reference)}</b></div>
+          <div><small>Last Updated</small><b>${esc(r.lastUpdated)}</b></div>
+        </div>
+      </div>
+      <div class="record-foot">
+        <span class="rf-l">
+          ${icon('database')} Source: <b>${esc(r.source)}</b> (mock)
+        </span>
+        <div class="rf-actions">
+          <a class="btn ghost sm" href="application-details.html?id=${esc(r.id)}">
+            ${icon('apps')} View Record
+          </a>
+          ${isActive?`
+            <a class="btn ghost sm" href="eligibility-check.html?scheme=${esc(r.schemeId)}">
+              ${icon('shield')} Review Eligibility
+            </a>`:''}
+        </div>
+      </div>
+    </article>`;
+}
+
+/* Button bindings */
+scanBtn.addEventListener('click',runScan);
+rescanBtn.addEventListener('click',()=>{
+  scanned=false;
+  resultWrap.classList.remove('show');
+  resultWrap.innerHTML='';
+  historyCard.style.display='none';
+  nextSteps.style.display='none';
+  pendingState.style.display='block';
+  scanBtn.style.display='inline-flex';
+  rescanBtn.style.display='none';
+  scanProgress.classList.remove('show');
+  scanBar.style.width='0%';
+  [...scanSteps.querySelectorAll('.sp-step')].forEach(s=>s.classList.remove('done'));
+  window.scrollTo({top:0,behavior:'smooth'});
+  toast('Ready to rescan','ok');
+});
+</script>
+</body>
+</html>
