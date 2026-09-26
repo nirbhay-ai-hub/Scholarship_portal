@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B5E55">
+<title>Dashboard · Tribal Scholarship One</title>
+<style>
+:root{--brand:#0B5E55;--brand2:#0E7C6F;--brandsoft:#E6F2F0;--bg:#F4F6F8;--card:#fff;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0;--ok:#0F9D58;--okbg:#E7F6EE;--warn:#B45309;--warnbg:#FEF3C7;--err:#DC2626;--errbg:#FEE2E2;--info:#1D4ED8;--infobg:#DBEAFE;--r:14px;--sh:0 1px 2px rgba(15,23,42,.06),0 8px 24px -14px rgba(15,23,42,.2);--safeb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+svg{display:block}
+/* ---------- SHELL ---------- */
+.app{min-height:100dvh;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:50;background:var(--brand);color:#fff;display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:56px}
+.topbar .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.logo{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.15);display:grid;place-items:center;flex:none}
+.logo svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8}
+.brand-t{min-width:0}
+.brand-t b{display:block;font-size:14px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.brand-t small{display:block;font-size:11px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-actions{display:flex;gap:4px}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:0;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;cursor:pointer;position:relative}
+.iconbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+.iconbtn .dot-badge{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#FBBF24;border:2px solid var(--brand)}
+.sidebar{display:none}
+.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 4px calc(6px + var(--safeb));box-shadow:0 -4px 16px -8px rgba(15,23,42,.1)}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:10px;color:var(--muted);font-size:10.5px;font-weight:500;min-width:0}
+.bn-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7}
+.bn-item.active{color:var(--brand);background:var(--brandsoft)}
+.bn-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.content{flex:1;padding:14px 14px calc(88px + var(--safeb));min-width:0}
+.wrap{max-width:1200px;margin:0 auto}
+@media(min-width:768px){.content{padding:18px 22px calc(92px + var(--safeb))}.bottomnav{padding:8px 12px calc(8px + var(--safeb))}.bn-item{font-size:11.5px}.bn-item svg{width:24px;height:24px}}
+@media(min-width:1200px){
+  .app{display:grid;grid-template-columns:250px 1fr;grid-template-rows:auto 1fr;grid-template-areas:"top top" "side main"}
+  .topbar{grid-area:top}
+  .sidebar{grid-area:side;display:block;background:#fff;border-right:1px solid var(--line);padding:14px 12px;position:sticky;top:56px;height:calc(100dvh - 56px);overflow-y:auto}
+  .sidebar .nav-title{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;padding:12px 12px 6px}
+  .sidebar a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--ink);font-size:14px;font-weight:500;margin-bottom:2px}
+  .sidebar a svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;flex:none}
+  .sidebar a:hover{background:var(--bg)}
+  .sidebar a.active{background:var(--brandsoft);color:var(--brand);font-weight:600}
+  .content{grid-area:main;padding:22px 26px}
+  .bottomnav{display:none}
+  .wrap{max-width:1180px}
+}
+/* ---------- CARDS ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.card+.card{margin-top:14px}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.card-h h2{font-size:15.5px;font-weight:600;margin:0}
+.cols{display:grid;gap:14px;margin-top:14px}
+@media(min-width:900px){.cols{grid-template-columns:1fr 1fr}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:10px;border:1px solid transparent;background:#fff;color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;line-height:1.2;text-align:center;transition:.15s;min-height:42px}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.ghost{background:#fff;border-color:var(--line)}
+.row{display:flex;flex-wrap:wrap;align-items:center}
+.row.gap{gap:10px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:600;background:#F1F5F9;color:#334155;white-space:nowrap}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.err{background:var(--errbg);color:var(--err)}
+.badge.info{background:var(--infobg);color:var(--info)}
+.badge.neutral{background:#F1F5F9;color:#475569}
+.badge.brand{background:var(--brandsoft);color:var(--brand)}
+.muted{color:var(--muted)}.sm{font-size:13px}.xs{font-size:11.5px}
+.link{color:var(--brand);font-weight:600;font-size:13.5px}
+.link.sm{font-size:12.5px}
+.progress{height:8px;border-radius:99px;background:#E2E8F0;overflow:hidden}
+.progress>span{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:99px;transition:width .4s}
+/* hero */
+.hero{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-radius:16px;padding:20px;display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.hero-eyebrow{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;opacity:.9;margin-bottom:8px}
+.hero-eyebrow svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8}
+.hero h1{font-size:21px;margin:0 0 4px;font-weight:700}
+.hero p{margin:0 0 10px;font-size:13.5px;opacity:.9;max-width:420px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:6px}
+.hero-meta .pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);padding:5px 10px;border-radius:999px;font-size:11.5px;font-weight:500}
+.hero-meta .pill svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8}
+.hero-ring{position:relative;width:96px;height:96px;flex:none}
+.hero-ring svg{width:100%;height:100%}
+.hero-ring-txt{position:absolute;inset:0;display:grid;place-content:center;text-align:center;line-height:1.1}
+.hero-ring-txt strong{font-size:19px;font-weight:700}
+.hero-ring-txt span{font-size:10px;opacity:.85;text-transform:uppercase;letter-spacing:.05em}
+@media(max-width:520px){.hero{flex-direction:column;align-items:flex-start}.hero-ring{align-self:flex-end;margin-top:-58px;width:78px;height:78px}.hero-ring-txt strong{font-size:16px}}
+.qa-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.qa{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;background:#fff;border:1px solid var(--line);border-radius:12px;font-size:11px;font-weight:600;text-align:center;color:var(--ink);transition:.15s}
+.qa svg{width:22px;height:22px;stroke:var(--brand);fill:none;stroke-width:1.7}
+.qa:hover{background:var(--brandsoft);border-color:var(--brand)}
+@media(max-width:420px){.qa-row{grid-template-columns:repeat(2,1fr)}}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+@media(min-width:768px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:10px;align-items:center}
+.stat-ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex:none}
+.stat-ic svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8}
+.stat-ic.ok{background:var(--okbg);color:var(--ok)}
+.stat-ic.info{background:var(--infobg);color:var(--info)}
+.stat-ic.warn{background:var(--warnbg);color:var(--warn)}
+.stat b{display:block;font-size:17px;font-weight:700;line-height:1.1}
+.stat small{font-size:11.5px;color:var(--muted)}
+.app-row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
+.app-row h3{font-size:15px;margin:8px 0 3px;font-weight:600}
+.app-row-r{text-align:right;flex:none}
+.app-row-r b{font-size:16px;font-weight:700;display:block;color:var(--brand)}
+.app-row-r small{font-size:11px;color:var(--muted)}
+.stage-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin:8px 0 14px;font-weight:500}
+.action-list{list-style:none;padding:0;margin:0}
+.action{display:flex;gap:12px;padding:12px;border-radius:10px;background:var(--bg);margin-bottom:8px}
+.action.high{background:var(--errbg)}
+.action.medium{background:var(--warnbg)}
+.action-ic{width:30px;height:30px;border-radius:8px;background:#fff;display:grid;place-items:center;flex:none}
+.action-ic svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9}
+.action.high .action-ic{color:var(--err)}.action.medium .action-ic{color:var(--warn)}.action.low .action-ic{color:var(--info)}
+.action b{font-size:13.5px;display:block;font-weight:600}
+.action p{margin:2px 0 4px}
+.check-list{list-style:none;padding:0;margin:0}
+.check-list li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.check-list li:last-child{border-bottom:0}
+.ck{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none}
+.ck svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.2}
+.ck.ok{background:var(--okbg);color:var(--ok)}
+.ck.warn{background:var(--warnbg);color:var(--warn)}
+.ck.err{background:var(--errbg);color:var(--err)}
+.ck.neutral{background:#F1F5F9;color:var(--muted)}
+.ck-l{flex:1;font-size:13.5px;font-weight:500}
+.pay-hero{display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--brandsoft);border-radius:12px;margin-bottom:12px}
+.pay-hero small{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+.pay-hero b{font-size:22px;font-weight:700;color:var(--brand)}
+.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+.kv-grid>div small{display:block;font-size:11.5px;color:var(--muted);margin-bottom:2px}
+.kv-grid>div b{font-size:14px;font-weight:600}
+.reco{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-color:#FCD34D;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.reco-l h3{margin:8px 0 4px;font-size:16px}
+.reco-r{text-align:right;flex:none}
+.reco-r b{font-size:18px;font-weight:700;color:#92400E;display:block}
+.reco-r small{font-size:11px;color:#92400E;opacity:.75}
+.notif-list{list-style:none;padding:0;margin:0}
+.notif-list li{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.notif-list li:last-child{border-bottom:0}
+.notif-list li.unread b{color:var(--brand)}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;margin-top:6px;background:#CBD5E1}
+.dot.success{background:var(--ok)}.dot.warn{background:#F59E0B}.dot.err{background:var(--err)}.dot.info{background:var(--info)}
+.notif-list b{font-size:13.5px;display:block;font-weight:600}
+.notif-list p{margin:2px 0 3px;font-size:12.5px}
+.gap-card .card-h h2{display:flex;align-items:center;gap:8px;font-size:14px}
+.gap-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.gap-metrics>div{text-align:center;padding:12px 8px;background:var(--bg);border-radius:10px}
+.gap-metrics>div.hl{background:var(--warnbg)}
+.gap-metrics b{display:block;font-size:18px;font-weight:700;color:var(--brand)}
+.gap-metrics>div.hl b{color:var(--warn)}
+.gap-metrics small{font-size:10.5px;color:var(--muted);line-height:1.3;display:block;margin-top:2px}
+.jago-banner{display:flex;align-items:center;gap:12px;padding:14px;background:linear-gradient(135deg,#0F172A,#1E293B);color:#fff;border-radius:14px;margin-top:14px}
+.jago-orb{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;flex:none}
+.jago-orb svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:1.8}
+.jago-banner b{display:block;font-size:14.5px}
+.jago-banner small{font-size:12px;opacity:.75;display:block}
+.jago-banner>svg:last-child{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;flex:none;margin-left:auto}
+.jago-fab{position:fixed;right:14px;bottom:calc(78px + var(--safeb));width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center;box-shadow:0 10px 24px -8px rgba(11,94,85,.6);z-index:70;border:0;cursor:pointer}
+.jago-fab svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.8}
+@media(min-width:1200px){.jago-fab{bottom:26px;right:26px;width:58px;height:58px}}
+.toast-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + var(--safeb));z-index:300;display:flex;flex-direction:column;gap:8px;pointer-events:none;align-items:center;width:calc(100% - 28px);max-width:420px}
+@media(min-width:1200px){.toast-wrap{bottom:24px}}
+.toast{background:#0F172A;color:#fff;padding:11px 16px;border-radius:10px;font-size:13.5px;font-weight:500;box-shadow:0 10px 30px -10px rgba(0,0,0,.35)}
+.empty{text-align:center;padding:26px 12px;color:var(--muted)}
+.empty svg{width:44px;height:44px;stroke:currentColor;fill:none;stroke-width:1.5;margin:0 auto 10px;opacity:.5}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar" id="topbar"></header>
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content"><div class="wrap" id="page"></div></main>
+  <nav class="bottomnav" id="bottomnav"></nav>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ============ ICONS ============ */
+const ICONS={
+dashboard:'<path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>',
+schemes:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16"/>',
+apps:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+docs:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+pay:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+jago:'<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 15c1.5 1.2 4.5 1.2 6 0"/>',
+notif:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+check:'<path d="M5 13l4 4L19 7"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+upload:'<path d="M12 3v12M7 8l5-5 5 5"/><path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"/>',
+chev:'<path d="M9 6l6 6-6 6"/>',
+help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><path d="M12 17h.01"/>',
+settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>'
+};
+function icon(n,cls){const p=ICONS[n]||ICONS.info;return `<svg class="${cls||''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`}
+
+/* ============ HELPERS ============ */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmtMoney(n){return '₹'+Number(n||0).toLocaleString('en-IN')}
+function statusClass(st){const m={Verified:'ok',Approved:'ok',Disbursed:'ok',Paid:'ok',Submitted:'info',Verification:'info','In progress':'info','Not Required':'neutral',Pending:'warn',Processing:'warn',Mismatch:'err',Rejected:'err','Not Eligible':'err',Eligible:'ok','Needs Manual Review':'warn'};return m[st]||'neutral'}
+function toast(msg,type){const w=document.getElementById('toastWrap');const t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},2400)}
+
+/* ============ STATE ============ */
+const KEY='tso_state_v1';
+function S(){try{const raw=localStorage.getItem(KEY);if(raw){const p=JSON.parse(raw);if(p&&p.profile)return p}}catch(e){}return null}
+const STAGES=['Submitted','Institution Verification','Document Verification','State Verification','Sanction','DBT Processing','Payment Credited'];
+
+/* ============ SHELL ============ */
+const NAV=[
+  {id:'dashboard',label:'Dashboard',icon:'dashboard',href:'dashboard.html'},
+  {id:'schemes',label:'Schemes',icon:'schemes',href:'schemes.html'},
+  {id:'applications',label:'Applications',icon:'apps',href:'my-applications.html'},
+  {id:'documents',label:'Documents',icon:'docs',href:'document-wallet.html'},
+  {id:'payments',label:'Payments',icon:'pay',href:'payment-status.html'},
+  {id:'jago',label:'JAGO',icon:'jago',href:'jago.html'},
+  {id:'notifications',label:'Notifications',icon:'notif',href:'notifications.html'},
+  {id:'profile',label:'Profile',icon:'profile',href:'profile.html'}
+];
+const MOBILE_NAV=['dashboard','schemes','applications','jago','profile'];
+
+function mountShell(active,crumb){
+  const s=S();const unread=s?s.notifications.filter(n=>!n.read).length:0;
+  document.getElementById('topbar').innerHTML=`
+    <div class="brand">
+      <span class="logo">${icon('shield')}</span>
+      <span class="brand-t"><b>Tribal Scholarship One</b><small>${esc(crumb||'Unified Scholarship Platform')}</small></span>
+    </div>
+    <div class="top-actions">
+      <a class="iconbtn" href="notifications.html" aria-label="Notifications">${icon('notif')}${unread?'<span class="dot-badge"></span>':''}</a>
+      <a class="iconbtn" href="profile.html" aria-label="Profile">${icon('user')}</a>
+    </div>`;
+  document.getElementById('sidebar').innerHTML=`
+    <div class="nav-title">Menu</div>
+    ${NAV.map(n=>`<a href="${n.href}" class="${n.id===active?'active':''}">${icon(n.icon)}<span>${n.label}</span></a>`).join('')}
+    <div class="nav-title">Support</div>
+    <a href="help.html">${icon('help')}<span>Help</span></a>
+    <a href="settings.html">${icon('settings')}<span>Settings</span></a>
+    <a href="index.html" onclick="localStorage.removeItem('tso_state_v1')">${icon('logout')}<span>Logout</span></a>`;
+  document.getElementById('bottomnav').innerHTML=MOBILE_NAV.map(id=>{
+    const n=NAV.find(x=>x.id===id);
+    return `<a class="bn-item ${id===active?'active':''}" href="${n.href}">${icon(n.icon)}<span>${n.label}</span></a>`;
+  }).join('');
+  if(!document.querySelector('.jago-fab')){
+    const f=document.createElement('button');f.className='jago-fab';f.setAttribute('aria-label','Open JAGO assistant');f.innerHTML=icon('jago');
+    f.onclick=()=>location.href='jago.html';document.body.appendChild(f);
+  }
+}
+
+/* ============ PAGE ============ */
+const s=S();
+if(!s||!s.profile){location.href='index.html'}
+const p=s.profile,apps=s.applications,active=apps.find(a=>a.status!=='Disbursed')||apps[0];
+const verifiedDocs=s.documents.filter(d=>d.status==='Verified').length;
+const requiredDocs=s.documents.filter(d=>d.required).length;
+const verChecks=s.verification.checks;
+const verPct=Math.round(verChecks.filter(c=>c.status==='Verified').length/verChecks.length*100);
+const unread=s.notifications.filter(n=>!n.read).length;
+const paidTotal=s.payments.filter(x=>x.status==='Paid').reduce((a,b)=>a+b.amount,0);
+const recommended=s.schemes.find(x=>x.id==='top-class');
+
+mountShell('dashboard','Home / Dashboard');
+
+document.getElementById('page').innerHTML=`
+  <section class="hero">
+    <div class="hero-l">
+      <span class="hero-eyebrow">${icon('shield')} Ministry of Tribal Affairs</span>
+      <h1>Namaste, ${esc(p.firstName)} 👋</h1>
+      <p>Your unified scholarship dashboard — all five ST scholarship schemes, one place.</p>
+      <div class="hero-meta">
+        <span class="pill">${icon('user')} ${esc(p.enrollment)}</span>
+        <span class="pill">${icon('schemes')} ${esc(p.course)}</span>
+      </div>
+    </div>
+    <div class="hero-ring">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="10"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-dasharray="${(p.profileCompletion/100)*327} 327" transform="rotate(-90 60 60)"/>
+      </svg>
+      <div class="hero-ring-txt"><strong>${p.profileCompletion}%</strong><span>Profile</span></div>
+    </div>
+  </section>
+
+  <section class="qa-row">
+    <a class="qa" href="schemes.html">${icon('schemes')}<span>Browse Schemes</span></a>
+    <a class="qa" href="eligibility-check.html">${icon('shield')}<span>Check Eligibility</span></a>
+    <a class="qa" href="scholarship-check.html">${icon('search')}<span>Existing Scholarship</span></a>
+    <a class="qa" href="document-upload.html">${icon('upload')}<span>Upload Document</span></a>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><span class="stat-ic ok">${icon('apps')}</span><div><b>${apps.length}</b><small>My Applications</small></div></div>
+    <div class="stat"><span class="stat-ic info">${icon('docs')}</span><div><b>${verifiedDocs}/${requiredDocs}</b><small>Docs Verified</small></div></div>
+    <div class="stat"><span class="stat-ic warn">${icon('shield')}</span><div><b>${verPct}%</b><small>Verification</small></div></div>
+    <div class="stat"><span class="stat-ic ok">${icon('pay')}</span><div><b>${fmtMoney(paidTotal)}</b><small>Total Received</small></div></div>
+  </section>
+
+  <div class="cols">
+    <section class="card">
+      <div class="card-h"><h2>Current Application</h2><a class="link" href="my-applications.html">View all</a></div>
+      ${active?`
+      <div class="app-row">
+        <div class="app-row-l">
+          <span class="badge ${statusClass(active.status)}">${esc(active.status)}</span>
+          <h3>${esc(active.schemeName)}</h3>
+          <p class="muted sm">ID <b>${esc(active.id)}</b> · AY ${esc(active.year)}</p>
+        </div>
+        <div class="app-row-r"><b>${fmtMoney(active.amount)}</b><small>Sanctioned</small></div>
+      </div>
+      <div class="progress"><span style="width:${(active.stageIndex/6*100).toFixed(0)}%"></span></div>
+      <div class="stage-lbl"><span>${STAGES[active.stageIndex]}</span><span>Step ${active.stageIndex+1} of 7</span></div>
+      <div class="row gap">
+        <a class="btn primary" href="application-details.html?id=${active.id}">Track Application</a>
+        <a class="btn ghost" href="verification.html">Verification</a>
+      </div>`:`<div class="empty">${icon('apps')}<p>No applications yet</p><a class="btn primary" href="schemes.html">Browse Schemes</a></div>`}
+    </section>
+
+    <section class="card">
+      <div class="card-h"><h2>Pending Actions</h2><span class="badge warn">${s.pendingActions.length} open</span></div>
+      <ul class="action-list">
+        ${s.pendingActions.map(a=>`
+          <li class="action ${a.priority}">
+            <span class="action-ic">${icon(a.priority==='high'?'alert':'info')}</span>
+            <div>
+              <b>${esc(a.title)}</b>
+              <p class="muted sm">${esc(a.desc)}</p>
+              <a class="link sm" href="${a.href}">${esc(a.cta)} →</a>
+            </div>
+          </li>`).join('')}
+      </ul>
+    </section>
+  </div>
+
+  <div class="cols">
+    <section class="card">
+      <div class="card-h"><h2>Verification Status</h2><a class="link" href="verification.html">Details</a></div>
+      <ul class="check-list">
+        ${verChecks.slice(0,5).map(c=>`
+          <li>
+            <span class="ck ${statusClass(c.status)}">${icon(c.status==='Verified'?'check':c.status==='Pending'?'clock':c.status==='Mismatch'?'alert':'info')}</span>
+            <span class="ck-l">${esc(c.label)}</span>
+            <span class="badge ${statusClass(c.status)}">${esc(c.status)}</span>
+          </li>`).join('')}
+      </ul>
+      <p class="muted xs" style="margin-top:10px">Last checked ${esc(s.verification.lastChecked)} · Sources (mock): ${esc(s.verification.sources.slice(0,4).join(', '))}</p>
+    </section>
+
+    <section class="card">
+      <div class="card-h"><h2>Payment / DBT Status</h2><a class="link" href="payment-status.html">History</a></div>
+      <div class="pay-hero">
+        <div><small>Sanctioned (AY ${esc(s.paymentSummary.year)})</small><b>${fmtMoney(s.paymentSummary.sanctioned)}</b></div>
+        <span class="badge ${statusClass(s.paymentSummary.status)}">${esc(s.paymentSummary.status)}</span>
+      </div>
+      <div class="kv-grid">
+        <div><small>DBT Status</small><b>${esc(s.paymentSummary.dbt)}</b></div>
+        <div><small>Reference No.</small><b>${esc(s.paymentSummary.ref)}</b></div>
+        <div><small>Sanction Date</small><b>${esc(s.paymentSummary.sanctionDate)}</b></div>
+        <div><small>Credited On</small><b>${esc(s.paymentSummary.paidDate||'—')}</b></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card reco">
+    <div class="reco-l">
+      <span class="badge info">Recommended for you</span>
+      <h3>${esc(recommended.name)}</h3>
+      <p class="muted sm">${esc(recommended.short)}</p>
+      <div class="row gap" style="margin-top:10px">
+        <a class="btn primary" href="scheme-details.html?scheme=${recommended.id}">View Details</a>
+        <a class="btn ghost" href="eligibility-check.html?scheme=${recommended.id}">Check Eligibility</a>
+      </div>
+    </div>
+    <div class="reco-r"><b>${esc(recommended.benefitShort)}</b><small>Benefits</small></div>
+  </section>
+
+  <div class="cols">
+    <section class="card">
+      <div class="card-h"><h2>Recent Notifications</h2><a class="link" href="notifications.html">All ${unread?`(${unread})`:''}</a></div>
+      <ul class="notif-list">
+        ${s.notifications.slice(0,4).map(n=>`
+          <li class="${n.read?'':'unread'}">
+            <span class="dot ${n.type}"></span>
+            <div><b>${esc(n.title)}</b><p class="muted sm">${esc(n.body)}</p><small class="muted xs">${esc(n.date)}</small></div>
+          </li>`).join('')}
+      </ul>
+    </section>
+
+    <section class="card gap-card">
+      <div class="card-h"><h2>Beneficiary Gap Detection <span class="badge neutral">Concept</span></h2></div>
+      <p class="muted sm">Demo view of how enrolment data can be matched with scholarship data to find ST students who are enrolled but not receiving benefits.</p>
+      <div class="gap-metrics">
+        <div><b>12,480</b><small>ST students enrolled (UDISE+)</small></div>
+        <div><b>9,310</b><small>Receiving scholarship</small></div>
+        <div class="hl"><b>3,170</b><small>Potential gap</small></div>
+      </div>
+      <p class="muted xs">Sources matched (mock): UDISE+ · APAAR · OTR. For demonstration only.</p>
+    </section>
+  </div>
+
+  <a class="jago-banner" href="jago.html">
+    <span class="jago-orb">${icon('jago')}</span>
+    <span>
+      <b>Ask JAGO</b>
+      <small>Your scholarship assistant — status, documents, eligibility, payments</small>
+    </span>
+    ${icon('chev')}
+  </a>
+`;
+</script>
+</body>
+</html>
