@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B5E55">
+<title>Verify OTP · Tribal Scholarship One</title>
+<style>
+:root{--brand:#0B5E55;--brandsoft:#E6F2F0;--bg:#F4F6F8;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0;--err:#DC2626;--ok:#0F9D58;--safeb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;display:grid;place-items:center;min-height:100dvh;padding:24px 16px}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+.card{background:#fff;border-radius:20px;box-shadow:0 20px 50px -20px rgba(15,23,42,.35);padding:28px 22px;width:100%;max-width:440px}
+.ic{width:64px;height:64px;border-radius:18px;background:var(--brandsoft);display:grid;place-items:center;margin:0 auto 16px}
+.ic svg{width:34px;height:34px;stroke:var(--brand);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+h1{font-size:20px;text-align:center;margin:0 0 6px}
+.sub{font-size:13.5px;color:var(--muted);text-align:center;margin:0 0 22px;line-height:1.5}
+.sub b{color:var(--ink)}
+.otp-row{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
+.otp-row input{width:46px;height:54px;text-align:center;font-size:22px;font-weight:700;border:1.5px solid var(--line);border-radius:10px;background:#fff;outline:0;transition:.15s;caret-color:var(--brand)}
+.otp-row input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(11,94,85,.14)}
+.otp-row input.filled{border-color:var(--brand);background:var(--brandsoft)}
+@media(max-width:400px){.otp-row input{width:40px;height:48px;font-size:19px}}
+.err{color:var(--err);font-size:12.5px;text-align:center;min-height:18px;margin-bottom:10px}
+.timer{text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px}
+.timer b{color:var(--ink);font-variant-numeric:tabular-nums}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:10px;border:1px solid transparent;background:#fff;font-weight:600;font-size:14.5px;min-height:48px;cursor:pointer;width:100%}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:#fff;border-color:var(--line);margin-top:10px}
+.resend{background:none;border:0;color:var(--brand);font-weight:600;font-size:13.5px;cursor:pointer;padding:4px 8px;border-radius:6px}
+.resend:disabled{color:var(--muted);cursor:not-allowed}
+.demo-note{background:var(--brandsoft);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--brand);margin-top:16px;text-align:center;font-weight:500}
+.toast-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center;width:calc(100% - 28px);max-width:400px;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="ic"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/></svg></div>
+  <h1>Verify your mobile</h1>
+  <p class="sub">We sent a 6-digit OTP to <b id="maskedMobile">+91 ••••• •••10</b><br>Enter it below to continue.</p>
+
+  <div class="otp-row" id="otpRow" role="group" aria-label="One-time password">
+    <input inputmode="numeric" maxlength="1" aria-label="Digit 1">
+    <input inputmode="numeric" maxlength="1" aria-label="Digit 2">
+    <input inputmode="numeric" maxlength="1" aria-label="Digit 3">
+    <input inputmode="numeric" maxlength="1" aria-label="Digit 4">
+    <input inputmode="numeric" maxlength="1" aria-label="Digit 5">
+    <input inputmode="numeric" maxlength="1" aria-label="Digit 6">
+  </div>
+  <div class="err" id="errMsg"></div>
+  <div class="timer">Didn't receive it? Resend in <b id="timer">00:30</b></div>
+
+  <button class="btn primary" id="verifyBtn" disabled>Verify &amp; Continue</button>
+  <button class="btn ghost" id="resendBtn" disabled>Resend OTP</button>
+
+  <div class="demo-note">Demo OTP: <b>123456</b> (any 6-digit code also works)</div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+const inputs=[...document.querySelectorAll('#otpRow input')];
+const verifyBtn=document.getElementById('verifyBtn');
+const resendBtn=document.getElementById('resendBtn');
+const timerEl=document.getElementById('timer');
+const errMsg=document.getElementById('errMsg');
+
+/* Mask mobile from registration draft */
+try{
+  const d=JSON.parse(localStorage.getItem('tso_reg_draft')||'{}');
+  if(d.mobile&&d.mobile.length===10){
+    document.getElementById('maskedMobile').textContent='+91 ••••• ••'+d.mobile.slice(-2);
+  }
+}catch(e){}
+
+/* OTP input handling */
+inputs.forEach((inp,i)=>{
+  inp.addEventListener('input',e=>{
+    const v=e.target.value.replace(/\D/g,'');
+    e.target.value=v.slice(-1);
+    e.target.classList.toggle('filled',!!e.target.value);
+    if(e.target.value&&i<inputs.length-1)inputs[i+1].focus();
+    updateState();
+  });
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Backspace'&&!e.target.value&&i>0){inputs[i-1].focus();inputs[i-1].value='';inputs[i-1].classList.remove('filled');updateState()}
+    if(e.key==='ArrowLeft'&&i>0)inputs[i-1].focus();
+    if(e.key==='ArrowRight'&&i<inputs.length-1)inputs[i+1].focus();
+  });
+  inp.addEventListener('paste',e=>{
+    e.preventDefault();
+    const txt=(e.clipboardData.getData('text')||'').replace(/\D/g,'').slice(0,6);
+    txt.split('').forEach((c,j)=>{if(inputs[j]){inputs[j].value=c;inputs[j].classList.add('filled')}});
+    if(txt.length)inputs[Math.min(txt.length,5)].focus();
+    updateState();
+  });
+});
+
+function updateState(){
+  const code=inputs.map(i=>i.value).join('');
+  verifyBtn.disabled=code.length!==6;
+  errMsg.textContent='';
+}
+
+/* Timer */
+let remaining=30;
+function tick(){
+  const m=String(Math.floor(remaining/60)).padStart(2,'0');
+  const s=String(remaining%60).padStart(2,'0');
+  timerEl.textContent=m+':'+s;
+  if(remaining<=0){
+    timerEl.parentElement.innerHTML='Didn\'t receive it? <button class="resend" id="resendInline">Resend OTP</button>';
+    resendBtn.disabled=false;
+    document.getElementById('resendInline').onclick=()=>resend();
+    return;
+  }
+  remaining--; setTimeout(tick,1000);
+}
+tick();
+
+function resend(){
+  remaining=30;
+  resendBtn.disabled=true;
+  timerEl.parentElement.innerHTML='Didn\'t receive it? Resend in <b id="timer">00:30</b>';
+  timerEl=document.getElementById('timer');
+  inputs.forEach(i=>{i.value='';i.classList.remove('filled')});
+  inputs[0].focus();
+  updateState();
+  tick();
+  toast('OTP resent (demo)','ok');
+}
+resendBtn.onclick=resend;
+
+/* Verify */
+verifyBtn.addEventListener('click',()=>{
+  const code=inputs.map(i=>i.value).join('');
+  if(code.length!==6){errMsg.textContent='Please enter all 6 digits.';return}
+  verifyBtn.disabled=true;
+  verifyBtn.textContent='Verifying…';
+  setTimeout(()=>{
+    // Promote registration draft into full state
+    try{
+      const KEY='tso_state_v1';
+      const d=JSON.parse(localStorage.getItem('tso_reg_draft')||'{}');
+      let st=JSON.parse(localStorage.getItem(KEY)||'null');
+      if(st&&st.profile){
+        if(d.firstName)st.profile.firstName=d.firstName;
+        if(d.lastName)st.profile.lastName=d.lastName;
+        if(d.firstName||d.lastName)st.profile.name=((d.firstName||st.profile.firstName)+' '+(d.lastName||st.profile.lastName)).trim();
+        st.profile.initials=((st.profile.firstName||'A')[0]+(st.profile.lastName||'M')[0]).toUpperCase();
+        if(d.mobile)st.profile.mobile='+91 '+d.mobile;
+        if(d.email)st.profile.email=d.email;
+        if(d.state)st.profile.state=d.state;
+        if(d.district)st.profile.district=d.district;
+        st.session={loggedIn:true,at:Date.now()};
+        localStorage.setItem(KEY,JSON.stringify(st));
+      }
+      localStorage.removeItem('tso_reg_draft');
+    }catch(e){}
+    toast('Mobile verified successfully','ok');
+    setTimeout(()=>location.href='dashboard.html',500);
+  },900);
+});
+
+inputs[0].focus();
+
+function toast(msg,type){const w=document.getElementById('toastWrap');const t=document.createElement('div');t.style.cssText='background:'+(type==='err'?'#DC2626':type==='ok'?'#0F9D58':'#0F172A')+';color:#fff;padding:11px 16px;border-radius:10px;font-size:13.5px;font-weight:500;box-shadow:0 10px 30px -10px rgba(0,0,0,.35);transition:opacity .3s';t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300)},2400)}
+</script>
+</body>
+</html>

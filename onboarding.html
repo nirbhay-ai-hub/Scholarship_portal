@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B5E55">
+<title>Welcome · Tribal Scholarship One</title>
+<style>
+:root{--brand:#0B5E55;--brand2:#0E7C6F;--brandsoft:#E6F2F0;--bg:#F4F6F8;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0;--r:14px;--safeb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#fff;color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:10px;border:1px solid transparent;background:#fff;font-weight:600;font-size:14.5px;min-height:46px;transition:.15s}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.ghost{background:#fff;border-color:var(--line)}
+.btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+.ob-wrap{min-height:100dvh;display:flex;flex-direction:column;background:#fff;max-width:560px;margin:0 auto;position:relative}
+.ob-top{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 4px}
+.ob-brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px}
+.ob-brand .l{width:32px;height:32px;border-radius:9px;background:var(--brand);display:grid;place-items:center}
+.ob-brand .l svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8}
+.ob-skip{background:none;border:0;color:var(--muted);font-size:13.5px;font-weight:600;padding:8px 10px}
+.ob-slides{flex:1;position:relative;overflow:hidden}
+.ob-slide{position:absolute;inset:0;padding:30px 24px 20px;display:flex;flex-direction:column;justify-content:center;opacity:0;transition:opacity .35s;pointer-events:none}
+.ob-slide.active{opacity:1;pointer-events:auto}
+.ob-ill{width:130px;height:130px;border-radius:32px;background:var(--brandsoft);display:grid;place-items:center;margin:0 auto 26px}
+.ob-ill svg{width:64px;height:64px;stroke:var(--brand);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ob-slide h2{font-size:23px;text-align:center;margin:0 0 12px;line-height:1.25;font-weight:700}
+.ob-slide p{text-align:center;color:var(--muted);font-size:14.5px;margin:0;max-width:380px;align-self:center}
+.ob-slide ul{text-align:left;align-self:center;max-width:360px;margin:16px 0 0;padding:0;list-style:none;font-size:14px;color:var(--ink)}
+.ob-slide li{padding:6px 0;display:flex;gap:10px;align-items:flex-start}
+.ob-slide li svg{width:18px;height:18px;stroke:var(--brand);fill:none;stroke-width:2.4;flex:none;margin-top:2px}
+.ob-foot{padding:16px 20px calc(22px + var(--safeb));border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff}
+.ob-dots{display:flex;gap:6px}
+.ob-dots span{width:8px;height:8px;border-radius:50%;background:#CBD5E1;transition:.2s;cursor:pointer}
+.ob-dots span.active{width:24px;border-radius:99px;background:var(--brand)}
+</style>
+</head>
+<body>
+<div class="ob-wrap">
+  <header class="ob-top">
+    <div class="ob-brand">
+      <span class="l"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
+      Tribal Scholarship One
+    </div>
+    <a class="ob-skip" href="index.html">Skip</a>
+  </header>
+
+  <div class="ob-slides" id="slides">
+    <section class="ob-slide active">
+      <div class="ob-ill"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16"/></svg></div>
+      <h2>One portal for all ST scholarships</h2>
+      <p>Access five Ministry of Tribal Affairs schemes from a single unified dashboard — Pre-Matric, Post-Matric, Top Class, NFST and NOS.</p>
+    </section>
+
+    <section class="ob-slide">
+      <div class="ob-ill"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13l2 2 4-4"/></svg></div>
+      <h2>Documents once, reuse everywhere</h2>
+      <p>Upload your certificates into a secure digital wallet and reuse them across every application.</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg> ST &amp; PVTG certificates</li>
+        <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg> Income, domicile, marksheets</li>
+        <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg> Institution &amp; identity records</li>
+      </ul>
+    </section>
+
+    <section class="ob-slide">
+      <div class="ob-ill"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <h2>Unified verification &amp; tracking</h2>
+      <p>See verification status, application progress, sanctions and DBT payments in one timeline — no more juggling between portals.</p>
+    </section>
+
+    <section class="ob-slide">
+      <div class="ob-ill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 15c1.5 1.2 4.5 1.2 6 0"/></svg></div>
+      <h2>Meet JAGO, your assistant</h2>
+      <p>Ask JAGO about schemes, eligibility, documents, application status or payment — in English or Hindi.</p>
+    </section>
+  </div>
+
+  <footer class="ob-foot">
+    <div class="ob-dots" id="dots" role="tablist"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn ghost" id="prevBtn" hidden>Back</button>
+      <button class="btn primary" id="nextBtn">Next</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+const slides=document.querySelectorAll('.ob-slide');
+const dots=document.getElementById('dots');
+const nextBtn=document.getElementById('nextBtn');
+const prevBtn=document.getElementById('prevBtn');
+let idx=0;
+
+slides.forEach((_,i)=>{const d=document.createElement('span');if(i===0)d.classList.add('active');d.onclick=()=>go(i);dots.appendChild(d)});
+
+function go(n){
+  idx=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,i)=>s.classList.toggle('active',i===idx));
+  dots.querySelectorAll('span').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  prevBtn.hidden=idx===0;
+  nextBtn.textContent=idx===slides.length-1?'Get Started':'Next';
+  nextBtn.onclick=()=>idx===slides.length-1?location.href='register.html':go(idx+1);
+}
+prevBtn.onclick=()=>go(idx-1);
+nextBtn.onclick=()=>go(idx+1);
+
+/* swipe */
+let sx=0;
+document.getElementById('slides').addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+document.getElementById('slides').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)go(idx+(dx<0?1:-1))},{passive:true});
+</script>
+</body>
+</html>

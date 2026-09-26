@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B5E55">
+<title>Payment Status - Tribal Scholarship One</title>
+<style>
+:root{
+  --brand:#0B5E55;--brand2:#0E7C6F;--brandsoft:#E6F2F0;
+  --bg:#F4F6F8;--card:#fff;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0;
+  --ok:#0F9D58;--okbg:#E7F6EE;--warn:#B45309;--warnbg:#FEF3C7;
+  --err:#DC2626;--errbg:#FEE2E2;--info:#1D4ED8;--infobg:#DBEAFE;
+  --r:14px;--sh:0 1px 2px rgba(15,23,42,.06),0 8px 24px -14px rgba(15,23,42,.2);
+  --safeb:env(safe-area-inset-bottom,0px)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+svg{display:block}
+
+/* SHELL */
+.app{min-height:100dvh;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:50;background:var(--brand);color:#fff;
+  display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:56px;
+  padding-top:calc(10px + env(safe-area-inset-top,0px));
+}
+.topbar .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.logo{
+  width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.15);
+  display:grid;place-items:center;flex:none;
+}
+.logo svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.brand-t{min-width:0}
+.brand-t b{display:block;font-size:14px;line-height:1.15;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.brand-t small{display:block;font-size:11px;opacity:.8;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.top-actions{display:flex;gap:4px}
+.iconbtn{
+  width:38px;height:38px;border-radius:10px;border:0;
+  background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;
+  cursor:pointer;position:relative;
+}
+.iconbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+.iconbtn .dot-badge{
+  position:absolute;top:6px;right:6px;width:8px;height:8px;
+  border-radius:50%;background:#FBBF24;border:2px solid var(--brand)
+}
+.sidebar{display:none}
+.bottomnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:60;background:#fff;
+  border-top:1px solid var(--line);display:flex;
+  padding:6px 4px calc(6px + var(--safeb));
+  box-shadow:0 -4px 16px -8px rgba(15,23,42,.1);
+}
+.bn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 2px;border-radius:10px;color:var(--muted);font-size:10.5px;
+  font-weight:500;min-width:0;
+}
+.bn-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7}
+.bn-item.active{color:var(--brand);background:var(--brandsoft)}
+.bn-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.content{flex:1;padding:14px 14px calc(88px + var(--safeb));min-width:0}
+.wrap{max-width:900px;margin:0 auto}
+
+@media(min-width:768px){
+  .content{padding:18px 22px calc(92px + var(--safeb))}
+  .bottomnav{padding:8px 12px calc(8px + var(--safeb))}
+  .bn-item{font-size:11.5px}.bn-item svg{width:24px;height:24px}
+}
+@media(min-width:1200px){
+  .app{
+    display:grid;grid-template-columns:250px 1fr;
+    grid-template-rows:auto 1fr;
+    grid-template-areas:"top top" "side main";
+  }
+  .topbar{grid-area:top}
+  .sidebar{
+    grid-area:side;display:block;background:#fff;
+    border-right:1px solid var(--line);padding:14px 12px;
+    position:sticky;top:56px;height:calc(100dvh - 56px);overflow-y:auto;
+  }
+  .sidebar .nav-title{
+    font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted);font-weight:600;padding:12px 12px 6px;
+  }
+  .sidebar a{
+    display:flex;align-items:center;gap:12px;padding:10px 12px;
+    border-radius:10px;color:var(--ink);font-size:14px;font-weight:500;
+    margin-bottom:2px;
+  }
+  .sidebar a svg{width:20px;height:20px;stroke:currentColor;fill:none;
+    stroke-width:1.8;flex:none}
+  .sidebar a:hover{background:var(--bg)}
+  .sidebar a.active{background:var(--brandsoft);color:var(--brand);font-weight:600}
+  .content{grid-area:main;padding:22px 26px}
+  .bottomnav{display:none}
+  .wrap{max-width:920px}
+}
+
+/* COMMON */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 16px;border-radius:10px;border:1px solid transparent;
+  background:#fff;color:var(--ink);font-weight:600;font-size:14px;
+  cursor:pointer;line-height:1.2;text-align:center;transition:.15s;
+  min-height:44px;
+}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:hover{background:#0a4f48}
+.btn.ghost{background:#fff;border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn.sm{padding:8px 13px;font-size:13px;min-height:38px}
+.btn.xs{padding:6px 11px;font-size:12px;min-height:34px}
+.btn.block{width:100%}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;
+  stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 9px;
+  border-radius:999px;font-size:11.5px;font-weight:600;background:#F1F5F9;
+  color:#334155;white-space:nowrap;
+}
+.badge.ok{background:var(--okbg);color:var(--ok)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+.badge.err{background:var(--errbg);color:var(--err)}
+.badge.info{background:var(--infobg);color:var(--info)}
+.badge.brand{background:var(--brandsoft);color:var(--brand)}
+.badge.neutral{background:#F1F5F9;color:#475569}
+.muted{color:var(--muted)}
+.sm{font-size:13px}
+.xs{font-size:11.5px}
+.link{color:var(--brand);font-weight:600;font-size:13.5px}
+
+/* HEAD */
+.page-head{margin-bottom:14px}
+.breadcrumb{
+  display:flex;align-items:center;gap:6px;font-size:12px;
+  color:var(--muted);margin-bottom:8px;flex-wrap:wrap;
+}
+.breadcrumb svg{width:12px;height:12px;stroke:currentColor;fill:none;
+  stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.page-head h1{font-size:22px;font-weight:700;margin:0 0 6px}
+.page-head p{color:var(--muted);font-size:13.5px;margin:0;max-width:640px}
+
+/* HERO */
+.pay-hero{
+  background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+  border-radius:16px;padding:20px;margin-bottom:14px;position:relative;
+  overflow:hidden;
+}
+.pay-hero::before{
+  content:"";position:absolute;top:-40px;right:-40px;width:200px;height:200px;
+  border-radius:50%;background:rgba(255,255,255,.06);
+}
+.ph-top{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:12px;position:relative;z-index:1;margin-bottom:14px;
+}
+.ph-top .ph-l{flex:1;min-width:0}
+.ph-top .ph-l small{
+  font-size:11.5px;opacity:.85;display:block;margin-bottom:4px;
+  text-transform:uppercase;letter-spacing:.05em;font-weight:600;
+}
+.ph-top .ph-l b{
+  display:block;font-size:28px;font-weight:700;line-height:1.1;
+  margin-bottom:6px;
+}
+.ph-top .ph-l .ph-sub{
+  font-size:12.5px;opacity:.9;display:block;
+}
+.ph-top .ph-ic{
+  width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.15);
+  display:grid;place-items:center;flex:none;
+}
+.ph-top .ph-ic svg{width:26px;height:26px;stroke:#fff;fill:none;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ph-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.15);padding:5px 11px;border-radius:999px;
+  font-size:11.5px;font-weight:700;
+}
+.ph-metrics{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:8px;
+  position:relative;z-index:1;
+}
+@media(min-width:560px){.ph-metrics{grid-template-columns:repeat(3,1fr)}}
+.ph-metric{
+  background:rgba(255,255,255,.12);border-radius:11px;padding:11px 10px;
+}
+.ph-metric small{
+  font-size:10.5px;opacity:.85;display:block;margin-bottom:3px;
+  text-transform:uppercase;letter-spacing:.04em;font-weight:600;
+}
+.ph-metric b{font-size:15px;font-weight:700;display:block}
+
+/* CARD */
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:16px;margin-bottom:14px;box-shadow:var(--sh);
+}
+.card-h{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  flex-wrap:wrap;
+}
+.card-h .c-ic{
+  width:34px;height:34px;border-radius:10px;background:var(--brandsoft);
+  display:grid;place-items:center;flex:none;
+}
+.card-h .c-ic svg{width:18px;height:18px;stroke:var(--brand);fill:none;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.card-h h2{font-size:15px;font-weight:700;margin:0;flex:1}
+
+/* KV GRID */
+.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+@media(min-width:640px){.kv-grid{grid-template-columns:repeat(3,1fr)}}
+.kv-grid>div small{
+  display:block;font-size:11px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.03em;font-weight:700;
+  margin-bottom:2px;
+}
+.kv-grid>div b{
+  font-size:14px;font-weight:600;color:var(--ink);word-break:break-word;
+}
+.kv-grid>div b.amt{color:var(--brand);font-size:16px;font-weight:700}
+
+/* DBT TRACK */
+.dbt-track{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
+  margin-top:6px;
+}
+@media(max-width:520px){.dbt-track{grid-template-columns:repeat(2,1fr)}}
+.dbt-step{
+  padding:12px 8px;border-radius:11px;background:var(--bg);
+  text-align:center;position:relative;
+}
+.dbt-step .ds-ic{
+  width:34px;height:34px;border-radius:9px;background:#fff;
+  display:grid;place-items:center;margin:0 auto 8px;
+  box-shadow:0 1px 2px rgba(15,23,42,.06);
+}
+.dbt-step .ds-ic svg{width:18px;height:18px;stroke:var(--muted);
+  fill:none;stroke-width:1.9}
+.dbt-step b{font-size:12px;font-weight:700;display:block;
+  margin-bottom:2px;line-height:1.25}
+.dbt-step small{font-size:10.5px;color:var(--muted);display:block;
+  line-height:1.3}
+.dbt-step.done{background:var(--okbg)}
+.dbt-step.done .ds-ic{background:var(--ok)}
+.dbt-step.done .ds-ic svg{stroke:#fff}
+.dbt-step.done b{color:var(--ok)}
+.dbt-step.active{background:var(--warnbg)}
+.dbt-step.active .ds-ic{background:var(--warn)}
+.dbt-step.active .ds-ic svg{stroke:#fff}
+.dbt-step.active b{color:var(--warn)}
+
+/* PAYMENT LIST */
+.pay-list{display:grid;gap:10px}
+.pay-row{
+  display:flex;gap:13px;align-items:center;padding:13px;
+  background:#fff;border:1px solid var(--line);border-radius:12px;
+  transition:.15s;
+}
+.pay-row:hover{border-color:#CBD5E1}
+.pay-row .pr-year{
+  width:64px;flex:none;text-align:center;
+}
+.pay-row .pr-year b{
+  font-size:13px;font-weight:700;color:var(--brand);display:block;
+}
+.pay-row .pr-year small{
+  font-size:10px;color:var(--muted);display:block;
+  text-transform:uppercase;letter-spacing:.04em;font-weight:600;
+}
+.pay-row .pr-info{
+  flex:1;min-width:0;
+}
+.pay-row .pr-info b{
+  font-size:13.5px;font-weight:600;display:block;margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.pay-row .pr-info small{
+  font-size:11.5px;color:var(--muted);display:block;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.pay-row .pr-amount{
+  text-align:right;flex:none;
+}
+.pay-row .pr-amount b{
+  font-size:15px;font-weight:700;color:var(--ink);display:block;
+  margin-bottom:3px;font-variant-numeric:tabular-nums;
+}
+.pay-row .pr-amount .badge{font-size:10.5px;padding:2px 7px}
+
+/* FILTERS */
+.filters{
+  display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:12px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.filters::-webkit-scrollbar{display:none}
+.filter{
+  flex:none;display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:999px;background:#fff;
+  border:1px solid var(--line);font-size:12.5px;font-weight:600;
+  color:var(--ink);cursor:pointer;transition:.15s;white-space:nowrap;
+  min-height:38px;
+}
+.filter svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.filter:hover{border-color:var(--brand);color:var(--brand)}
+.filter.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.filter .count{
+  background:rgba(0,0,0,.08);padding:1px 6px;border-radius:999px;
+  font-size:11px;font-weight:700;
+}
+.filter.active .count{background:rgba(255,255,255,.22)}
+
+/* SUMMARY STRIP */
+.sum-strip{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  margin-bottom:14px;
+}
+.sum-item{
+  background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:13px;text-align:center;box-shadow:var(--sh);
+}
+.sum-item b{
+  display:block;font-size:18px;font-weight:700;color:var(--brand);
+  line-height:1.15;font-variant-numeric:tabular-nums;
+}
+.sum-item small{
+  font-size:10.5px;color:var(--muted);display:block;
+  margin-top:3px;line-height:1.25;text-transform:uppercase;
+  letter-spacing:.03em;font-weight:600;
+}
+@media(max-width:420px){
+  .sum-item b{font-size:15px}
+  .sum-item small{font-size:9.5px}
+}
+
+/* MINI INFO */
+.mini-info{
+  display:flex;gap:11px;align-items:flex-start;padding:11px 13px;
+  background:var(--infobg);border:1px solid #BFDBFE;border-radius:10px;
+  font-size:12.5px;line-height:1.5;color:#1E3A8A;margin-bottom:14px;
+}
+.mini-info svg{width:16px;height:16px;stroke:currentColor;
+  fill:none;stroke-width:2;flex:none;margin-top:1px}
+
+/* HELP */
+.help-block{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:16px;box-shadow:var(--sh);margin-top:14px;
+}
+.help-block h3{
+  margin:0 0 12px;font-size:15px;font-weight:700;
+  display:flex;align-items:center;gap:9px;
+}
+.help-block h3 svg{width:18px;height:18px;stroke:var(--brand);fill:none;
+  stroke-width:1.9}
+.help-block .row-btns{
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;
+}
+
+/* EMPTY */
+.empty{
+  text-align:center;padding:44px 20px;background:#fff;
+  border:1px dashed var(--line);border-radius:14px;
+}
+.empty svg{width:48px;height:48px;stroke:var(--muted);fill:none;
+  stroke-width:1.4;margin:0 auto 12px;opacity:.5}
+.empty h3{color:var(--ink);font-size:15px;margin:0 0 6px}
+.empty p{margin:0;font-size:13px;color:var(--muted);max-width:400px;
+  margin-left:auto;margin-right:auto}
+
+/* TOAST */
+.toast-wrap{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(88px + var(--safeb));z-index:500;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none;
+  align-items:center;width:calc(100% - 28px);max-width:420px;
+}
+@media(min-width:1200px){.toast-wrap{bottom:24px}}
+.toast{
+  background:#0F172A;color:#fff;padding:11px 16px;border-radius:10px;
+  font-size:13.5px;font-weight:500;
+  box-shadow:0 10px 30px -10px rgba(0,0,0,.35);
+  transition:opacity .3s;text-align:center;max-width:100%;
+}
+.toast.ok{background:var(--ok)}
+.toast.err{background:var(--err)}
+.toast.warn{background:var(--warn)}
+
+/* JAGO FAB */
+.jago-fab{
+  position:fixed;right:14px;bottom:calc(78px + var(--safeb));
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+  display:grid;place-items:center;
+  box-shadow:0 10px 24px -8px rgba(11,94,85,.6);
+  z-index:70;border:0;cursor:pointer;
+}
+.jago-fab svg{width:26px;height:26px;stroke:currentColor;fill:none;
+  stroke-width:1.8}
+@media(min-width:1200px){
+  .jago-fab{bottom:26px;right:26px;width:58px;height:58px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar" id="topbar"></header>
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content"><div class="wrap" id="page"></div></main>
+  <nav class="bottomnav" id="bottomnav"></nav>
+</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* =========================================================
+   ICONS
+   ========================================================= */
+var ICONS = {
+  dashboard:'<path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>',
+  schemes:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16"/>',
+  apps:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+  docs:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  pay:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+  jago:'<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 15c1.5 1.2 4.5 1.2 6 0"/>',
+  notif:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+  check:'<path d="M5 13l4 4L19 7"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>',
+  chevL:'<path d="M15 6l-6 6 6 6"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  close:'<path d="M18 6L6 18M6 6l12 12"/>',
+  book:'<path d="M4 19.5V5a2 2 0 0 1 2-2h11a1 1 0 0 1 1 1v15"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H18"/><path d="M20 5v14"/>',
+  grad:'<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/>',
+  star:'<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/>',
+  bank:'<path d="M3 10l9-6 9 6"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><path d="M12 17h.01"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+  alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  refresh:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>',
+  upload:'<path d="M12 3v12M7 8l5-5 5 5"/><path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4"/>',
+  arrowR:'<path d="M5 12h14M13 5l7 7-7 7"/>',
+  download:'<path d="M12 3v12M7 10l5 5 5-5"/><path d="M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/>',
+  file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h6"/>',
+  sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+  layers:'<path d="M12 2L2 7l10 5 10-5z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/>'
+};
+function icon(n, cls){
+  var p = ICONS[n] || ICONS.info;
+  return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
+}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+function fmtMoney(n){
+  return 'Rs ' + Number(n || 0).toLocaleString('en-IN');
+}
+function toast(msg, type){
+  var w = document.getElementById('toastWrap');
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  w.appendChild(t);
+  setTimeout(function(){
+    t.style.opacity = '0';
+    setTimeout(function(){ t.remove(); }, 320);
+  }, 2400);
+}
+function payStatusMeta(st){
+  var m = {
+    'Paid':       {cls:'ok',   label:'Paid'},
+    'Credited':   {cls:'ok',   label:'Credited'},
+    'Processing': {cls:'warn', label:'Processing'},
+    'Initiated':  {cls:'info', label:'Initiated'},
+    'Pending':    {cls:'warn', label:'Pending'},
+    'Failed':     {cls:'err',  label:'Failed'},
+    'Rejected':   {cls:'err',  label:'Rejected'}
+  };
+  return m[st] || {cls:'neutral', label: st};
+}
+
+/* =========================================================
+   STATE
+   ========================================================= */
+var KEY = 'tso_state_v1';
+function S(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){
+      var p = JSON.parse(raw);
+      if(p && p.profile) return p;
+    }
+  }catch(e){}
+  return null;
+}
+
+/* =========================================================
+   SHELL
+   ========================================================= */
+var NAV = [
+  {id:'dashboard',   label:'Dashboard',    icon:'dashboard', href:'dashboard.html'},
+  {id:'schemes',     label:'Schemes',      icon:'schemes',   href:'schemes.html'},
+  {id:'applications',label:'Applications', icon:'apps',      href:'my-applications.html'},
+  {id:'documents',   label:'Documents',    icon:'docs',      href:'document-wallet.html'},
+  {id:'payments',    label:'Payments',     icon:'pay',       href:'payment-status.html'},
+  {id:'jago',        label:'JAGO',         icon:'jago',      href:'jago.html'},
+  {id:'notifications',label:'Notifications',icon:'notif',    href:'notifications.html'},
+  {id:'profile',     label:'Profile',      icon:'profile',   href:'profile.html'}
+];
+var MOBILE_NAV = ['dashboard','schemes','applications','jago','profile'];
+
+function mountShell(active, crumb){
+  var st = S();
+  var unread = st ? st.notifications.filter(function(n){ return !n.read; }).length : 0;
+
+  document.getElementById('topbar').innerHTML =
+    '<div class="brand">' +
+      '<span class="logo">' + icon('shield') + '</span>' +
+      '<span class="brand-t">' +
+        '<b>Tribal Scholarship One</b>' +
+        '<small>' + esc(crumb || 'Unified Scholarship Platform') + '</small>' +
+      '</span>' +
+    '</div>' +
+    '<div class="top-actions">' +
+      '<a class="iconbtn" href="notifications.html" aria-label="Notifications">' +
+        icon('notif') + (unread ? '<span class="dot-badge"></span>' : '') +
+      '</a>' +
+      '<a class="iconbtn" href="profile.html" aria-label="Profile">' + icon('user') + '</a>' +
+    '</div>';
+
+  document.getElementById('sidebar').innerHTML =
+    '<div class="nav-title">Menu</div>' +
+    NAV.map(function(n){
+      return '<a href="' + n.href + '" class="' + (n.id === active ? 'active' : '') + '">' +
+        icon(n.icon) + '<span>' + n.label + '</span>' +
+      '</a>';
+    }).join('') +
+    '<div class="nav-title">Support</div>' +
+    '<a href="help.html">' + icon('help') + '<span>Help</span></a>' +
+    '<a href="settings.html">' + icon('settings') + '<span>Settings</span></a>' +
+    '<a href="index.html" onclick="localStorage.removeItem(\'tso_state_v1\')">' +
+      icon('logout') + '<span>Logout</span></a>';
+
+  document.getElementById('bottomnav').innerHTML = MOBILE_NAV.map(function(id){
+    var n = NAV.find(function(x){ return x.id === id; });
+    return '<a class="bn-item ' + (id === active ? 'active' : '') + '" href="' + n.href + '">' +
+      icon(n.icon) + '<span>' + n.label + '</span>' +
+    '</a>';
+  }).join('');
+
+  if(!document.querySelector('.jago-fab')){
+    var f = document.createElement('button');
+    f.className = 'jago-fab';
+    f.setAttribute('aria-label','Open JAGO assistant');
+    f.innerHTML = icon('jago');
+    f.onclick = function(){ location.href = 'jago.html'; };
+    document.body.appendChild(f);
+  }
+}
+
+/* =========================================================
+   PAGE DATA
+   ========================================================= */
+var s = S();
+if(!s || !s.profile){ location.href = 'index.html'; }
+
+mountShell('payments', 'Home / Payments');
+
+/* Ensure the state has a payment summary; if not, derive one */
+if(!s.paymentSummary){
+  s.paymentSummary = {
+    year: '2025-26',
+    sanctioned: 0,
+    status: 'Pending',
+    dbt: 'Not initiated',
+    ref: '-',
+    sanctionDate: '-',
+    paidDate: null
+  };
+}
+if(!s.payments || !s.payments.length){
+  s.payments = [];
+}
+
+/* If there are applications but no payment rows, seed some from the applications */
+if(!s.payments.length && s.applications.length){
+  s.payments = s.applications.map(function(a){
+    return {
+      year: a.year,
+      scheme: a.schemeName,
+      amount: a.amount,
+      status: a.status === 'Disbursed' ? 'Paid' : (a.status === 'Sanctioned' ? 'Processing' : 'Pending'),
+      date: a.status === 'Disbursed' ? (a.lastUpdated || 'Credited') : '-',
+      ref: dbtRef(a)
+    };
+  });
+  try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
+}
+
+var summary = s.paymentSummary;
+var payments = s.payments.slice().sort(function(a, b){
+  return String(b.year).localeCompare(String(a.year));
+});
+
+function dbtRef(a){
+  var parts = String(a.id || '').split('-');
+  var tail = parts.length ? parts[parts.length - 1] : '0000';
+  return 'DBT-' + (a.year || '2025') + '-' + tail;
+}
+
+/* Totals */
+var totals = {
+  paid: 0,
+  processing: 0,
+  total: 0
+};
+payments.forEach(function(p){
+  if(p.status === 'Paid' || p.status === 'Credited'){
+    totals.paid += Number(p.amount || 0);
+  } else if(p.status === 'Processing' || p.status === 'Initiated'){
+    totals.processing += Number(p.amount || 0);
+  }
+  totals.total += Number(p.amount || 0);
+});
+
+/* =========================================================
+   FILTERS
+   ========================================================= */
+var FILTERS = [
+  {id:'all',        label:'All',        icon:'pay'},
+  {id:'paid',       label:'Paid',       icon:'check'},
+  {id:'processing', label:'Processing', icon:'clock'},
+  {id:'pending',    label:'Pending',    icon:'alert'}
+];
+var currentFilter = 'all';
+
+function payMatch(p, f){
+  if(f === 'all') return true;
+  if(f === 'paid') return p.status === 'Paid' || p.status === 'Credited';
+  if(f === 'processing') return p.status === 'Processing' || p.status === 'Initiated';
+  if(f === 'pending') return p.status === 'Pending' || p.status === 'Failed';
+  return true;
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+var page = document.getElementById('page');
+
+function renderHero(){
+  var sm = payStatusMeta(summary.status);
+  return (
+    '<section class="pay-hero">' +
+      '<div class="ph-top">' +
+        '<div class="ph-l">' +
+          '<small>Current sanction (AY ' + esc(summary.year) + ')</small>' +
+          '<b>' + fmtMoney(summary.sanctioned) + '</b>' +
+          '<span class="ph-sub">' +
+            '<span class="ph-badge">' + icon(sm.cls === 'ok' ? 'check' : (sm.cls === 'err' ? 'alert' : 'clock')) + ' ' + esc(sm.label) + '</span>' +
+          '</span>' +
+        '</div>' +
+        '<span class="ph-ic">' + icon('pay') + '</span>' +
+      '</div>' +
+      '<div class="ph-metrics">' +
+        '<div class="ph-metric">' +
+          '<small>DBT Status</small>' +
+          '<b>' + esc(summary.dbt || '-') + '</b>' +
+        '</div>' +
+        '<div class="ph-metric">' +
+          '<small>Sanction Date</small>' +
+          '<b>' + esc(summary.sanctionDate || '-') + '</b>' +
+        '</div>' +
+        '<div class="ph-metric">' +
+          '<small>Credited On</small>' +
+          '<b>' + esc(summary.paidDate || '-') + '</b>' +
+        '</div>' +
+      '</div>' +
+    '</section>'
+  );
+}
+
+function renderSummary(){
+  return (
+    '<section class="sum-strip">' +
+      '<div class="sum-item">' +
+        '<b>' + fmtMoney(totals.paid) + '</b>' +
+        '<small>Total received</small>' +
+      '</div>' +
+      '<div class="sum-item">' +
+        '<b>' + fmtMoney(totals.processing) + '</b>' +
+        '<small>In processing</small>' +
+      '</div>' +
+      '<div class="sum-item">' +
+        '<b>' + payments.length + '</b>' +
+        '<small>Payment records</small>' +
+      '</div>' +
+    '</section>'
+  );
+}
+
+function renderDbtTrack(){
+  var stage = 0;
+  var st = summary.status;
+  if(st === 'Paid' || st === 'Credited') stage = 4;
+  else if(st === 'Processing') stage = 3;
+  else if(st === 'Initiated') stage = 2;
+  else if(st === 'Pending') stage = 1;
+  else if(st === 'Failed' || st === 'Rejected') stage = -1;
+
+  var steps = [
+    {label:'Sanction',    icon:'check', sub:'Approved'},
+    {label:'DBT Initiated',icon:'upload', sub:'Sent to PFMS'},
+    {label:'Bank Processing',icon:'bank', sub:'In progress'},
+    {label:'Credited',    icon:'pay', sub:'To account'}
+  ];
+
+  return (
+    '<section class="card">' +
+      '<div class="card-h">' +
+        '<span class="c-ic">' + icon('layers') + '</span>' +
+        '<h2>DBT Status</h2>' +
+        '<span class="badge ' + payStatusMeta(summary.status).cls + '">' +
+          esc(payStatusMeta(summary.status).label) +
+        '</span>' +
+      '</div>' +
+      '<div class="dbt-track">' +
+        steps.map(function(st2, i){
+          var cls = '';
+          if(i < stage) cls = 'done';
+          else if(i === stage - 1) cls = 'done';
+          else if(i === stage) cls = 'active';
+          /* simpler: mark all up to stage-1 as done, stage as active */
+          cls = '';
+          if(i < stage) cls = 'done';
+          else if(i === stage - 1 && stage > 0) cls = 'done';
+          else if(i === stage) cls = 'active';
+          /* if fully paid, everything done */
+          if(stage === 4) cls = 'done';
+
+          return (
+            '<div class="dbt-step ' + cls + '">' +
+              '<span class="ds-ic">' + icon(st2.icon) + '</span>' +
+              '<b>' + esc(st2.label) + '</b>' +
+              '<small>' + esc(st2.sub) + '</small>' +
+            '</div>'
+          );
+        }).join('') +
+      '</div>' +
+      '<div class="kv-grid" style="margin-top:14px">' +
+        '<div><small>DBT Reference</small><b>' + esc(summary.ref || '-') + '</b></div>' +
+        '<div><small>Payment Mode</small><b>Aadhaar-linked Bank Account</b></div>' +
+        '<div><small>Source System</small><b>PFMS (mock)</b></div>' +
+      '</div>' +
+    '</section>'
+  );
+}
+
+function renderPayList(){
+  var filtered = payments.filter(function(p){ return payMatch(p, currentFilter); });
+
+  if(!filtered.length){
+    return (
+      '<div class="empty">' +
+        icon('pay') +
+        '<h3>No payment records</h3>' +
+        '<p>Payment records will appear here once a scholarship is sanctioned and disbursed.</p>' +
+      '</div>'
+    );
+  }
+
+  return (
+    '<div class="pay-list">' +
+      filtered.map(function(p){
+        var sm = payStatusMeta(p.status);
+        return (
+          '<div class="pay-row">' +
+            '<div class="pr-year">' +
+              '<b>' + esc(p.year) + '</b>' +
+              '<small>AY</small>' +
+            '</div>' +
+            '<div class="pr-info">' +
+              '<b>' + esc(p.scheme || 'Scholarship') + '</b>' +
+              '<small>Ref ' + esc(p.ref || '-') + ' - ' + esc(p.date || '-') + '</small>' +
+            '</div>' +
+            '<div class="pr-amount">' +
+              '<b>' + fmtMoney(p.amount) + '</b>' +
+              '<span class="badge ' + sm.cls + '">' + esc(sm.label) + '</span>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('') +
+    '</div>'
+  );
+}
+
+function renderFilters(){
+  return FILTERS.map(function(f){
+    var count = 0;
+    if(f.id === 'all') count = payments.length;
+    else count = payments.filter(function(p){ return payMatch(p, f.id); }).length;
+    return (
+      '<button class="filter ' + (currentFilter === f.id ? 'active' : '') + '" data-filter="' + f.id + '" type="button">' +
+        icon(f.icon) + '<span>' + f.label + '</span><span class="count">' + count + '</span>' +
+      '</button>'
+    );
+  }).join('');
+}
+
+function render(){
+  page.innerHTML =
+    '<div class="page-head">' +
+      '<nav class="breadcrumb" aria-label="Breadcrumb">' +
+        '<a href="dashboard.html">Home</a>' + icon('chev') +
+        '<span>Payment Status</span>' +
+      '</nav>' +
+      '<h1>Payment Status</h1>' +
+      '<p>Track your scholarship sanctions, DBT processing and payments received across academic years.</p>' +
+    '</div>' +
+
+    renderHero() +
+
+    '<div class="mini-info">' +
+      icon('info') +
+      '<span>Payments are processed via DBT to your Aadhaar-linked bank account. Amounts shown are from mock data for the prototype.</span>' +
+    '</div>' +
+
+    renderSummary() +
+
+    renderDbtTrack() +
+
+    '<section class="card">' +
+      '<div class="card-h">' +
+        '<span class="c-ic">' + icon('pay') + '</span>' +
+        '<h2>Payment History</h2>' +
+      '</div>' +
+      '<div class="filters" role="tablist" aria-label="Filter payments">' + renderFilters() + '</div>' +
+      '<div id="payListContainer">' + renderPayList() + '</div>' +
+    '</section>' +
+
+    '<section class="card">' +
+      '<div class="card-h">' +
+        '<span class="c-ic">' + icon('download') + '</span>' +
+        '<h2>Statements & Receipts</h2>' +
+      '</div>' +
+      '<p class="muted sm" style="margin-bottom:12px">Download your payment statement for your records.</p>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
+        '<button class="btn ghost sm" type="button" id="downloadStatementBtn">' +
+          icon('download') + ' Download Statement (demo)' +
+        '</button>' +
+        '<a class="btn ghost sm" href="my-applications.html">' +
+          icon('apps') + ' View Applications' +
+        '</a>' +
+      '</div>' +
+    '</section>' +
+
+    '<section class="help-block">' +
+      '<h3>' + icon('help') + ' Need help?</h3>' +
+      '<p class="muted sm" style="margin:0">Ask JAGO about your payment status, DBT processing, or what to do if a payment is delayed.</p>' +
+      '<div class="row-btns">' +
+        '<a class="btn ghost sm" href="jago.html">' + icon('jago') + ' Ask JAGO</a>' +
+        '<a class="btn ghost sm" href="help.html">' + icon('help') + ' View Help</a>' +
+      '</div>' +
+    '</section>';
+
+  bindAll();
+}
+
+/* =========================================================
+   BINDINGS
+   ========================================================= */
+function bindAll(){
+  document.querySelectorAll('.filter').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      currentFilter = btn.dataset.filter;
+      document.querySelectorAll('.filter').forEach(function(b){
+        b.classList.toggle('active', b === btn);
+      });
+      document.getElementById('payListContainer').innerHTML = renderPayList();
+      bindAll();
+    });
+  });
+
+  var downloadBtn = document.getElementById('downloadStatementBtn');
+  if(downloadBtn){
+    downloadBtn.addEventListener('click', function(){
+      toast('Statement download (demo only)', 'ok');
+    });
+  }
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+render();
+</script>
+</body>
+</html>
