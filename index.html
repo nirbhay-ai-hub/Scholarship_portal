@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0B5E55">
-<title>Login · Tribal Scholarship One</title>
+<title>Login / Register · Tribal Scholarship One</title>
 <style>
 :root{--brand:#0B5E55;--brand2:#0E7C6F;--brandsoft:#E6F2F0;--bg:#F4F6F8;--card:#fff;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0;--ok:#0F9D58;--okbg:#E7F6EE;--warn:#B45309;--warnbg:#FEF3C7;--err:#DC2626;--errbg:#FEE2E2;--info:#1D4ED8;--infobg:#DBEAFE;--r:14px;--sh:0 1px 2px rgba(15,23,42,.06),0 8px 24px -14px rgba(15,23,42,.2);--safeb:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -16,14 +16,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .field .hint{font-size:12px;color:var(--muted);margin-top:4px}
 .field .err{font-size:12px;color:var(--err);margin-top:4px;display:none}
 .field.invalid .err{display:block}
-.field.invalid input{border-color:var(--err)}
-input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:15px;outline:0;transition:.15s;min-height:44px}
-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(11,94,85,.12)}
+.field.invalid input,.field.invalid select{border-color:var(--err)}
+input,select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:15px;outline:0;transition:.15s;min-height:44px}
+input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(11,94,85,.12)}
 .input-group{position:relative}
 .input-group .suffix{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12.5px;color:var(--brand);background:none;border:0;cursor:pointer;font-weight:600;padding:6px 8px;border-radius:6px}
 .input-group input{padding-right:74px}
 .check{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;cursor:pointer;user-select:none;padding:4px 0}
-.check input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--brand)}
+.check input{width:18px;height:18px;margin-top:2px;flex:none;accent-color:var(--brand);min-height:auto;padding:0}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:10px;border:1px solid transparent;background:#fff;color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;line-height:1.2;text-align:center;transition:.15s;min-height:44px}
 .btn.primary{background:var(--brand);color:#fff}
 .btn.primary:hover{background:#0a4f48}
@@ -38,14 +38,16 @@ input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(11,94,85,.12)}
 .divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:16px 0}
 .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
 .auth-bg{min-height:100dvh;background:linear-gradient(160deg,#0B5E55 0%,#0E7C6F 45%,#F4F6F8 45.1%);padding:24px 16px 40px;display:flex;align-items:flex-start;justify-content:center}
-.auth-card{width:100%;max-width:440px;background:#fff;border-radius:20px;box-shadow:0 20px 50px -20px rgba(15,23,42,.4);padding:26px 22px;margin-top:40px}
-.auth-brand{text-align:center;margin-bottom:22px}
+.auth-card{width:100%;max-width:460px;background:#fff;border-radius:20px;box-shadow:0 20px 50px -20px rgba(15,23,42,.4);padding:26px 22px;margin-top:24px}
+.auth-brand{text-align:center;margin-bottom:20px}
 .auth-brand .l{width:60px;height:60px;border-radius:16px;background:var(--brand);display:grid;place-items:center;margin:0 auto 12px}
 .auth-brand .l svg{width:32px;height:32px;stroke:#fff;fill:none;stroke-width:1.7}
 .auth-brand h1{font-size:19px;font-weight:700;margin:0 0 4px}
 .auth-brand p{font-size:13px;color:var(--muted);margin:0}
 .row{display:flex;flex-wrap:wrap;align-items:center}
 .row.between{justify-content:space-between}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:420px){.grid2{grid-template-columns:1fr}}
 .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:flex-end;justify-content:center;z-index:200;padding:0}
 .modal-bg.open{display:flex}
 .modal{background:#fff;border-radius:18px 18px 0 0;width:100%;max-width:520px;padding:20px;animation:slideUp .25s}
@@ -54,8 +56,17 @@ input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(11,94,85,.12)}
 .modal-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
 .modal-h h3{margin:0;font-size:17px}
 .modal-h button{background:none;border:0;font-size:22px;color:var(--muted);cursor:pointer;line-height:1}
-.demo-note{background:var(--brandsoft);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--brand);font-weight:500;margin-top:14px}
+.demo-note{background:var(--brandsoft);border-radius:10px;padding:12px;font-size:12.5px;color:var(--brand);font-weight:500;margin-top:14px;line-height:1.55}
 .foot{text-align:center;font-size:12px;color:var(--muted);margin-top:18px;line-height:1.6}
+.auth-error{background:var(--errbg);color:#7F1D1D;border:1px solid #FCA5A5;border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;margin-bottom:14px;display:none}
+.auth-error.show{display:block}
+.auth-success{background:var(--okbg);color:#065F46;border:1px solid #6EE7B7;border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;margin-bottom:14px;display:none}
+.auth-success.show{display:block}
+.toast-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:300;display:flex;flex-direction:column;gap:8px;pointer-events:none;align-items:center;width:calc(100% - 28px);max-width:420px}
+.toast{background:#0F172A;color:#fff;padding:11px 16px;border-radius:10px;font-size:13.5px;font-weight:500;box-shadow:0 10px 30px -10px rgba(0,0,0,.35);text-align:center;max-width:100%;transition:opacity .3s}
+.toast.ok{background:var(--ok)}
+.toast.err{background:var(--err)}
+.toast.warn{background:var(--warn)}
 </style>
 </head>
 <body>
@@ -74,43 +85,134 @@ input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(11,94,85,.12)}
       <button data-tab="register" role="tab">Register</button>
     </div>
 
-    <!-- LOGIN -->
+    <!-- ================= LOGIN ================= -->
     <form id="loginForm" novalidate>
+      <div class="auth-error" id="loginError" role="alert"></div>
+
       <div class="field">
-        <label for="identifier">Mobile or Email</label>
-        <input id="identifier" type="text" inputmode="email" autocomplete="username" placeholder="9876543210 or you@example.com" required>
-        <div class="err" id="errIdentifier">Please enter your mobile or email.</div>
+        <label for="loginId">Mobile or Email</label>
+        <input id="loginId" type="text" inputmode="email" autocomplete="username" placeholder="9876543210 or you@example.com">
+        <div class="err">Please enter your mobile or email.</div>
       </div>
+
       <div class="field">
-        <label for="password">Password</label>
+        <label for="loginPw">Password</label>
         <div class="input-group">
-          <input id="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
-          <button type="button" class="suffix" id="togglePw">Show</button>
+          <input id="loginPw" type="password" autocomplete="current-password" placeholder="Enter password">
+          <button type="button" class="suffix" id="toggleLoginPw">Show</button>
         </div>
-        <div class="err" id="errPassword">Password is required.</div>
+        <div class="err">Password is required.</div>
       </div>
+
       <div class="row between" style="margin-bottom:16px">
         <label class="check"><input type="checkbox" id="remember"> Keep me signed in</label>
         <button type="button" class="link" id="forgotBtn">Forgot password?</button>
       </div>
-      <button class="btn primary block" type="submit">Login</button>
+
+      <button class="btn primary block" type="submit" id="loginBtn">Login</button>
+
       <div class="divider">or</div>
-      <button class="btn ghost block" type="button" id="otpLogin">Login with OTP</button>
-      <div class="demo-note">Demo mode · Use any mobile/email and password to continue. Data is stored only in your browser.</div>
+      <button class="btn ghost block" type="button" id="demoLogin">Try Demo Account</button>
+
+      <div class="demo-note">
+        <b>New here?</b> Tap the <b>Register</b> tab above to create an account, or try the demo account to explore with pre-filled data.
+      </div>
     </form>
 
-    <!-- REGISTER TEASER -->
-    <div id="registerPane" hidden>
-      <p class="muted" style="font-size:13.5px;margin-bottom:16px">Create your unified scholarship profile once, and reuse it across all five MoTA schemes.</p>
-      <ul style="list-style:none;padding:0;margin:0 0 18px;font-size:13.5px;line-height:2">
-        <li>✓ Pre-Matric, Post-Matric, Top Class, NFST, NOS</li>
-        <li>✓ One digital document wallet</li>
-        <li>✓ Unified verification &amp; payment tracking</li>
-        <li>✓ AI assistant JAGO for guidance</li>
-      </ul>
-      <a class="btn primary block" href="register.html">Create Account</a>
-      <a class="btn ghost block" href="onboarding.html" style="margin-top:10px">Take a quick tour</a>
-    </div>
+    <!-- ================= REGISTER ================= -->
+    <form id="registerForm" novalidate hidden>
+      <div class="auth-error" id="regError" role="alert"></div>
+
+      <div class="grid2">
+        <div class="field">
+          <label for="rFirst">First Name *</label>
+          <input id="rFirst" type="text" autocomplete="given-name" placeholder="Anjali">
+          <div class="err">Enter your first name.</div>
+        </div>
+        <div class="field">
+          <label for="rLast">Last Name *</label>
+          <input id="rLast" type="text" autocomplete="family-name" placeholder="Murmu">
+          <div class="err">Enter your last name.</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label for="rDob">Date of Birth *</label>
+          <input id="rDob" type="date">
+          <div class="err">Select your date of birth.</div>
+        </div>
+        <div class="field">
+          <label for="rGender">Gender *</label>
+          <select id="rGender">
+            <option value="">Select</option>
+            <option>Female</option>
+            <option>Male</option>
+            <option>Other</option>
+          </select>
+          <div class="err">Select your gender.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="rMobile">Mobile Number *</label>
+        <input id="rMobile" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel-national">
+        <div class="err">Enter a valid 10-digit mobile number.</div>
+      </div>
+
+      <div class="field">
+        <label for="rEmail">Email Address *</label>
+        <input id="rEmail" type="email" placeholder="you@example.com" autocomplete="email">
+        <div class="err">Enter a valid email address.</div>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label for="rState">State *</label>
+          <select id="rState">
+            <option value="">Select state</option>
+            <option>Odisha</option><option>Jharkhand</option><option>Madhya Pradesh</option>
+            <option>Chhattisgarh</option><option>Maharashtra</option><option>Rajasthan</option>
+            <option>Andhra Pradesh</option><option>Telangana</option><option>West Bengal</option>
+            <option>Assam</option><option>Other</option>
+          </select>
+          <div class="err">Select your state.</div>
+        </div>
+        <div class="field">
+          <label for="rDistrict">District *</label>
+          <input id="rDistrict" type="text" placeholder="Mayurbhanj">
+          <div class="err">Enter your district.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="check"><input type="checkbox" id="rPvtg"> I belong to a PVTG (Particularly Vulnerable Tribal Group)</label>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label for="rPw">Password *</label>
+          <input id="rPw" type="password" autocomplete="new-password" placeholder="Min 6 characters">
+          <div class="err">Password must be at least 6 characters.</div>
+        </div>
+        <div class="field">
+          <label for="rConfirm">Confirm Password *</label>
+          <input id="rConfirm" type="password" autocomplete="new-password">
+          <div class="err">Passwords do not match.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="check"><input type="checkbox" id="rTerms"> I agree to the terms and consent to verification of my documents through mock integrated sources.</label>
+        <div class="err" id="rTermsErr">Please accept the terms to continue.</div>
+      </div>
+
+      <button class="btn primary block" type="submit" id="registerBtn">Create Account</button>
+
+      <div class="demo-note">
+        Your account is stored only in this browser. No data leaves your device.
+      </div>
+    </form>
 
     <div class="foot">Ministry of Tribal Affairs · Government of India<br>Prototype for demonstration only</div>
   </div>
@@ -132,120 +234,428 @@ input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(11,94,85,.12)}
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
-/* ---------- tiny shared helpers ---------- */
-function toast(msg,type){let w=document.getElementById('toastWrap');const t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},2400);}
-function openModal(id){document.getElementById(id).classList.add('open')}
-function closeModal(id){document.getElementById(id).classList.remove('open')}
-document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+/* =========================================================
+   TRIBAL SCHOLARSHIP ONE — Auth (Login + Register)
+   Single-file, self-contained.
+   Stores:
+     tso_users_v1    -> array of registered users
+     tso_session_v1  -> {uid, at}
+     tso_state_v1    -> active user's app state
+   ========================================================= */
 
-/* ---------- tabs ---------- */
-const tabs=document.querySelectorAll('.tabs button');
-const loginForm=document.getElementById('loginForm');
-const registerPane=document.getElementById('registerPane');
-tabs.forEach(b=>b.addEventListener('click',()=>{
-  tabs.forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  const isLogin=b.dataset.tab==='login';
-  loginForm.hidden=!isLogin;
-  registerPane.hidden=isLogin;
-}));
+/* ---------------- constants ---------------- */
+var USERS_KEY   = 'tso_users_v1';
+var SESSION_KEY = 'tso_session_v1';
+var STATE_KEY   = 'tso_state_v1';
 
-/* ---------- password toggle ---------- */
-document.getElementById('togglePw').addEventListener('click',function(){
-  const p=document.getElementById('password');
-  const show=p.type==='password';
-  p.type=show?'text':'password';
-  this.textContent=show?'Hide':'Show';
+/* ---------------- tiny helpers ---------------- */
+function toast(msg, type){
+  var w = document.getElementById('toastWrap');
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  w.appendChild(t);
+  setTimeout(function(){
+    t.style.opacity = '0';
+    setTimeout(function(){ t.remove(); }, 320);
+  }, 2400);
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-bg').forEach(function(m){
+  m.addEventListener('click', function(e){ if(e.target === m) m.classList.remove('open'); });
 });
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function normalizeEmail(v){ return String(v || '').trim().toLowerCase(); }
+function normalizeMobile(v){ return String(v || '').replace(/\D/g, ''); }
 
-/* ---------- login submit ---------- */
-loginForm.addEventListener('submit',e=>{
-  e.preventDefault();
-  const id=document.getElementById('identifier');
-  const pw=document.getElementById('password');
-  let ok=true;
-  id.parentElement.classList.toggle('invalid',!id.value.trim());
-  pw.parentElement.classList.toggle('invalid',!pw.value.trim());
-  if(!id.value.trim()||!pw.value.trim()){ok=false}
-  if(!ok){toast('Please fill all fields','err');return;}
-  // Seed state on first login (shared across pages)
+/* Demo-only hash. NOT real security — this is a prototype. */
+function hashPw(p){
+  var h = 0, s = String(p || '');
+  for(var i = 0; i < s.length; i++){
+    h = ((h << 5) - h) + s.charCodeAt(i);
+    h |= 0;
+  }
+  return 'h' + h;
+}
+
+/* ---------------- user store ---------------- */
+function loadUsers(){
   try{
-    const KEY='tso_state_v1';
-    if(!localStorage.getItem(KEY)){
-      localStorage.setItem(KEY,JSON.stringify({
-        session:{loggedIn:true,at:Date.now()},
-        profile:{firstName:'Anjali',lastName:'Murmu',name:'Anjali Murmu',initials:'AM',email:'anjali.murmu@example.com',mobile:'+91 98765 43210',dob:'2003-06-14',gender:'Female',category:'ST',pvtg:false,state:'Odisha',district:'Mayurbhanj',address:'Village Baripada, PO Rairangpur, Mayurbhanj, Odisha - 757043',domicile:'Odisha',institution:'Demo University, Bhubaneswar',university:'Demo University',course:'B.Tech AI & Data Science',branch:'Artificial Intelligence',semester:'6',enrollment:'DEMO2023CS014',academicYear:'2025-26',marks:'82.4%',income:'180000',incomeCert:true,stCert:true,disability:false,profileCompletion:78},
-        schemes:[
-          {id:'pre-matric',name:'Pre-Matric Scholarship',for:'Class IX–X ST students',short:'For ST students studying in Class IX and X to reduce dropouts.',benefitShort:'Up to ₹3,500/yr',benefits:['Monthly maintenance allowance','Books & ad-hoc grant','Disability allowance (if applicable)'],eligibility:['ST category','Class IX or X','Family income ≤ ₹2.5 lakh','Studying in recognized school'],documents:['ST Certificate','Income Certificate','School Bonafide','Bank Passbook','Aadhaar'],process:['Register on Tribal Scholarship One','Fill personal & academic details','Upload documents','Institution verification','State verification & sanction','DBT payment'],conditions:['Only one scholarship per academic year','Attendance ≥ 60% required','Aadhaar-linked bank account mandatory'],faq:[['Can I apply if I already get another scholarship?','No. Only one scholarship per academic year is allowed.'],['When is the payment credited?','After state sanction and DBT processing.']]},
-          {id:'post-matric',name:'Post-Matric Scholarship',for:'Class XI to PhD ST students',short:'Financial assistance for ST students pursuing post-matriculation courses.',benefitShort:'Up to ₹1,20,000/yr',benefits:['Full tuition fee reimbursement','Maintenance allowance','Books & thesis allowance','Study tour charges'],eligibility:['ST category','Class XI and above','Family income ≤ ₹2.5 lakh','Enrolled in recognized institution'],documents:['ST Certificate','Income Certificate','Marksheet','Institution Certificate','Bank Passbook','Aadhaar'],process:['Register & complete profile','Fill application','Upload documents','Institution verification','State verification','Sanction & DBT'],conditions:['One scholarship per year','Minimum attendance required','No gap year without approval'],faq:[['Is this for PG students?','Yes, up to PhD level for eligible courses.'],['What is the income limit?','₹2.5 lakh per annum for most categories.']]},
-          {id:'top-class',name:'Top Class Scholarship',for:'ST students in top-ranked institutions',short:'For ST students admitted to top-ranked institutes (NIRF/QS ranked).',benefitShort:'Full course fee + living',benefits:['Full tuition & non-tuition fees','Living expenses','Books & study material'],eligibility:['ST category','Admitted to top-ranked institution','Family income ≤ ₹6 lakh','Not availing other scholarship'],documents:['ST Certificate','Income Certificate','Admission Letter','Fee Receipt','Bank Passbook'],process:['Profile & eligibility','Upload documents','Institution verification','Ministry review','Sanction','DBT'],conditions:['Institution must be in approved list','Annual renewal required'],faq:[['What counts as top-ranked?','Institutions in the MoTA approved list (NIRF/QS rankings).']]},
-          {id:'nfst',name:'National Fellowship for ST (NFST)',for:'ST students pursuing MPhil/PhD',short:'Fellowship for ST students pursuing MPhil or PhD in recognized universities.',benefitShort:'₹31,000/mo + HRA',benefits:['Monthly fellowship','Contingency grant','HRA as per rules','Escalation after 2 years'],eligibility:['ST category','MPhil/PhD admitted','NET/JRF or equivalent qualified','Not receiving other fellowship'],documents:['ST Certificate','NET/JRF Certificate','Admission Letter','Research Proposal','Bank Passbook'],process:['Register & profile','Upload research documents','Institution verification','UGC/NTA verification','Ministry sanction','Monthly DBT'],conditions:['Annual progress report required','No concurrent fellowship'],faq:[['Is NET/JRF mandatory?','Yes, or an equivalent qualifying exam as specified.']]},
-          {id:'nos',name:'National Overseas Scholarship (NOS)',for:'ST students for overseas masters/PhD',short:'For ST students pursuing Masters/PhD abroad in specified fields.',benefitShort:'Full tuition + living abroad',benefits:['Tuition fees','Living allowance','Airfare','Visa fees','Contingency'],eligibility:['ST category','Admitted to overseas university','Family income ≤ ₹6 lakh','Age ≤ 35','Not availing other overseas scholarship'],documents:['ST Certificate','Income Certificate','Overseas Admission Letter','Passport','IELTS/TOEFL','Bank Passbook'],process:['Profile & eligibility','Upload documents','Ministry screening','Interview','Sanction','Disbursement'],conditions:['Must return to India after completion','Approved universities only'],faq:[['Which countries are covered?','As per the current NOS guidelines — USA, UK, and others listed.']]}
-        ],
-        applications:[
-          {id:'TSO-2025-00412',schemeId:'post-matric',schemeName:'Post-Matric Scholarship',year:'2025-26',submitted:'12 Aug 2025',status:'Verification',stageIndex:3,amount:48500,lastUpdated:'2 days ago'},
-          {id:'TSO-2024-00287',schemeId:'pre-matric',schemeName:'Pre-Matric Scholarship',year:'2024-25',submitted:'05 Jul 2024',status:'Disbursed',stageIndex:6,amount:3500,lastUpdated:'12 Mar 2025'},
-          {id:'TSO-2023-00198',schemeId:'post-matric',schemeName:'Post-Matric Scholarship',year:'2023-24',submitted:'22 Jul 2023',status:'Disbursed',stageIndex:6,amount:42000,lastUpdated:'18 Jan 2024'}
-        ],
-        documents:[
-          {id:'doc1',type:'ST Certificate',status:'Verified',required:true,source:'DigiLocker (mock)',fileName:'st_certificate.pdf',size:'420 KB',uploaded:'10 Aug 2025',verifiedOn:'14 Aug 2025'},
-          {id:'doc2',type:'Income Certificate',status:'Pending',required:true,source:'State e-District (mock)',fileName:'income_cert.pdf',size:'315 KB',uploaded:'11 Aug 2025',verifiedOn:'—'},
-          {id:'doc3',type:'Domicile Certificate',status:'Verified',required:true,source:'State e-District (mock)',fileName:'domicile.pdf',size:'280 KB',uploaded:'10 Aug 2025',verifiedOn:'15 Aug 2025'},
-          {id:'doc4',type:'Marksheet (last exam)',status:'Verified',required:true,source:'Institution (mock)',fileName:'marksheet_sem5.pdf',size:'1.1 MB',uploaded:'10 Aug 2025',verifiedOn:'16 Aug 2025'},
-          {id:'doc5',type:'Aadhaar / Identity',status:'Verified',required:true,source:'UIDAI (mock)',fileName:'aadhaar_masked.pdf',size:'180 KB',uploaded:'10 Aug 2025',verifiedOn:'12 Aug 2025'},
-          {id:'doc6',type:'Institution Certificate',status:'Pending',required:true,source:'Institution (mock)',fileName:'institution_cert.pdf',size:'520 KB',uploaded:'12 Aug 2025',verifiedOn:'—'},
-          {id:'doc7',type:'Disability Certificate',status:'Not Required',required:false,source:'—',fileName:'—',size:'—',uploaded:'—',verifiedOn:'—'},
-          {id:'doc8',type:'NET/JRF Certificate',status:'Not Required',required:false,source:'UGC/NTA (mock)',fileName:'—',size:'—',uploaded:'—',verifiedOn:'—'}
-        ],
-        verification:{lastChecked:'2 days ago',sources:['DigiLocker','APAAR','UDISE+','State e-District','UIDAI','Institution DB','UGC/NTA'],checks:[
-          {label:'Identity (Aadhaar)',status:'Verified',src:'UIDAI (mock)'},
-          {label:'ST Certificate',status:'Verified',src:'DigiLocker (mock)'},
-          {label:'Income Certificate',status:'Mismatch',src:'State e-District (mock)'},
-          {label:'Academic Record',status:'Verified',src:'Institution DB (mock)'},
-          {label:'Institution Verification',status:'Verified',src:'Institution DB (mock)'},
-          {label:'Domicile',status:'Pending',src:'State e-District (mock)'},
-          {label:'Disability',status:'Not Required',src:'—'},
-          {label:'NET/JRF',status:'Not Required',src:'UGC/NTA (mock)'}
-        ]},
-        paymentSummary:{year:'2025-26',sanctioned:48500,status:'Processing',dbt:'Initiated',ref:'DBT-TSO-2025-00412',sanctionDate:'20 Aug 2025',paidDate:null},
-        payments:[
-          {year:'2024-25',scheme:'Pre-Matric Scholarship',amount:3500,status:'Paid',date:'12 Mar 2025',ref:'DBT-2024-8871'},
-          {year:'2023-24',scheme:'Post-Matric Scholarship',amount:42000,status:'Paid',date:'18 Jan 2024',ref:'DBT-2023-5540'},
-          {year:'2025-26',scheme:'Post-Matric Scholarship',amount:48500,status:'Processing',date:'—',ref:'DBT-TSO-2025-00412'}
-        ],
-        notifications:[
-          {id:'n1',type:'warn',title:'Income certificate mismatch',body:'A mismatch was detected between your uploaded income certificate and state records.',date:'2 hours ago',read:false,action:'verification.html'},
-          {id:'n2',type:'info',title:'Document verified',body:'Your ST Certificate has been verified via DigiLocker (mock).',date:'Yesterday',read:false},
-          {id:'n3',type:'success',title:'Application submitted',body:'Post-Matric Scholarship application TSO-2025-00412 submitted successfully.',date:'12 Aug 2025',read:true,action:'application-details.html?id=TSO-2025-00412'},
-          {id:'n4',type:'success',title:'Payment credited',body:'₹3,500 credited for Pre-Matric Scholarship AY 2024-25.',date:'12 Mar 2025',read:true,action:'payment-status.html'},
-          {id:'n5',type:'info',title:'Sanction letter generated',body:'Sanction letter for Post-Matric Scholarship AY 2025-26 is available.',date:'20 Aug 2025',read:true}
-        ],
-        pendingActions:[
-          {title:'Income certificate mismatch',desc:'Re-upload or request manual review to continue verification.',priority:'high',cta:'Resolve now',href:'document-upload.html'},
-          {title:'Complete institution certificate',desc:'Institution certificate upload is pending.',priority:'medium',cta:'Upload',href:'document-upload.html'},
-          {title:'Verify domicile',desc:'Domicile verification is pending at State e-District (mock).',priority:'low',cta:'View',href:'verification.html'}
-        ]
-      }));
-    }else{
-      const st=JSON.parse(localStorage.getItem(KEY)); st.session={loggedIn:true,at:Date.now()}; localStorage.setItem(KEY,JSON.stringify(st));
-    }
-  }catch(e){}
-  toast('Login successful','ok');
-  setTimeout(()=>location.href='dashboard.html',450);
+    var raw = localStorage.getItem(USERS_KEY);
+    var arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr : [];
+  }catch(e){ return []; }
+}
+function saveUsers(arr){
+  try{ localStorage.setItem(USERS_KEY, JSON.stringify(arr)); }catch(e){}
+}
+function findUser(identifier){
+  var id  = normalizeEmail(identifier);
+  var mob = normalizeMobile(identifier);
+  if(!id && !mob) return null;
+  return loadUsers().find(function(u){
+    return normalizeEmail(u.email) === id ||
+           (mob && normalizeMobile(u.mobile) === mob);
+  });
+}
+
+/* ---------------- scheme catalogue (shared) ---------------- */
+function buildSchemes(){
+  return [
+    {id:'pre-matric',name:'Pre-Matric Scholarship',for:'Class IX–X ST students',short:'For ST students studying in Class IX and X to reduce dropouts.',benefitShort:'Up to Rs 3,500/yr',benefits:['Monthly maintenance allowance','Books & ad-hoc grant','Disability allowance (if applicable)'],eligibility:['ST category','Class IX or X','Family income <= Rs 2.5 lakh','Studying in recognized school'],documents:['ST Certificate','Income Certificate','School Bonafide','Bank Passbook','Aadhaar'],process:['Register on Tribal Scholarship One','Fill personal & academic details','Upload documents','Institution verification','State verification & sanction','DBT payment'],conditions:['Only one scholarship per academic year','Attendance 60% or more required','Aadhaar-linked bank account mandatory'],faq:[['Can I apply if I already get another scholarship?','No. Only one scholarship per academic year is allowed.'],['When is the payment credited?','After state sanction and DBT processing.']]},
+    {id:'post-matric',name:'Post-Matric Scholarship',for:'Class XI to PhD ST students',short:'Financial assistance for ST students pursuing post-matriculation courses.',benefitShort:'Up to Rs 1,20,000/yr',benefits:['Full tuition fee reimbursement','Maintenance allowance','Books & thesis allowance','Study tour charges'],eligibility:['ST category','Class XI and above','Family income <= Rs 2.5 lakh','Enrolled in recognized institution'],documents:['ST Certificate','Income Certificate','Marksheet','Institution Certificate','Bank Passbook','Aadhaar'],process:['Register & complete profile','Fill application','Upload documents','Institution verification','State verification','Sanction & DBT'],conditions:['One scholarship per year','Minimum attendance required','No gap year without approval'],faq:[['Is this for PG students?','Yes, up to PhD level for eligible courses.'],['What is the income limit?','Rs 2.5 lakh per annum for most categories.']]},
+    {id:'top-class',name:'Top Class Scholarship',for:'ST students in top-ranked institutions',short:'For ST students admitted to top-ranked institutes (NIRF/QS ranked).',benefitShort:'Full course fee + living',benefits:['Full tuition & non-tuition fees','Living expenses','Books & study material'],eligibility:['ST category','Admitted to top-ranked institution','Family income <= Rs 6 lakh','Not availing other scholarship'],documents:['ST Certificate','Income Certificate','Admission Letter','Fee Receipt','Bank Passbook'],process:['Profile & eligibility','Upload documents','Institution verification','Ministry review','Sanction','DBT'],conditions:['Institution must be in approved list','Annual renewal required'],faq:[['What counts as top-ranked?','Institutions in the MoTA approved list (NIRF/QS rankings).']]},
+    {id:'nfst',name:'National Fellowship for ST (NFST)',for:'ST students pursuing MPhil/PhD',short:'Fellowship for ST students pursuing MPhil or PhD in recognized universities.',benefitShort:'Rs 31,000/mo + HRA',benefits:['Monthly fellowship','Contingency grant','HRA as per rules','Escalation after 2 years'],eligibility:['ST category','MPhil/PhD admitted','NET/JRF or equivalent qualified','Not receiving other fellowship'],documents:['ST Certificate','NET/JRF Certificate','Admission Letter','Research Proposal','Bank Passbook'],process:['Register & profile','Upload research documents','Institution verification','UGC/NTA verification','Ministry sanction','Monthly DBT'],conditions:['Annual progress report required','No concurrent fellowship'],faq:[['Is NET/JRF mandatory?','Yes, or an equivalent qualifying exam as specified.']]},
+    {id:'nos',name:'National Overseas Scholarship (NOS)',for:'ST students for overseas masters/PhD',short:'For ST students pursuing Masters/PhD abroad in specified fields.',benefitShort:'Full tuition + living abroad',benefits:['Tuition fees','Living allowance','Airfare','Visa fees','Contingency'],eligibility:['ST category','Admitted to overseas university','Family income <= Rs 6 lakh','Age 35 or below','Not availing other overseas scholarship'],documents:['ST Certificate','Income Certificate','Overseas Admission Letter','Passport','IELTS/TOEFL','Bank Passbook'],process:['Profile & eligibility','Upload documents','Ministry screening','Interview','Sanction','Disbursement'],conditions:['Must return to India after completion','Approved universities only'],faq:[['Which countries are covered?','As per the current NOS guidelines — USA, UK, and others listed.']]}
+  ];
+}
+
+/* ---------------- state builders ---------------- */
+function buildBlankState(user){
+  var first = user.firstName || 'Student';
+  var last  = user.lastName  || '';
+  return {
+    session:{loggedIn:true, at:Date.now(), uid:user.id},
+    profile:{
+      firstName:first, lastName:last,
+      name:(first + ' ' + last).trim(),
+      initials:(((first[0]||'S') + (last[0]||'U')).toUpperCase()),
+      email:user.email || '', mobile:user.mobile || '',
+      dob:user.dob || '', gender:user.gender || '',
+      category:'ST', pvtg: !!user.pvtg,
+      state:user.state || '', district:user.district || '',
+      address:'', domicile:user.state || '',
+      institution:'', university:'', course:'', branch:'',
+      semester:'', enrollment:'', academicYear:'2025-26', marks:'',
+      income:'', incomeCert:false, stCert:false, disability:false,
+      profileCompletion:40
+    },
+    schemes: buildSchemes(),
+    applications:[],
+    documents:[],
+    verification:{
+      lastChecked:'Never',
+      sources:['DigiLocker','APAAR','UDISE+','State e-District','UIDAI','Institution DB','UGC/NTA'],
+      checks:[
+        {label:'Identity (Aadhaar)',status:'Pending',src:'UIDAI (mock)'},
+        {label:'ST Certificate',status:'Pending',src:'DigiLocker (mock)'},
+        {label:'Income Certificate',status:'Pending',src:'State e-District (mock)'},
+        {label:'Academic Record',status:'Pending',src:'Institution DB (mock)'},
+        {label:'Institution Verification',status:'Pending',src:'Institution DB (mock)'},
+        {label:'Domicile',status:'Pending',src:'State e-District (mock)'},
+        {label:'Disability',status:'Not Required',src:'-'},
+        {label:'NET/JRF',status:'Not Required',src:'UGC/NTA (mock)'}
+      ]
+    },
+    paymentSummary:{year:'2025-26',sanctioned:0,status:'Pending',dbt:'Not initiated',ref:'-',sanctionDate:'-',paidDate:null},
+    payments:[],
+    notifications:[
+      {id:'n1',type:'success',title:'Welcome to Tribal Scholarship One',body:'Complete your profile and explore schemes to get started.',date:'Just now',read:false}
+    ],
+    pendingActions:[
+      {title:'Complete your profile',desc:'Add your academic details to unlock scheme applications.',priority:'high',cta:'Update profile',href:'profile.html'},
+      {title:'Add your documents',desc:'Upload ST, income and other certificates to your wallet.',priority:'medium',cta:'Upload',href:'document-wallet.html'}
+    ]
+  };
+}
+
+function buildDemoState(){
+  return {
+    session:{loggedIn:true, at:Date.now(), uid:'u_demo'},
+    profile:{firstName:'Anjali',lastName:'Murmu',name:'Anjali Murmu',initials:'AM',email:'anjali.murmu@example.com',mobile:'+91 98765 43210',dob:'2003-06-14',gender:'Female',category:'ST',pvtg:false,state:'Odisha',district:'Mayurbhanj',address:'Village Baripada, PO Rairangpur, Mayurbhanj, Odisha - 757043',domicile:'Odisha',institution:'Demo University, Bhubaneswar',university:'Demo University',course:'B.Tech AI & Data Science',branch:'Artificial Intelligence',semester:'6',enrollment:'DEMO2023CS014',academicYear:'2025-26',marks:'82.4%',income:'180000',incomeCert:true,stCert:true,disability:false,profileCompletion:78},
+    schemes: buildSchemes(),
+    applications:[
+      {id:'TSO-2025-00412',schemeId:'post-matric',schemeName:'Post-Matric Scholarship',year:'2025-26',submitted:'12 Aug 2025',status:'Verification',stageIndex:3,amount:48500,lastUpdated:'2 days ago'},
+      {id:'TSO-2024-00287',schemeId:'pre-matric',schemeName:'Pre-Matric Scholarship',year:'2024-25',submitted:'05 Jul 2024',status:'Disbursed',stageIndex:6,amount:3500,lastUpdated:'12 Mar 2025'},
+      {id:'TSO-2023-00198',schemeId:'post-matric',schemeName:'Post-Matric Scholarship',year:'2023-24',submitted:'22 Jul 2023',status:'Disbursed',stageIndex:6,amount:42000,lastUpdated:'18 Jan 2024'}
+    ],
+    documents:[
+      {id:'doc1',type:'ST Certificate',status:'Verified',required:true,source:'DigiLocker (mock)',fileName:'st_certificate.pdf',size:'420 KB',uploaded:'10 Aug 2025',verifiedOn:'14 Aug 2025'},
+      {id:'doc2',type:'Income Certificate',status:'Pending',required:true,source:'State e-District (mock)',fileName:'income_cert.pdf',size:'315 KB',uploaded:'11 Aug 2025',verifiedOn:'-'},
+      {id:'doc3',type:'Domicile Certificate',status:'Verified',required:true,source:'State e-District (mock)',fileName:'domicile.pdf',size:'280 KB',uploaded:'10 Aug 2025',verifiedOn:'15 Aug 2025'},
+      {id:'doc4',type:'Marksheet (last exam)',status:'Verified',required:true,source:'Institution (mock)',fileName:'marksheet_sem5.pdf',size:'1.1 MB',uploaded:'10 Aug 2025',verifiedOn:'16 Aug 2025'},
+      {id:'doc5',type:'Aadhaar / Identity',status:'Verified',required:true,source:'UIDAI (mock)',fileName:'aadhaar_masked.pdf',size:'180 KB',uploaded:'10 Aug 2025',verifiedOn:'12 Aug 2025'},
+      {id:'doc6',type:'Institution Certificate',status:'Pending',required:true,source:'Institution (mock)',fileName:'institution_cert.pdf',size:'520 KB',uploaded:'12 Aug 2025',verifiedOn:'-'},
+      {id:'doc7',type:'Disability Certificate',status:'Not Required',required:false,source:'-',fileName:'-',size:'-',uploaded:'-',verifiedOn:'-'},
+      {id:'doc8',type:'NET/JRF Certificate',status:'Not Required',required:false,source:'UGC/NTA (mock)',fileName:'-',size:'-',uploaded:'-',verifiedOn:'-'}
+    ],
+    verification:{lastChecked:'2 days ago',sources:['DigiLocker','APAAR','UDISE+','State e-District','UIDAI','Institution DB','UGC/NTA'],checks:[
+      {label:'Identity (Aadhaar)',status:'Verified',src:'UIDAI (mock)'},
+      {label:'ST Certificate',status:'Verified',src:'DigiLocker (mock)'},
+      {label:'Income Certificate',status:'Mismatch',src:'State e-District (mock)'},
+      {label:'Academic Record',status:'Verified',src:'Institution DB (mock)'},
+      {label:'Institution Verification',status:'Verified',src:'Institution DB (mock)'},
+      {label:'Domicile',status:'Pending',src:'State e-District (mock)'},
+      {label:'Disability',status:'Not Required',src:'-'},
+      {label:'NET/JRF',status:'Not Required',src:'UGC/NTA (mock)'}
+    ]},
+    paymentSummary:{year:'2025-26',sanctioned:48500,status:'Processing',dbt:'Initiated',ref:'DBT-TSO-2025-00412',sanctionDate:'20 Aug 2025',paidDate:null},
+    payments:[
+      {year:'2024-25',scheme:'Pre-Matric Scholarship',amount:3500,status:'Paid',date:'12 Mar 2025',ref:'DBT-2024-8871'},
+      {year:'2023-24',scheme:'Post-Matric Scholarship',amount:42000,status:'Paid',date:'18 Jan 2024',ref:'DBT-2023-5540'},
+      {year:'2025-26',scheme:'Post-Matric Scholarship',amount:48500,status:'Processing',date:'-',ref:'DBT-TSO-2025-00412'}
+    ],
+    notifications:[
+      {id:'n1',type:'warn',title:'Income certificate mismatch',body:'A mismatch was detected between your uploaded income certificate and state records.',date:'2 hours ago',read:false,action:'verification.html'},
+      {id:'n2',type:'info',title:'Document verified',body:'Your ST Certificate has been verified via DigiLocker (mock).',date:'Yesterday',read:false},
+      {id:'n3',type:'success',title:'Application submitted',body:'Post-Matric Scholarship application TSO-2025-00412 submitted successfully.',date:'12 Aug 2025',read:true,action:'application-details.html?id=TSO-2025-00412'},
+      {id:'n4',type:'success',title:'Payment credited',body:'Rs 3,500 credited for Pre-Matric Scholarship AY 2024-25.',date:'12 Mar 2025',read:true,action:'payment-status.html'},
+      {id:'n5',type:'info',title:'Sanction letter generated',body:'Sanction letter for Post-Matric Scholarship AY 2025-26 is available.',date:'20 Aug 2025',read:true}
+    ],
+    pendingActions:[
+      {title:'Income certificate mismatch',desc:'Re-upload or request manual review to continue verification.',priority:'high',cta:'Resolve now',href:'document-upload.html'},
+      {title:'Complete institution certificate',desc:'Institution certificate upload is pending.',priority:'medium',cta:'Upload',href:'document-upload.html'},
+      {title:'Verify domicile',desc:'Domicile verification is pending at State e-District (mock).',priority:'low',cta:'View',href:'verification.html'}
+    ]
+  };
+}
+
+/* ---------------- tabs ---------------- */
+var tabs       = document.querySelectorAll('.tabs button');
+var loginForm  = document.getElementById('loginForm');
+var regForm    = document.getElementById('registerForm');
+tabs.forEach(function(b){
+  b.addEventListener('click', function(){
+    tabs.forEach(function(x){ x.classList.remove('active'); });
+    b.classList.add('active');
+    var isLogin = b.dataset.tab === 'login';
+    loginForm.hidden = !isLogin;
+    regForm.hidden   = isLogin;
+    clearErrors();
+  });
 });
 
-/* ---------- OTP login ---------- */
-document.getElementById('otpLogin').addEventListener('click',()=>{
-  location.href='otp-verification.html';
+function clearErrors(){
+  ['loginError','regError'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.textContent=''; el.classList.remove('show'); }
+  });
+}
+function showError(id, msg){
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+/* ---------------- password toggles ---------------- */
+document.getElementById('toggleLoginPw').addEventListener('click', function(){
+  var p = document.getElementById('loginPw');
+  var show = p.type === 'password';
+  p.type = show ? 'text' : 'password';
+  this.textContent = show ? 'Hide' : 'Show';
 });
 
-/* ---------- forgot password ---------- */
-document.getElementById('forgotBtn').addEventListener('click',()=>openModal('forgotModal'));
-document.getElementById('sendReset').addEventListener('click',()=>{
-  const v=document.getElementById('forgotId').value.trim();
-  if(!v){toast('Please enter your mobile or email','err');return;}
+/* ---------------- validation helpers ---------------- */
+function setInvalid(id, invalid){
+  var el = document.getElementById(id);
+  if(!el) return;
+  var field = el.closest('.field');
+  if(field) field.classList.toggle('invalid', !!invalid);
+}
+function isEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||'').trim()); }
+function isMobile(v){ return /^[6-9]\d{9}$/.test(normalizeMobile(v)); }
+
+/* =========================================================
+   LOGIN SUBMIT
+   ========================================================= */
+loginForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  clearErrors();
+
+  var idEl = document.getElementById('loginId');
+  var pwEl = document.getElementById('loginPw');
+  var id   = idEl.value.trim();
+  var pw   = pwEl.value;
+
+  setInvalid('loginId', !id);
+  setInvalid('loginPw', !pw);
+  if(!id || !pw){
+    showError('loginError', 'Please enter your mobile/email and password.');
+    toast('Please fill all fields', 'err');
+    return;
+  }
+
+  var users = loadUsers();
+  if(users.length === 0){
+    showError('loginError', 'No account found. Please tap the Register tab to create one.');
+    toast('No account found. Please register.', 'err');
+    return;
+  }
+
+  var user = findUser(id);
+  if(!user){
+    showError('loginError', 'No account found for that mobile or email.');
+    toast('No account found.', 'err');
+    return;
+  }
+
+  if(user.password !== hashPw(pw)){
+    showError('loginError', 'Incorrect password. Please try again.');
+    toast('Incorrect password.', 'err');
+    return;
+  }
+
+  /* Success — restore this user's state or build a fresh one */
+  var state = null;
+  try{ state = JSON.parse(localStorage.getItem(STATE_KEY) || 'null'); }catch(e){ state = null; }
+
+  var belongs = state && state.profile &&
+    (normalizeEmail(state.profile.email) === normalizeEmail(user.email));
+
+  if(!belongs){
+    state = buildBlankState(user);
+  }
+  state.session = {loggedIn:true, at:Date.now(), uid:user.id};
+
+  try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){}
+  try{ localStorage.setItem(SESSION_KEY, JSON.stringify({uid:user.id, at:Date.now()})); }catch(e){}
+
+  var btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+  toast('Login successful', 'ok');
+  setTimeout(function(){ location.href = 'dashboard.html'; }, 500);
+});
+
+/* =========================================================
+   REGISTER SUBMIT
+   ========================================================= */
+regForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  clearErrors();
+
+  var first    = document.getElementById('rFirst').value.trim();
+  var last     = document.getElementById('rLast').value.trim();
+  var dob      = document.getElementById('rDob').value;
+  var gender   = document.getElementById('rGender').value;
+  var mobile   = document.getElementById('rMobile').value.trim();
+  var email    = document.getElementById('rEmail').value.trim();
+  var state    = document.getElementById('rState').value;
+  var district = document.getElementById('rDistrict').value.trim();
+  var pvtg     = document.getElementById('rPvtg').checked;
+  var pw       = document.getElementById('rPw').value;
+  var confirm  = document.getElementById('rConfirm').value;
+  var terms    = document.getElementById('rTerms').checked;
+
+  var ok = true;
+  setInvalid('rFirst',    !first);                            if(!first) ok = false;
+  setInvalid('rLast',     !last);                             if(!last) ok = false;
+  setInvalid('rDob',      !dob);                              if(!dob) ok = false;
+  setInvalid('rGender',   !gender);                           if(!gender) ok = false;
+  setInvalid('rMobile',   !isMobile(mobile));                 if(!isMobile(mobile)) ok = false;
+  setInvalid('rEmail',    !isEmail(email));                   if(!isEmail(email)) ok = false;
+  setInvalid('rState',    !state);                            if(!state) ok = false;
+  setInvalid('rDistrict', !district);                         if(!district) ok = false;
+  setInvalid('rPw',       pw.length < 6);                     if(pw.length < 6) ok = false;
+  var match = pw === confirm && confirm.length >= 6;
+  setInvalid('rConfirm',  !match);                            if(!match) ok = false;
+  document.getElementById('rTermsErr').style.display = terms ? 'none' : 'block';
+  if(!terms) ok = false;
+
+  if(!ok){
+    showError('regError', 'Please fix the highlighted fields.');
+    toast('Please fix the highlighted fields', 'err');
+    /* scroll first invalid into view */
+    var firstInvalid = regForm.querySelector('.field.invalid');
+    if(firstInvalid) firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  /* Check duplicates */
+  var existing = findUser(email) || findUser(mobile);
+  if(existing){
+    showError('regError', 'An account with this email or mobile already exists. Please login.');
+    toast('Account already exists', 'err');
+    return;
+  }
+
+  /* Create user */
+  var uid = 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  var newUser = {
+    id:uid,
+    firstName:first,
+    lastName:last,
+    dob:dob,
+    gender:gender,
+    mobile:mobile,
+    email:email,
+    state:state,
+    district:district,
+    pvtg:pvtg,
+    password:hashPw(pw),
+    registeredAt:Date.now()
+  };
+
+  var users = loadUsers();
+  users.push(newUser);
+  saveUsers(users);
+
+  /* Create their fresh state and log them in */
+  var freshState = buildBlankState(newUser);
+  try{ localStorage.setItem(STATE_KEY, JSON.stringify(freshState)); }catch(e){}
+  try{ localStorage.setItem(SESSION_KEY, JSON.stringify({uid:uid, at:Date.now()})); }catch(e){}
+
+  var btn = document.getElementById('registerBtn');
+  btn.disabled = true;
+  btn.textContent = 'Creating account...';
+  toast('Account created successfully', 'ok');
+  setTimeout(function(){ location.href = 'dashboard.html'; }, 700);
+});
+
+/* =========================================================
+   DEMO LOGIN
+   ========================================================= */
+document.getElementById('demoLogin').addEventListener('click', function(){
+  var DEMO_EMAIL = 'anjali.murmu@example.com';
+  var DEMO_PW    = 'demo1234';
+
+  var users = loadUsers();
+  if(!users.find(function(u){ return normalizeEmail(u.email) === DEMO_EMAIL; })){
+    users.push({
+      id:'u_demo',
+      firstName:'Anjali', lastName:'Murmu',
+      email:DEMO_EMAIL, mobile:'9876543210',
+      dob:'2003-06-14', gender:'Female',
+      state:'Odisha', district:'Mayurbhanj',
+      pvtg:false,
+      password:hashPw(DEMO_PW),
+      registeredAt:Date.now()
+    });
+    saveUsers(users);
+  }
+
+  var state = buildDemoState();
+  try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){}
+  try{ localStorage.setItem(SESSION_KEY, JSON.stringify({uid:'u_demo', at:Date.now()})); }catch(e){}
+
+  toast('Signed in as demo user', 'ok');
+  setTimeout(function(){ location.href = 'dashboard.html'; }, 500);
+});
+
+/* =========================================================
+   FORGOT PASSWORD
+   ========================================================= */
+document.getElementById('forgotBtn').addEventListener('click', function(){
+  openModal('forgotModal');
+});
+document.getElementById('sendReset').addEventListener('click', function(){
+  var v = document.getElementById('forgotId').value.trim();
+  if(!v){ toast('Please enter your mobile or email', 'err'); return; }
   closeModal('forgotModal');
-  toast('Demo reset link sent to '+v,'ok');
+  toast('Demo reset link sent to ' + v, 'ok');
+});
+
+/* =========================================================
+   MOBILE SANITIZER
+   ========================================================= */
+document.getElementById('rMobile').addEventListener('input', function(e){
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
 });
 </script>
 </body>
