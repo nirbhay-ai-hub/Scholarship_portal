@@ -112,5 +112,6 @@ let sx=0;
 document.getElementById('slides').addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
 document.getElementById('slides').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)go(idx+(dx<0?1:-1))},{passive:true});
 </script>
+  <script src="lang.js"></script>
 </body>
 </html>
