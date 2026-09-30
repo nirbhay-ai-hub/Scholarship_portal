@@ -168,5 +168,6 @@ inputs[0].focus();
 
 function toast(msg,type){const w=document.getElementById('toastWrap');const t=document.createElement('div');t.style.cssText='background:'+(type==='err'?'#DC2626':type==='ok'?'#0F9D58':'#0F172A')+';color:#fff;padding:11px 16px;border-radius:10px;font-size:13.5px;font-weight:500;box-shadow:0 10px 30px -10px rgba(0,0,0,.35);transition:opacity .3s';t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300)},2400)}
 </script>
+  <script src="lang.js"></script>
 </body>
 </html>
